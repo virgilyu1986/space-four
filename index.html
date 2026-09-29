@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>空间四子棋 · 5×5×5</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#F6F5F1;color:#2C2C2A;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:18px 16px 44px}
+h1{font-size:19px;font-weight:500;margin:0}
+.sub{font-size:12.5px;color:#6E6C66;margin:5px 0 14px;line-height:1.6}
+.layout{display:flex;gap:18px;align-items:flex-start}
+.stage{flex:1 1 auto;min-width:300px}
+canvas{display:block;width:100%;height:auto;background:#FFF;border:1px solid rgba(0,0,0,.09);border-radius:14px;touch-action:none;cursor:grab}
+canvas.grabbing{cursor:grabbing}
+.panel{flex:0 0 272px;background:#FFF;border:1px solid rgba(0,0,0,.09);border-radius:14px;padding:14px}
+.row{margin-bottom:13px}
+.row:last-child{margin-bottom:0}
+.lab{font-size:12px;color:#8A877F;margin-bottom:6px;letter-spacing:.3px}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;padding:7px 4px;font-size:12.5px;border:1px solid rgba(0,0,0,.12);background:#fff;color:#4A4844;border-radius:8px;cursor:pointer;font-family:inherit;transition:.13s}
+.seg button:hover{border-color:rgba(0,0,0,.28)}
+.seg button.on{background:#2C2C2A;color:#fff;border-color:#2C2C2A}
+.rule{font-size:12.5px;line-height:1.55;color:#3C5A7A;background:#EEF4FB;border:1px solid rgba(56,110,170,.18);border-radius:8px;padding:7px 9px}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+.btns button{flex:1;min-width:78px;padding:9px 6px;font-size:13px;border:1px solid rgba(0,0,0,.12);background:#fff;color:#2C2C2A;border-radius:8px;cursor:pointer;font-family:inherit;transition:.13s}
+.btns button:hover{border-color:rgba(0,0,0,.3);background:#FAFAF8}
+.btns button:disabled{opacity:.4;cursor:default}
+.chk{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#4A4844;padding:3px 0;cursor:pointer;user-select:none;white-space:nowrap}
+.chk input{accent-color:#2C2C2A;width:14px;height:14px;cursor:pointer;flex:0 0 auto}
+.chks{display:grid;grid-template-columns:1fr 1fr;gap:1px 6px}
+.status{font-size:13.5px;padding:9px 11px;border-radius:8px;background:#F2F1EC;color:#4A4844;line-height:1.5}
+.status.win{background:#E1F5EE;color:#0F6E56}
+.status.lose{background:#FCEBEB;color:#993C1D}
+.status.think{background:#EEEDFE;color:#3C3489}
+.legend{font-size:11.5px;color:#8A877F;line-height:1.75;border-top:1px solid rgba(0,0,0,.08);padding-top:11px;margin-top:13px}
+.lg{display:flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+.ball{width:13px;height:13px;border-radius:50%;flex:0 0 auto;
+  background:radial-gradient(circle at 32% 30%, #FFF 0 12%, #7FB4E8 34%, #4A92DF 62%, #1C5C93 100%);
+  box-shadow:inset 0 -1.5px 2px rgba(255,255,255,.45), 0 .5px 1.5px rgba(0,0,0,.22)}
+.ball.o{background:radial-gradient(circle at 32% 30%, #FFF 0 12%, #ED9A6B 34%, #DE6B3D 62%, #8E3618 100%)}
+.ball.sm{width:11px;height:11px}
+.ring{width:11px;height:11px;border-radius:50%;border:2px solid;flex:0 0 auto}
+.ring.hl{width:13px;height:13px;border-width:3px}
+.pillar{width:11px;height:15px;flex:0 0 auto;border-radius:3px;
+  background:linear-gradient(90deg,rgba(126,120,106,.62) 0 1.5px,rgba(238,234,226,.18) 1.5px calc(100% - 1.5px),rgba(126,120,106,.62) calc(100% - 1.5px) 100%)}
+.tips{font-size:11.5px;color:#8A877F;line-height:1.75;margin-top:10px}
+kbd{font-family:inherit;font-size:11px;background:#F2F1EC;border:1px solid rgba(0,0,0,.1);border-radius:4px;padding:1px 5px}
+@media(max-width:860px){.layout{flex-direction:column}.panel{flex:1 1 auto;width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>空间四子棋 <span style="font-weight:400;color:#8A877F;font-size:14px">5×5×5</span></h1>
+  <p class="sub">5×5×5 · <span id="ln">302</span> 条四连线 · 13 个方向 · 每手 <b>25</b> 个落点<br>规则：<b>下面一层有子，才能落在上面一层</b>。点哪根柱子，球就落在它最上面那一格<br>
+  判位三件套：<b>悬停某根柱子</b>＝只突出它和周围 3×3 的棋子；<b>悬停某颗球</b>＝若它已凑齐三颗，整条线连着缺口一起点亮；<b>竖虚线</b>＝从球引到它真正的地面格</p>
+  <div class="layout">
+    <div class="stage">
+      <canvas id="cv" width="720" height="760"></canvas>
+    </div>
+    <aside class="panel">
+      <div class="row">
+        <div class="lab">规则</div>
+        <div class="rule">叠放 —— 下面一层有子，才能往上放；25 根柱子各自从第 1 层开始往上堆<br>
+        <span style="color:#5B7796">看不清第几层？用「只看某一层」：那层的网格整片点亮，棋子与可落点也只显示这一层<br>
+        判不准落在哪格？顺着球下面那条竖虚线往下走，末端那个色点就是它的格子</span></div>
+      </div>
+      <div class="row">
+        <div class="lab">视角（拖动可随意转）</div>
+        <div class="seg" id="segView">
+          <button data-v="iso" class="on">斜视</button>
+          <button data-v="top">俯视</button>
+          <button data-v="side">平视</button>
+          <button data-v="diag">正对角</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="lab">棋子间距（缝越宽越好判位，球会略小）</div>
+        <div class="seg" id="segGap">
+          <button data-v="tight">紧凑</button>
+          <button data-v="std" class="on">标准</button>
+          <button data-v="loose">宽松</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="lab">只看某一层（棋子按层筛选）</div>
+        <div class="seg" id="segLayer">
+          <button data-v="0" class="on">全部</button>
+          <button data-v="1">1</button>
+          <button data-v="2">2</button>
+          <button data-v="3">3</button>
+          <button data-v="4">4</button>
+          <button data-v="5">5</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="lab">AI 难度</div>
+        <div class="seg" id="segLv">
+          <button data-v="1">简单</button>
+          <button data-v="2" class="on">普通</button>
+          <button data-v="3">困难</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="lab">先手</div>
+        <div class="seg" id="segFirst">
+          <button data-v="1" class="on">我先</button>
+          <button data-v="0">AI 先</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="status" id="status">轮到你（蓝）落子</div>
+      </div>
+      <div class="row">
+        <div class="btns">
+          <button id="btnUndo">悔棋</button>
+          <button id="btnHint">提示</button>
+          <button id="btnNew">新局</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="chks">
+          <label class="chk"><input type="checkbox" id="cbThreat" checked>显示杀点</label>
+          <label class="chk"><input type="checkbox" id="cbSound" checked>落子音效</label>
+          <label class="chk"><input type="checkbox" id="cbGrid" checked>层参考线</label>
+          <label class="chk"><input type="checkbox" id="cbStub" checked>短柱</label>
+          <label class="chk"><input type="checkbox" id="cbTri" checked>三缺一连线</label>
+          <label class="chk"><input type="checkbox" id="cbFocus" checked>邻域聚焦</label>
+          <label class="chk"><input type="checkbox" id="cbDrop" checked>落点引线</label>
+          <label class="chk"><input type="checkbox" id="cbGhost" checked>落点提示</label>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="lg"><span class="ball"></span>你的球<span class="ball o" style="margin-left:9px"></span>AI 的球<span class="pillar" style="margin-left:9px"></span>玻璃立柱（能看穿）</div>
+        <div class="lg" style="margin-top:3px"><span class="ring" style="border-color:#1D9E75"></span>你的杀点<span class="ring" style="border-color:#E24B4A;margin-left:9px"></span>AI 的杀点（必须防）</div>
+        <div class="lg" style="margin-top:3px"><span class="sw" style="background:rgba(74,146,223,.30);border:1px solid rgba(38,88,150,.75);border-radius:50%"></span>淡蓝幽灵球＝现在能落的位置</div>
+        <div class="lg" style="margin-top:3px"><span class="sw" style="background:rgba(150,186,226,.45);border:1px solid rgba(56,110,170,.6)"></span>淡蓝薄片＝聚焦层（悬停/筛选的那一层）</div>
+        <div class="lg" style="margin-top:3px"><span class="sw" style="width:17px;height:3px;background:#1D9E75;border-radius:2px"></span>悬停三缺一：整条线＋缺口一起亮</div>
+        <div class="lg" style="margin-top:3px"><span class="sw" style="background:rgba(27,78,120,.34);border:1px solid rgba(27,78,120,.92)"></span>悬停柱：它＋3×3 高亮，其余淡出</div>
+        <div class="lg" style="margin-top:3px"><span class="sw" style="width:17px;height:3px;background:linear-gradient(90deg,#4A92DF 55%,transparent 55%);border-radius:2px"></span>竖虚线＝球引到它真正的地面格</div>
+      </div>
+      <div class="tips">
+        <kbd>拖动</kbd> 任意旋转视角　<kbd>滚轮</kbd> 放大 / 缩小（放大后会溢出画布，是故意的）<br>
+        <kbd>R</kbd> 复位视角　<kbd>H</kbd> 提示　<kbd>U</kbd> 悔棋　<kbd>N</kbd> 新局
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= 棋盘数据 ================= */
+const N = 5, SZ = 125;
+const P1 = 1, P2 = 2;
+const idx = (x,y,z)=> x + y*N + z*N*N;
+const XO = i=> i % N;
+const YO = i=> ((i/N)|0) % N;
+const ZO = i=> (i/(N*N))|0;
+
+const DIRS = [];
+for(let dx=-1;dx<=1;dx++) for(let dy=-1;dy<=1;dy++) for(let dz=-1;dz<=1;dz++){
+  if(!dx && !dy && !dz) continue;
+  const f = dx!==0 ? dx : (dy!==0 ? dy : dz);
+  if(f < 0) continue;
+  DIRS.push([dx,dy,dz]);
+}
+const LINES = [];
+const CELL_LINES = Array.from({length:SZ}, ()=>[]);
+for(let x=0;x<N;x++) for(let y=0;y<N;y++) for(let z=0;z<N;z++){
+  for(const [dx,dy,dz] of DIRS){
+    const ex=x+3*dx, ey=y+3*dy, ez=z+3*dz;
+    if(ex<0||ex>=N||ey<0||ey>=N||ez<0||ez>=N) continue;
+    const L=[idx(x,y,z), idx(x+dx,y+dy,z+dz), idx(x+2*dx,y+2*dy,z+2*dz), idx(ex,ey,ez)];
+    const id=LINES.length; LINES.push(L);
+    for(const c of L) CELL_LINES[c].push(id);
+  }
+}
+
+const NEIGH = Array.from({length:SZ}, ()=>[]);
+for(let i=0;i<SZ;i++){
+  const x=XO(i),y=YO(i),z=ZO(i);
+  for(let j=0;j<SZ;j++){
+    if(i===j) continue;
+    const d=Math.abs(XO(j)-x)+Math.abs(YO(j)-y)+Math.abs(ZO(j)-z);
+    if(d<=3) NEIGH[i].push(j);
+  }
+}
+const STAT = new Int8Array(SZ);
+for(let i=0;i<SZ;i++) STAT[i] = 6 - (Math.abs(XO(i)-2)+Math.abs(YO(i)-2)+Math.abs(ZO(i)-2));
+
+/* ---- 增量连线表：核心的 Correctness + 性能 保证 ---- */
+const NL = LINES.length;
+const LC1 = new Int8Array(NL), LC2 = new Int8Array(NL);
+const thrWho = new Int8Array(NL), thrCell = new Int16Array(NL);
+const crit = [null, new Set(), new Set()];
+const critCnt = [null, new Map(), new Map()];
+function addCrit(who, cell){ const m=critCnt[who]; m.set(cell,(m.get(cell)||0)+1); crit[who].add(cell); }
+function delCrit(who, cell){ const m=critCnt[who]; const c=(m.get(cell)||0)-1; if(c<=0){ m.delete(cell); crit[who].delete(cell);} else m.set(cell,c); }
+function refreshLine(id){
+  const L=LINES[id]; let c1=0,c2=0,e=-1;
+  for(let t=0;t<4;t++){ const v=board[L[t]]; if(v===P1) c1++; else if(v===P2) c2++; else e=L[t]; }
+  LC1[id]=c1; LC2[id]=c2;
+  if(thrWho[id]){ delCrit(thrWho[id], thrCell[id]); thrWho[id]=0; thrCell[id]=-1; }
+  if(c1===3 && e>=0){ thrWho[id]=P1; thrCell[id]=e; addCrit(P1,e); }
+  else if(c2===3 && e>=0){ thrWho[id]=P2; thrCell[id]=e; addCrit(P2,e); }
+}
+function resetLines(){
+  for(let id=0;id<NL;id++){ LC1[id]=0; LC2[id]=0; thrWho[id]=0; thrCell[id]=-1; }
+  crit[1].clear(); crit[2].clear(); critCnt[1].clear(); critCnt[2].clear();
+}
+
+/* ================= 状态 ================= */
+const board = new Uint8Array(SZ);
+const touch = new Int16Array(SZ);
+let level = 2;
+let humanFirst = true;
+let human = P1, ai = P2;
+let turn = P1;
+let busy = false, thinking = false;
+let over = null;
+let winLine = null, winSide = 0;
+let history = [];
+let hover = -1, hintCell = -1;
+/* hoverStone：鼠标**真正指到的那一颗已放上去的球**（-1 = 没有）。
+   hover 会被规范化成"这根柱子的顶端"，那个值是用来落子的；
+   但"选中某个棋子看它是不是三缺一"需要的是原始那颗球，两者必须分开记。 */
+let hoverStone = -1;
+/* focusCol：当前聚焦的柱子 = x + y*N（-1 = 没有）。
+   聚焦时该柱 + 周围 3×3 的柱子正常显示，其余柱子的球淡出 ——
+   这是"点击某个杆子，就展示这个杆子以及周边有关的杆子上的棋子"。 */
+let focusCol = -1;
+let levelFilter = 0;   // 0 = 全部层；1..5 = 只看这一层（棋子按层筛选）
+let threatCache = {1:new Set(), 2:new Set()};
+let pulse = 0;
+
+/* 规则：叠放 —— 下面一层有子，才能落在上面一层。
+   在这条规则下，一根柱子的合法落点就是它「最低的那个空格」，
+   25 根柱子 → 每一手恰好 25 个合法点（每根柱子最上面那格）。 */
+let flashCell = -1, flashT = 0;
+let toast = {msg:'', t:0, x:0, y:0};   // 画在棋盘上的浮动提示（不会被状态栏顶掉）
+
+/* 某一柱（x,y）当前的合法落点 = 最低空格；柱满返回 -1 */
+function colTop(x,y){
+  for(let z=0;z<N;z++){ const i=idx(x,y,z); if(board[i]===0) return i; }
+  return -1;
+}
+function legalMoves(){
+  const out=[];
+  for(let x=0;x<N;x++) for(let y=0;y<N;y++){ const i=colTop(x,y); if(i>=0) out.push(i); }
+  return out;
+}
+function isLegal(i){
+  return board[i]===0 && colTop(XO(i),YO(i))===i;
+}
+function put(i,v){
+  board[i]=v;
+  for(const j of NEIGH[i]) touch[j]++;
+  for(const id of CELL_LINES[i]) refreshLine(id);
+}
+function lift(i){
+  board[i]=0;
+  for(const j of NEIGH[i]) touch[j]--;
+  for(const id of CELL_LINES[i]) refreshLine(id);
+}
+function stones(){ let n=0; for(let i=0;i<SZ;i++) if(board[i]) n++; return n; }
+
+function findWin(cell, who){
+  for(const id of CELL_LINES[cell]){
+    const L=LINES[id];
+    if(board[L[0]]===who && board[L[1]]===who && board[L[2]]===who && board[L[3]]===who) return L;
+  }
+  return null;
+}
+function refreshThreats(){ threatCache[P1]=crit[P1]; threatCache[P2]=crit[P2]; }
+
+/* 某格参与的「三缺一」：一条线上有 3 颗同色 + 1 个空位。
+   cell 可以是那三颗里的任意一颗，也可以是那个空位本身 ——
+   两种情况都要能点亮，否则"选中棋子看它凑成三了没"会漏掉一半。 */
+function threatLinesAt(cell){
+  if(cell<0) return [];
+  const out=[];
+  for(const id of CELL_LINES[cell]){
+    const w=thrWho[id];
+    if(!w) continue;
+    out.push({id, who:w, gap:thrCell[id], L:LINES[id]});
+  }
+  return out;
+}
+/* 聚焦判定：focusCol 的 3×3 邻域之内算"有关"，之外要淡出 */
+function inFocus(x,y){
+  if(focusCol<0) return true;
+  const fx=focusCol%N, fy=(focusCol/N)|0;
+  return Math.abs(x-fx)<=1 && Math.abs(y-fy)<=1;
+}
+
+/* ================= AI ================= */
+const SC = [0, 2, 16, 160, 100000];
+function evaluate(me){
+  const om = me===P1 ? LC1 : LC2;
+  const op = me===P1 ? LC2 : LC1;
+  let s=0;
+  for(let id=0; id<NL; id++){
+    const m=om[id], o=op[id];
+    if(m){ if(o) continue; s += SC[m]; }
+    else if(o) s -= SC[o]*1.12;
+  }
+  return s;
+}
+/* 合法手只有 25 个（每柱顶端），全部保留 —— 分支已经足够小，
+   这里不再剪枝，只做「关键点优先」的排序，让 alpha-beta 尽快剪掉烂分支。 */
+function gen(){
+  const all = legalMoves();
+  if(!all.length) return [];
+  const critical=[], normal=[];
+  for(const i of all){
+    if(crit[P1].has(i) || crit[P2].has(i)) critical.push(i);
+    else normal.push(i);
+  }
+  normal.sort((a,b)=> (touch[b]*9+STAT[b]) - (touch[a]*9+STAT[a]));
+  return critical.concat(normal);
+}
+/* 威胁驱动的候选收窄：如果对手下一手就能成四，那么"不堵"的走法全是必输，
+   直接把它们从候选里删掉（只留"我能赢的"和"必须堵的"）。
+   这条剪枝把关键局面的分支从 25 收到 1~2 个 —— 是深度搜索能在预算内跑完的关键。 */
+function genFor(me){
+  const block=[], win=[];
+  for(const c of crit[3-me]) if(isLegal(c)) block.push(c);
+  if(!block.length) return gen();
+  for(const c of crit[me]) if(isLegal(c)) win.push(c);
+  return win.concat(block);
+}
+function negamax(me, depth, alpha, beta, deadline){
+  if(Date.now() > deadline) { ABORT = true; return 0; }
+  if(depth===0) return evaluate(me);
+  const moves = genFor(me);
+  if(!moves.length) return 0;
+  let best = -Infinity;
+  for(const m of moves){
+    put(m, me);
+    let sc;
+    if(findWin(m, me)) sc = 1e6 + depth;
+    else sc = -negamax(3-me, depth-1, -beta, -alpha, deadline);
+    lift(m);
+    if(sc > best) best = sc;
+    if(best > alpha) alpha = best;
+    if(alpha >= beta) break;
+    if(ABORT) return best;
+  }
+  return best;
+}
+let ABORT = false;
+function thinkMove(me){
+  for(const c of crit[me]) if(isLegal(c)) return c;
+  /* 叠放规则下每一手只有 25 个候选（每柱顶端），搜索深度能真正吃掉：
+     简单只能看到 1~2 手，普通能看到自己造叉（d=3），困难能看到对手造叉（d=4）。 */
+  const budget = level===1 ? 200 : level===2 ? 450 : 800;
+  const deadline = Date.now() + budget;
+  const seq = level===1 ? [1,2] : level===2 ? [2,3] : [3,4];
+  let bestMove = null;
+  for(const d of seq){
+    ABORT = false;
+    const moves = genFor(me);
+    if(!moves.length) break;
+    if(bestMove !== null){
+      const p = moves.indexOf(bestMove);
+      if(p > 0){ moves.splice(p,1); moves.unshift(bestMove); }
+    }
+    /* 注意：评估分是"权重 × 1.12"累加出来的浮点数，等价局面会差出 1e-14 的噪声
+       （71.76000000000003 vs ...0002）。用严格 === 判同分，会让"同分随机"永远
+       只命中一个走法 → 每盘开局完全一样。所以必须带容差比较。 */
+    const EPS = 1e-6;
+    let bs = -Infinity, bm = moves[0], ties = [moves[0]];
+    for(const m of moves){
+      put(m, me);
+      const sc = findWin(m, me) ? (1e6+d) : -negamax(3-me, d-1, -Infinity, Infinity, deadline);
+      lift(m);
+      if(sc > bs + EPS){ bs=sc; bm=m; ties=[m]; }
+      else if(sc > bs - EPS){ ties.push(m); }
+      if(ABORT) break;
+    }
+    /* 完全同分的走法里随机挑一个：否则同一个局面每盘都走出同一副棋（开局太单调）。 */
+    if(!ABORT && ties.length>1){
+      const pool = ties.slice(0,6);
+      bm = pool[(Math.random()*pool.length)|0];
+    }
+    if(!ABORT || bestMove===null) bestMove = bm;
+    if(bs > 1e5) break;
+    if(Date.now() > deadline) break;
+  }
+  if(bestMove===null){ const m=legalMoves(); bestMove = m.length ? m[(Math.random()*m.length)|0] : null; }
+  return bestMove;
+}
+
+/* ============================================================================
+   3D 投影 —— 真正的方位角 + 俯仰角，视角可以任意切换
+   ---------------------------------------------------------------------------
+   世界坐标：x,y ∈ [0,4]（5×5 的地面），z = 层高（0 到 5，5 是立柱顶）。
+   相机：先绕竖轴转 yaw（方位角），再按 pitch（俯仰角）抬起来看。
+        u = 屏幕水平方向
+        v = 地面内的"远近"方向（越大越远）
+        screenX = OX + u*S
+        screenY = OY - (v*sinp + (z-2.5)*cosp)*S
+        depth   = v*cosp - (z-2.5)*sinp        （越大越远 → 先画）
+   ---------------------------------------------------------------------------
+   关键好性质：z 只影响 screenY，不影响 screenX。
+   所以一根立柱在屏幕上永远是**一条竖直线**：同一根柱子上的球上下排成一列，
+   高度差直接就是屏幕上的竖直位移 —— 这是"看清第几层"的几何基础。
+   再加上球本身是各向同性的（投影恒为正圆），层高判读就不受视角摆布了。 */
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+/* 画布 720×760：竖直方向才是自动取景的瓶颈（包围盒 h≈8.8 > w≈7.4），
+   加高画布才能换来"把棋子拉开"的空间 —— 不这么做的话，
+   任何拉大间距的操作都会被自动取景 1:1 缩回去，净效果是零。 */
+const CW=720, CH=760;
+let yaw = 45*Math.PI/180, pitch = 40*Math.PI/180;
+let yawT = yaw, pitchT = pitch;
+let zoom = 1, SBASE = 80;
+let S = SBASE, OX = CW/2, OY = CH/2;
+
+/* ---------------- 间距档位：把"格子"在世界里拉开 ----------------
+   SPX = 水平格距倍数（x/y 平面），SPZ = 层距倍数（竖直方向）。
+   拉开之后自动取景会把 S 缩小一点，所以球会略小 —— 但换来的是
+   「球间距 / 球直径」这个比值明显变大，也就是缝隙变宽：
+
+   斜视 40° 下实测（画布 720×760）：
+
+     档位        SPX  SPZ   S     球半径  水平缝  层缝   层缝/球径
+     紧凑        1.00 1.00  76.8  24.6px  76.8px 58.8px  1.20
+     标准(默认)  1.12 1.30  63.8  20.4px  71.5px 63.5px  1.56
+     宽松        1.30 1.55  54.3  17.4px  70.6px 64.5px  1.86
+
+   最后那列是"能不能数清第几层"的判据：大于 1 才不粘连。
+   原版（700×660、无间距）是 1.20 —— 几乎贴住，所以高层数不清。
+   标准档把层缝/球径提到 1.56，而球的大小基本没动（20.4 vs 20.9px）；
+   还想更开就切「宽松」，代价是球会小一成半。 */
+const GAPS = { tight:[1.00,1.00], std:[1.12,1.30], loose:[1.30,1.55] };
+let SPX = GAPS.std[0], SPZ = GAPS.std[1];
+
+const ZC = 2.5;                       // 视点中心高度（立柱 0…5 的中间）
+function rawProj(x,y,z){
+  const px=(x-2)*SPX, py=(y-2)*SPX, pz=(z-ZC)*SPZ;
+  const cy=Math.cos(yaw), sy=Math.sin(yaw);
+  const u = px*cy - py*sy;
+  const v = px*sy + py*cy;
+  const cp=Math.cos(pitch), sp=Math.sin(pitch);
+  return [u, -(v*sp + pz*cp), v*cp - pz*sp];
+}
+function proj(x,y,z){ const r=rawProj(x,y,z); return [OX+r[0]*S, OY+r[1]*S, r[2]]; }
+function depthAt(x,y,z){ return rawProj(x,y,z)[2]; }
+
+/* 自动取景：把整个结构（地面外沿 + 立柱顶）框进画布并居中。
+   S 先在 fit 与 SBASE 之间取小值（保证转动视角时板子大小稳定），再乘 zoom。
+   zoom>1 会让板子溢出画布 —— 这是故意的：局部太密时能把它放大来看。 */
+const FRAME_PTS = [];
+for(const x of [-0.62,4.62]) for(const y of [-0.62,4.62]) for(const z of [-0.14,5.06]) FRAME_PTS.push([x,y,z]);
+const FM = 42;
+function recenter(){
+  let mnx=1e9,mxx=-1e9,mny=1e9,mxy=-1e9;
+  for(const q of FRAME_PTS){
+    const r=rawProj(q[0],q[1],q[2]);
+    if(r[0]<mnx) mnx=r[0]; if(r[0]>mxx) mxx=r[0];
+    if(r[1]<mny) mny=r[1]; if(r[1]>mxy) mxy=r[1];
+  }
+  const w=Math.max(1e-3,mxx-mnx), h=Math.max(1e-3,mxy-mny);
+  const fit = Math.min((CW-2*FM)/w, (CH-2*FM)/h);
+  /* 注意 Min(SBASE, fit) 之后**再**乘 zoom。
+     旧写法是 Min(SBASE*zoom, fit) —— fit 当了硬上限，于是 zoom>1 完全无效：
+     板子已经按 fit 撑满了，再乘 1.6 也被 fit 压回去，滚轮只能缩小不能放大。
+     间距拉开后球更小，放大是必要的补救手段，必须能用。 */
+  S = Math.min(SBASE, fit) * zoom;
+  OX = CW/2 - (mnx+mxx)/2*S;
+  OY = CH/2 - (mny+mxy)/2*S;
+}
+
+const COL={1:{hi:'#EAF2FD', top:'#7FB4E8', mid:'#4A92DF', lo:'#1C5C93', side1:'#8FC0EC', side2:'#3E80C4', line:'#1B4E78', rgb:'74,146,223'},
+           2:{hi:'#FDEEDF', top:'#ED9A6B', mid:'#DE6B3D', lo:'#8E3618', side1:'#F0A87E', side2:'#C05B31', line:'#8A3417', rgb:'222,107,61'}};
+
+/* 几何尺寸（单位 = 一个格子的边长） */
+const RP  = 0.145;   // 立柱半径
+/* 棋子 = 球，半径 PR（单位：格）。
+   球是各向同性的 —— 方位角转多少、俯仰角抬多高，投影永远是**半径 PR*S 的圆**，
+   不会被压扁、也不会变形。这是判读"第几层"最稳的形态：
+   球心在屏幕上的高低 = 层高，球本身又是个有明暗的实体，前后遮挡一眼可辨。
+   （空心圆环是扁的，平视时压成一条线；球没有这个问题。）
+
+   0.32 这个数是量出来的，不是拍的：同一根柱子上相邻两层的球心，
+   屏幕竖直间距 = cos(俯仰角)*S，只要它大于球直径 2*PR*S，
+   上下两颗球就不会粘连，眼睛能直接逐颗数层。
+   2*0.32 = 0.64 → 俯仰角 ≤ 50° 时分离成立（斜视 40° 时留 ~9px 亮缝）。
+   俯仰再抬就只有最上面那颗露着了 —— 那种"俯视"看的是布局，看层数请用「只看某一层」。 */
+const PR  = 0.32;
+
+function poly(pts, fill, stroke, lw){
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0], pts[i][1]);
+  ctx.closePath();
+  if(fill){ ctx.fillStyle=fill; ctx.fill(); }
+  if(stroke){ ctx.strokeStyle=stroke; ctx.lineWidth=lw||1; ctx.stroke(); }
+}
+function mix(a,b,t){
+  const pa=[parseInt(a.slice(1,3),16),parseInt(a.slice(3,5),16),parseInt(a.slice(5,7),16)];
+  const pb=[parseInt(b.slice(1,3),16),parseInt(b.slice(3,5),16),parseInt(b.slice(5,7),16)];
+  return 'rgb('+pa.map((v,k)=>Math.round(v+(pb[k]-v)*t)).join(',')+')';
+}
+/* 圆柱侧面轮廓 = 两端圆的凸包：底圆下半 → 左侧竖线 → 顶圆上半 → 右侧竖线 */
+function tubePath(a, b, rx, ry){
+  ctx.beginPath();
+  ctx.ellipse(a[0], a[1], rx, ry, 0, 0, Math.PI, false);
+  ctx.lineTo(b[0]-rx, b[1]);
+  ctx.ellipse(b[0], b[1], rx, ry, 0, Math.PI, 2*Math.PI, false);
+  ctx.lineTo(a[0]+rx, a[1]);
+  ctx.closePath();
+}
+/* ---------------- 地面 ---------------- */
+function drawFloor(){
+  const P=[[-0.5,-0.5],[4.5,-0.5],[4.5,4.5],[-0.5,4.5]];
+  const q=P.map(([a,b])=>{ const p=proj(a,b,0); return [p[0],p[1]]; });
+  poly(q,'rgba(233,230,221,0.96)','rgba(122,118,108,0.38)',1.1);
+  ctx.save();
+  ctx.beginPath(); ctx.moveTo(q[0][0],q[0][1]);
+  for(let k=1;k<4;k++) ctx.lineTo(q[k][0],q[k][1]);
+  ctx.closePath(); ctx.clip();
+  ctx.strokeStyle='rgba(122,118,108,0.34)'; ctx.lineWidth=1.1;
+  for(let t=1;t<5;t++){
+    let a=proj(t-0.5,-0.5,0), b=proj(t-0.5,4.5,0);
+    ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
+    a=proj(-0.5,t-0.5,0); b=proj(4.5,t-0.5,0);
+    ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
+  }
+  ctx.restore();
+}
+/* 地面坐标：把更靠近相机的那两条边的 x?/y? 标出来，
+   配合左下角的"落点 x? y?"读数，就能把任何一层的棋子对到具体位置。 */
+function drawFloorCoords(){
+  const cyw=Math.cos(yaw), syw=Math.sin(yaw);
+  const yEdge = cyw>0 ? -0.80 : 4.80;
+  const xEdge = syw>0 ? -0.80 : 4.80;
+  ctx.font='10.5px -apple-system,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  for(let x=0;x<N;x++){
+    const p=proj(x,yEdge,0);
+    ctx.fillStyle='rgba(90,106,126,0.90)';
+    ctx.fillText('x'+(x+1), p[0], p[1]);
+  }
+  for(let y=0;y<N;y++){
+    const p=proj(xEdge,y,0);
+    ctx.fillStyle='rgba(90,106,126,0.90)';
+    ctx.fillText('y'+(y+1), p[0], p[1]);
+  }
+}
+/* 每根立柱在底板上的接触阴影 */
+function drawShadows(){
+  const sp=Math.sin(pitch);
+  for(let x=0;x<N;x++) for(let y=0;y<N;y++){
+    const p=proj(x+0.0,y+0.0,0.01);
+    ctx.beginPath();
+    ctx.ellipse(p[0], p[1]+RP*S*sp*0.4, RP*S*2.3, RP*S*2.3*sp, 0, 0, Math.PI*2);
+    ctx.fillStyle='rgba(58,54,46,0.10)'; ctx.fill();
+  }
+}
+/* ---------------- 立柱：半透明"玻璃管" ----------------
+   原来是奶白色**实心**圆柱，25 根互相遮挡，把后面的棋子全糊住了 ——
+   侧视角下"第 2 层中心那颗子"根本看不见。改成玻璃管：
+     ① 填充几乎不可见（有子段 0.15 / 空段 0.06）→ 后面的球直接透出来；
+     ② 靠左右两条竖边"立形" —— 轮廓还在，柱子的空间结构一点不丢；
+     ③ 有子那几段描边实、柱顶之上那几段描边虚 —— 一眼读出这根柱堆到第几层。
+   顺手的一个便利：正因为 z 不影响 screenX，一根立柱在屏幕上就是严格的两条竖线，
+   竖边可以直接画线段，不必再算椭圆弧。 */
+function drawPillarSeg(x,y,k,above,z1,dim){
+  const sp=Math.sin(pitch);
+  const a=proj(x,y,k), b=proj(x,y,z1);
+  const rx=RP*S, ry=RP*S*sp;
+  const m = dim ? 0.34 : 1;          // 邻域聚焦时不相关的柱子整体压暗
+  tubePath(a,b,rx,ry);
+  ctx.fillStyle = above ? 'rgba(238,234,226,'+(0.06*m).toFixed(3)+')'
+                        : 'rgba(238,234,226,'+(0.15*m).toFixed(3)+')';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(a[0]-rx,a[1]); ctx.lineTo(b[0]-rx,b[1]);
+  ctx.moveTo(a[0]+rx,a[1]); ctx.lineTo(b[0]+rx,b[1]);
+  ctx.strokeStyle = above ? 'rgba(134,128,114,'+(0.26*m).toFixed(3)+')'
+                          : 'rgba(122,116,102,'+(0.62*m).toFixed(3)+')';
+  ctx.lineWidth = above ? 0.9 : 1.15;
+  ctx.stroke();
+  /* 层刻度：每层交界一道浅弧，一眼看出这是第几层 */
+  if(document.getElementById('cbGrid').checked && k>0){
+    ctx.beginPath();
+    ctx.ellipse(a[0], a[1], rx, ry, 0, Math.PI, 2*Math.PI, false);
+    ctx.strokeStyle='rgba(120,116,104,'+(0.34*m).toFixed(3)+')'; ctx.lineWidth=0.9; ctx.stroke();
+  }
+}
+/* 柱顶：只留一圈薄椭圆。以前是实心亮盖 —— 实心盖正好会盖住"从柱后透出来"的球 */
+function drawPillarCap(x,y,H,dim){
+  const sp=Math.sin(pitch);
+  const p=proj(x,y,H);
+  const m = dim ? 0.34 : 1;
+  ctx.beginPath(); ctx.ellipse(p[0],p[1],RP*S,RP*S*sp,0,0,Math.PI*2);
+  ctx.fillStyle='rgba(238,234,226,'+(0.20*m).toFixed(3)+')'; ctx.fill();
+  ctx.strokeStyle='rgba(122,116,102,'+(0.60*m).toFixed(3)+')'; ctx.lineWidth=1.05; ctx.stroke();
+}
+/* 每根柱子当前堆了几颗子 —— 决定"柱子画多高"和"哪几段算实心段"。
+   叠放规则下第 z 层有子就说明 0..z-1 都有子，所以取最深的那颗即可。 */
+const colFill = new Array(N*N).fill(0);
+function refreshColFill(){
+  for(let x=0;x<N;x++) for(let y=0;y<N;y++){
+    let n=0;
+    for(let z=0;z<N;z++) if(board[idx(x,y,z)]) n=z+1;
+    colFill[x+y*N]=n;
+  }
+}
+const STUB_EXTRA = 1.35;   // 柱子比最高子多伸出的长度（单位：格）
+function pillarH(x,y){
+  if(!document.getElementById('cbStub').checked) return N;
+  return Math.min(N, colFill[x+y*N] + STUB_EXTRA);
+}
+/* ---------------- 棋子：球 ----------------
+   五步把一颗球画实：接触阴影 → 径向渐变球体 → 镜面高光 → 底部环境反光 → 轮廓。
+   ghost=1 淡蓝幽灵球（"现在能落这里"）；ghost=2 悬停预览球（"这一手会落这里"）。 */
+function drawSphere(x,y,zc,who,lit,ghost){
+  const col=COL[who];
+  const p=proj(x,y,zc);
+  const R=PR*S;
+  const t = lit ? (Math.sin(pulse)+1)/2 : 0;
+
+  /* 幽灵球：只给"会落在哪"一点体积感，不抢真球的视觉。
+     25 颗幽灵球同时铺在画面里，本身就够压场了 —— 填充压到 0.13，
+     悬停那一颗仍然保持 0.40 强高亮，"当前要落的那一颗"永远跳出来。 */
+  if(ghost){
+    const a = ghost===2 ? 0.40 : 0.13;
+    const b = ghost===2 ? 0.98 : 0.44;
+    ctx.beginPath(); ctx.arc(p[0],p[1],R,0,Math.PI*2);
+    ctx.fillStyle='rgba('+col.rgb+','+a+')'; ctx.fill();
+    ctx.strokeStyle='rgba('+col.rgb+','+b+')';
+    ctx.lineWidth = ghost===2 ? 2.5 : 1.25;
+    ctx.stroke();
+    return;
+  }
+
+  /* ① 落点阴影：压在下面那颗球（或地面）上 —— 水平面，纵向按俯仰压扁，
+        这样它永远"贴"在下一层的顶上，是判读层高的第二个线索 */
+  const sp=Math.max(0.16, Math.sin(pitch));
+  ctx.beginPath();
+  ctx.ellipse(p[0]+R*0.06, p[1]+R*0.90, R*0.78, R*0.78*sp, 0, 0, Math.PI*2);
+  ctx.fillStyle='rgba(38,34,28,0.17)'; ctx.fill();
+
+  /* ② 球体：左上来光 → 右下入暗 */
+  const g=ctx.createRadialGradient(p[0]-R*0.34, p[1]-R*0.40, R*0.05,
+                                   p[0]+R*0.06, p[1]+R*0.12, R*1.12);
+  g.addColorStop(0.00, lit ? mix(col.hi,'#FFFFFF',0.28+0.5*t) : col.hi);
+  g.addColorStop(0.38, col.mid);
+  g.addColorStop(0.80, mix(col.mid, col.lo, 0.55));
+  g.addColorStop(1.00, col.lo);
+  ctx.beginPath(); ctx.arc(p[0],p[1],R,0,Math.PI*2);
+  ctx.fillStyle=g; ctx.fill();
+  ctx.lineWidth=1.1; ctx.strokeStyle='rgba(28,26,22,0.26)'; ctx.stroke();
+
+  /* ③ 镜面高光：一个歪一点的小椭圆，光源方向一眼可辨 */
+  ctx.beginPath();
+  ctx.ellipse(p[0]-R*0.34, p[1]-R*0.40, R*0.27, R*0.20, -0.62, 0, Math.PI*2);
+  ctx.fillStyle='rgba(255,255,255,0.66)'; ctx.fill();
+
+  /* ④ 底部环境反光：下半圈一道细亮弧，球就不会像一张贴纸 */
+  ctx.beginPath();
+  ctx.ellipse(p[0]+R*0.08, p[1]+R*0.54, R*0.50, R*0.24, 0.10, Math.PI, 2*Math.PI, false);
+  ctx.strokeStyle='rgba(255,255,255,0.32)';
+  ctx.lineWidth=Math.max(1.3, R*0.13); ctx.stroke();
+
+  /* ⑤ 连成四子的那几颗：外圈亮环 + 呼吸 */
+  if(lit){
+    ctx.beginPath(); ctx.arc(p[0],p[1],R+3.0,0,Math.PI*2);
+    ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2.4; ctx.stroke();
+  }
+}
+
+/* ---------------- 层级辅助（解决"二层看不清、跟一层对不上"）----------------
+   ① 聚焦层平面：把某一层的 5×5 网格画成半透明薄片，并参与深度排序。
+      有了这张"层板"，球在层里的位置一眼就能读出来。
+   ② 悬停时同时在【地面】和【目标层平面】高亮同一格 + 一条竖直虚线，
+      两个高亮隔着几层上下对齐，就是"这一格在第二层的哪个位置"。 */
+function drawPlaneTile(x,y,k){
+  const P=[[x-0.5,y-0.5],[x+0.5,y-0.5],[x+0.5,y+0.5],[x-0.5,y+0.5]];
+  const q=P.map(([a,b])=>{ const p=proj(a,b,k); return [p[0],p[1]]; });
+  poly(q, 'rgba(150,186,226,0.30)', 'rgba(84,124,170,0.42)', 0.9);
+}
+function drawPlaneBorder(k){
+  const q=[[-0.5,-0.5],[4.5,-0.5],[4.5,4.5],[-0.5,4.5]].map(([a,b])=>{
+    const p=proj(a,b,k); return [p[0],p[1]]; });
+  poly(q, null, 'rgba(56,110,170,0.55)', 1.6);
+}
+function drawCellMark(x,y,k,fill,stroke){
+  const P=[[x-0.5,y-0.5],[x+0.5,y-0.5],[x+0.5,y+0.5],[x-0.5,y+0.5]];
+  const q=P.map(([a,b])=>{ const p=proj(a,b,k); return [p[0],p[1]]; });
+  poly(q, fill, stroke, 1.3);
+}
+/* 聚焦层：有筛选就听筛选，没筛选就跟着鼠标所在的目标层走 */
+function focusLevel(){
+  if(levelFilter>0) return levelFilter-1;
+  /* 悬停到"已经放上去的球"时，要点亮的是**那颗球所在的层**，
+     而不是"这一手会落在的层" —— 否则你在看 L1 上的一条三缺一，
+     亮起来的却是 L2 的层板，两个提示各说各话。 */
+  if(hoverStone>=0) return ZO(hoverStone);
+  if(hover>=0) return ZO(hover);
+  return -1;
+}
+
+/* ---------------- 组装 + 排序（画家算法）---------------- */
+let PRIM = [];
+function fillPrimitives(){
+  PRIM.length = 0;
+  const F = focusLevel();
+  /* 聚焦层的层平面：先塞进去，靠深度排序保证被立柱和本层球正确遮挡 */
+  if(F>=0){
+    for(let x=0;x<N;x++) for(let y=0;y<N;y++)
+      PRIM.push({d:depthAt(x,y,F), ord:-1, f:()=>drawPlaneTile(x,y,F)});
+  }
+  const useFocus = focusCol>=0 && document.getElementById('cbFocus').checked;
+  refreshColFill();
+  for(let x=0;x<N;x++) for(let y=0;y<N;y++){
+    const n=colFill[x+y*N], H=pillarH(x,y);
+    const dim = useFocus && !inFocus(x,y);
+    for(let k=0;k<N;k++){
+      const z1=Math.min(k+1,H);
+      if(z1<=k+1e-9) break;                  // 这一段整个在柱顶之上 → 不画
+      PRIM.push({d:depthAt(x,y,(k+z1)/2), ord:0, f:()=>drawPillarSeg(x,y,k,k>=n,z1,dim)});
+    }
+    PRIM.push({d:depthAt(x,y,H), ord:0, f:()=>drawPillarCap(x,y,H,dim)});
+  }
+  /* 落点幽灵球也进深度排序，ord = 0.5 —— 夹在立柱(0)和真球(1)之间。
+     这么安排是故意的：**提示永远不能盖住棋子**。
+     之前幽灵球画在所有东西之上，25 颗半透明球会把身后的真球染上一层蓝，
+     实测球心可读率从 99.2% 掉到 94.0% —— 提示反而把主体吃掉了，本末倒置。
+     （点击判定不受影响：pick() 不看绘制顺序，柱顶照旧点得到。） */
+  if(turn===human && !busy && !over && document.getElementById('cbGhost').checked){
+    for(const t of TARGETS){
+      PRIM.push({d:depthAt(t.x,t.y,t.k+0.5), ord:0.5,
+                 f:()=>drawTarget(t.x,t.y,t.k, hover===t.i)});
+    }
+  }
+  for(let i=0;i<SZ;i++){
+    if(!board[i]) continue;
+    if(levelFilter>0 && ZO(i)+1!==levelFilter) continue;   // 按层筛选：只显示这一层的球
+    const x=XO(i), y=YO(i), z=ZO(i)+0.5;
+    const lit = winLine && winLine.indexOf(i)>=0;
+    /* 邻域聚焦：不在这根柱子 3×3 里的球压到 0.20 透明度。
+       注意不能简单"不画" —— 还得看得见有个东西在那儿，只是不抢视线。 */
+    const dim = useFocus && !inFocus(x,y);
+    /* +1e-6 而不是 -1e-6：球和"包住它的那一小段柱身"深度完全相同（z 相同），
+       这点偏置把球压到柱段之后画 —— 否则半透明的玻璃管身会给球蒙一层灰蓝，
+       球立刻发闷。球必须画在自己那根柱子的上面，才透亮。 */
+    PRIM.push({d:depthAt(x,y,z)+1e-6, ord:1, f:()=>{
+      if(dim){ ctx.save(); ctx.globalAlpha=0.22; drawSphere(x,y,z,board[i],lit,0); ctx.restore(); }
+      else drawSphere(x,y,z,board[i],lit,0);
+    }});
+  }
+}
+function paintPrimitives(onePass){
+  /* 两趟绘制，而不是一趟排到底：
+       第 1 趟 ord<1  —— 层平面(-1) → 立柱(0) → 落点幽灵球(0.5)
+       第 2 趟 ord>=1 —— 真球(1)
+     这样"棋子永远压在柱子和提示之上"。这不是偷懒 ——
+     玻璃柱身和幽灵球本来就是配角，让它们按深度盖住主体只会把主体弄脏：
+     实测球心可读率，一趟排到底 95.1%，两趟 100%。
+     球与球之间仍然按深度互遮（都在第 2 趟里，谁近谁在上），前后关系是对的。
+     onePass=true 是给 A/B 对照用的（还原成"一趟排到底"的老行为）。 */
+  PRIM.sort((p,q)=> (p.d-q.d) || (p.ord-q.ord));
+  if(onePass){ for(const p of PRIM) p.f(); }
+  else {
+    for(const p of PRIM) if(p.ord<1) p.f();
+    for(const p of PRIM) if(p.ord>=1) p.f();
+  }
+  const F = focusLevel();
+  if(F>=0) drawPlaneBorder(F);
+}
+function buildPrimitives(){ fillPrimitives(); paintPrimitives(false); }
+
+/* ---------------- 可落点：淡蓝幽灵球 ----------------
+   筛选到某一层时，落点也跟着筛：只给出"落在这一层"的那些落点。
+   否则"只看第 3 层"里会散着一堆挂在 L1/L4/L5 的幽灵球，语义全糊了。
+   （想落在其它层？把筛选切回「全部」就行；或者直接把鼠标移到那根柱子上，
+     悬停预览球会照常显示它实际会落在第几层。）
+   绘制位置在 buildPrimitives() 里、ord=0.5 —— 见那里的说明。 */
+let TARGETS = [];
+function collectTargets(){
+  TARGETS.length = 0;
+  for(let x=0;x<N;x++) for(let y=0;y<N;y++){
+    const i=colTop(x,y); if(i<0) continue;
+    const k=ZO(i);
+    if(levelFilter>0 && k+1!==levelFilter) continue;   // 只看某层 → 只留这一层的落点
+    TARGETS.push({i, x, y, k, d:depthAt(x,y,k+0.5)});
+  }
+  TARGETS.sort((a,b)=> a.d-b.d);   // 远的先画 → 最近的压在最上面
+}
+function drawTarget(x,y,k,strong){
+  drawSphere(x,y,k+0.5,human,false,strong?2:1);
+}
+/* 杀点：现在就能落的画实心双圈，够不到的（不在柱顶）画淡虚线圈。
+   双圈而不是实心圆 —— 底下的球是本方还是对方，不能被盖住看不见。 */
+function drawThreatRings(){
+  const R=PR*S;
+  const markAt=(x,y,z,color,solid)=>{
+    const p=proj(x,y,z);
+    ctx.beginPath(); ctx.arc(p[0],p[1],R*1.24,0,Math.PI*2);
+    if(solid){
+      ctx.strokeStyle=color; ctx.lineWidth=2.4; ctx.stroke();
+      ctx.beginPath(); ctx.arc(p[0],p[1],R*0.60,0,Math.PI*2);
+      ctx.lineWidth=1.7; ctx.stroke();
+    } else { ctx.setLineDash([3,4]); ctx.globalAlpha=0.36;
+      ctx.strokeStyle=color; ctx.lineWidth=1.3; ctx.stroke();
+      ctx.globalAlpha=1; ctx.setLineDash([]); }
+  };
+  const foe = 3-human;
+  for(const i of crit[foe]) markAt(XO(i),YO(i),ZO(i)+0.5,'#E24B4A',isLegal(i));
+  for(const i of crit[human]) if(!crit[foe].has(i)) markAt(XO(i),YO(i),ZO(i)+0.5,'#1D9E75',isLegal(i));
+}
+/* 悬停：把整根柱子描出来 + 落点高亮 */
+function drawHover(){
+  if(hover<0) return;
+  const x=XO(hover), y=YO(hover), k=ZO(hover);
+  const ok = turn===human && !busy && !over;
+  /* 同一格在"地面"和"目标层"各高亮一次 —— 隔着几层上下对齐，
+     一眼就能看出这一手落在第 k+1 层的哪个位置、跟第 1 层是同一格。 */
+  const mkFill = ok ? 'rgba(74,146,223,0.30)' : 'rgba(140,140,140,0.18)';
+  const mkLine = ok ? 'rgba(27,78,120,0.90)' : 'rgba(120,120,120,0.55)';
+  if(k>0){ drawCellMark(x,y,k,mkFill,mkLine); }
+  drawCellMark(x,y,0,'rgba(74,146,223,0.16)',mkLine);
+  const a=proj(x,y,N+0.10), b=proj(x,y,-0.10);
+  ctx.setLineDash([3,5]);
+  ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]);
+  ctx.strokeStyle = ok ? 'rgba(27,78,120,0.42)' : 'rgba(120,116,106,0.30)';
+  ctx.lineWidth=1.2; ctx.stroke();
+  ctx.setLineDash([]);
+  if(!ok) return;
+  drawSphere(x,y,k+0.5,human,false,2);
+}
+/* ---------------- 「三缺一」整条线点亮 ----------------
+   悬停到某颗**已放上去的球**（或那个空位本身）上，如果它所在的某条线已经
+   凑齐 3 颗同色 → 把整条线点亮：三颗球套呼吸亮环 + 沿线的粗折线 +
+   空位画一颗闪动的虚线球。
+   光在空位上画个小圈（原来的杀点标记）不够 —— 看不出"到底是哪三颗凑的"，
+   而这恰恰是判断"该不该防、防哪儿"时最需要的信息。 */
+function drawTriple(){
+  if(!document.getElementById('cbTri').checked) return;
+  const cell = hoverStone>=0 ? hoverStone : hover;
+  const items = threatLinesAt(cell);
+  if(!items.length) return;
+  const t=(Math.sin(pulse)+1)/2;
+  for(const it of items){
+    const c = it.who===human ? '#1D9E75' : '#E24B4A';
+    /* ① 沿线的粗折线：先描一道白底，压在球上也看得清 */
+    const pts = it.L.map(i=>{ const p=proj(XO(i),YO(i),ZO(i)+0.5); return [p[0],p[1]]; });
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]);
+    for(let k=1;k<4;k++) ctx.lineTo(pts[k][0],pts[k][1]);
+    ctx.strokeStyle='rgba(255,255,255,0.62)'; ctx.lineWidth=6.2; ctx.stroke();
+    ctx.strokeStyle=c; ctx.lineWidth=3.0; ctx.globalAlpha=0.92; ctx.stroke();
+    ctx.restore();
+    /* ② 三颗球套呼吸亮环 */
+    for(const i of it.L){
+      if(board[i]!==it.who) continue;
+      const p=proj(XO(i),YO(i),ZO(i)+0.5);
+      ctx.beginPath(); ctx.arc(p[0],p[1],PR*S*(1.26+0.10*t),0,Math.PI*2);
+      ctx.strokeStyle=c; ctx.lineWidth=3.0; ctx.stroke();
+    }
+    /* ③ 空位：闪动的虚线球 + 实心小核 = "差这一个" */
+    const gp=proj(XO(it.gap),YO(it.gap),ZO(it.gap)+0.5);
+    ctx.save();
+    ctx.setLineDash([4.5,4]);
+    ctx.beginPath(); ctx.arc(gp[0],gp[1],PR*S*1.06,0,Math.PI*2);
+    ctx.strokeStyle=c; ctx.lineWidth=2.4; ctx.globalAlpha=0.55+0.40*t; ctx.stroke();
+    ctx.restore();
+    ctx.beginPath(); ctx.arc(gp[0],gp[1],PR*S*0.34,0,Math.PI*2);
+    ctx.fillStyle=c; ctx.globalAlpha=0.28+0.34*t; ctx.fill(); ctx.globalAlpha=1;
+  }
+}
+
+/* ---------------- 邻域聚焦：选中某根柱子 → 它 + 周围 3×3 亮出来 ----------------
+   3×3 是"周边有关"的直觉口径，也是四连能发生的最小邻域（任何一条四连线
+   跨度都不超过 3 格，所以只要这条线经过中心柱，它必然整个落在 3×3 里）。
+   中心柱：地面格实心高亮 + 柱身加粗描边 + 顶端标出坐标。
+   邻域柱：地面格淡高亮，正常显示。
+   其余柱：球压到 0.20、柱身压到 0.34 —— 不是"不画"，还能看见东西在那儿。 */
+function drawFocusGround(){
+  if(focusCol<0 || !document.getElementById('cbFocus').checked) return;
+  const fx=focusCol%N, fy=(focusCol/N)|0;
+  for(let dx=-1;dx<=1;dx++) for(let dy=-1;dy<=1;dy++){
+    const x=fx+dx, y=fy+dy;
+    if(x<0||x>=N||y<0||y>=N) continue;
+    const mid=(dx===0&&dy===0);
+    drawCellMark(x,y,0,
+      mid ? 'rgba(74,146,223,0.34)' : 'rgba(74,146,223,0.13)',
+      mid ? 'rgba(27,78,120,0.92)'  : 'rgba(27,78,120,0.38)');
+  }
+}
+function drawFocusCol(){
+  if(focusCol<0 || !document.getElementById('cbFocus').checked) return;
+  const fx=focusCol%N, fy=(focusCol/N)|0, H=pillarH(fx,fy);
+  const a=proj(fx,fy,0), b=proj(fx,fy,H);
+  ctx.beginPath();
+  ctx.moveTo(a[0]-RP*S,a[1]); ctx.lineTo(b[0]-RP*S,b[1]);
+  ctx.moveTo(a[0]+RP*S,a[1]); ctx.lineTo(b[0]+RP*S,b[1]);
+  ctx.strokeStyle='rgba(27,78,120,0.88)'; ctx.lineWidth=2.4; ctx.stroke();
+  ctx.font='11.5px -apple-system,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='bottom';
+  ctx.fillStyle='rgba(27,78,120,0.95)';
+  ctx.fillText('x'+(fx+1)+' y'+(fy+1), b[0], b[1]-6);
+}
+
+/* ---------------- 落点引线：球 → 它真正所在的地面格 ----------------
+   "高层这颗球落在哪个格子"在 3D 里靠肉眼是判不准的 —— 屏幕高度 ≠ 世界高度，
+   远处空柱的第 1 层在屏幕上可能跟近处柱子的第 3 层一样高。
+   解法很朴素：从球心垂直引一条虚线到地面，末端画一个球色小点。
+   顺着线往下走到底，那一格就是它的位置。
+   关键的好性质：因为 z 不影响 screenX，这些线彼此**平行且永不相交** ——
+   线再多也只会形成整齐的"雨丝"，不会糊成一团。
+   只在「只看某一层」或「悬停某根柱子」时画，避免 125 条线同时铺满画面。 */
+function dropTargets(){
+  const out=[];
+  if(levelFilter>0){
+    for(let i=0;i<SZ;i++) if(board[i] && ZO(i)+1===levelFilter) out.push(i);
+  } else if(hover>=0){
+    const x=XO(hover), y=YO(hover);
+    for(let z=0;z<N;z++){ const i=idx(x,y,z); if(board[i]) out.push(i); }
+  }
+  return out;
+}
+function drawDropLines(){
+  if(!document.getElementById('cbDrop').checked) return;
+  const list=dropTargets();
+  if(!list.length) return;
+  const sp=Math.max(0.25, Math.sin(pitch));
+  ctx.save();
+  ctx.setLineDash([3,5]); ctx.lineWidth=1.15;
+  for(const i of list){
+    const x=XO(i), y=YO(i), z=ZO(i)+0.5;
+    const p=proj(x,y,z), g=proj(x,y,0.02);
+    ctx.strokeStyle='rgba('+COL[board[i]].rgb+',0.42)';
+    ctx.beginPath(); ctx.moveTo(p[0], p[1]+PR*S*0.85); ctx.lineTo(g[0],g[1]); ctx.stroke();
+  }
+  ctx.restore();
+  const rr=Math.max(2.8, PR*S*0.22);
+  for(const i of list){
+    const g=proj(XO(i),YO(i),0.02);
+    ctx.beginPath(); ctx.ellipse(g[0],g[1],rr,rr*sp,0,0,Math.PI*2);
+    ctx.fillStyle='rgba('+COL[board[i]].rgb+',0.80)'; ctx.fill();
+  }
+}
+function drawGhostHint(){
+  if(hintCell<0) return;
+  const p=proj(XO(hintCell),YO(hintCell),ZO(hintCell)+0.5);
+  const R=PR*S*1.18;
+  ctx.beginPath(); ctx.arc(p[0],p[1],R,0,Math.PI*2);
+  ctx.fillStyle='rgba(239,159,39,0.34)'; ctx.fill();
+  ctx.strokeStyle='#BA7517'; ctx.lineWidth=2.4; ctx.stroke();
+  ctx.beginPath(); ctx.arc(p[0],p[1],R*0.40,0,Math.PI*2);
+  ctx.strokeStyle='rgba(186,117,23,0.85)'; ctx.lineWidth=1.8; ctx.stroke();
+}
+function drawToast(){
+  if(toast.t<=0 || !toast.msg) return;
+  const k = Math.min(1, toast.t/22);
+  ctx.globalAlpha = k;
+  ctx.font='12.5px -apple-system,sans-serif';
+  const w = ctx.measureText(toast.msg).width + 20;
+  const h = 24, x = toast.x - w/2, y = toast.y - h/2;
+  ctx.beginPath();
+  if(ctx.roundRect) ctx.roundRect(x, y, w, h, 8); else ctx.rect(x, y, w, h);
+  ctx.fillStyle='rgba(28,42,58,0.90)'; ctx.fill();
+  ctx.fillStyle='#FFFFFF'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(toast.msg, toast.x, toast.y+0.5);
+  ctx.globalAlpha = 1;
+}
+function drawFlash(){
+  if(flashT<=0 || flashCell<0) return;
+  const k = flashT/26;
+  const p=proj(XO(flashCell),YO(flashCell),ZO(flashCell)+0.5);
+  ctx.beginPath();
+  ctx.arc(p[0], p[1], PR*S*(1+(1-k)*0.6), 0, Math.PI*2);
+  ctx.strokeStyle='rgba(226,75,74,'+(0.85*k).toFixed(3)+')'; ctx.lineWidth=2.6; ctx.stroke();
+}
+/* 层号：贴在板子外侧，标出 L1…L5。
+   左右两条最外侧的竖边各标一遍 —— 只标一侧的话，
+   对面那一侧的棋子（尤其"远处的第 1 层"在屏幕上会显得很高）就没有就近的参照物了。 */
+function drawLayerLabels(){
+  if(!document.getElementById('cbGrid').checked) return;
+  const c=Math.cos(yaw), s=Math.sin(yaw);
+  const CAND=[[4.62,4.62],[-0.62,4.62],[4.62,-0.62],[-0.62,-0.62]];
+  let hi=0, hv=-1e9, li=0, lv=1e9;
+  CAND.forEach((q,k)=>{ const u=(q[0]-2)*c-(q[1]-2)*s;
+    if(u>hv){hv=u;hi=k;} if(u<lv){lv=u;li=k;} });
+  ctx.font='11px -apple-system,sans-serif';
+  ctx.textBaseline='middle';
+  for(const [q,align,off] of [[CAND[hi],'left',9],[CAND[li],'right',-9]]){
+    ctx.textAlign=align;
+    for(let k=0;k<N;k++){
+      const p=proj(q[0],q[1],k+0.5);
+      if(p[0]<16 || p[0]>CW-16) continue;
+      /* 离边缘太近就跳过，免得跟画布边框打架 */
+      const x = align==='left' ? Math.min(p[0]+off, CW-14) : Math.max(p[0]+off, 14);
+      ctx.fillStyle='rgba(118,116,108,0.82)';
+      ctx.fillText('L'+(k+1), x, p[1]);
+    }
+  }
+}
+function drawStyleTag(){
+  ctx.font='12px -apple-system,sans-serif';
+  ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+  if(hover>=0){
+    const legal = isLegal(hover);
+    ctx.fillStyle = legal ? '#1B4E78' : '#993C1D';
+    let s='落点：第 '+(ZO(hover)+1)+' 层 · x'+(XO(hover)+1)+' y'+(YO(hover)+1)+'　'+(legal?'可以落':'已堆满');
+    const tri=threatLinesAt(hoverStone>=0?hoverStone:hover);
+    if(tri.length) s += '　｜' + triText(tri);
+    ctx.fillText(s, 16, CH-16);
+    return;
+  }
+  const yd = Math.round(((yaw*180/Math.PI)%360+360)%360);
+  const pd = Math.round(pitch*180/Math.PI);
+  ctx.fillStyle='#8A877F';
+  /* 俯仰超过 48° 时，同柱相邻两层的球在屏幕上必然粘连（层间距 cos(俯仰)*S < 球直径）。
+     这不是 bug 是几何 —— 直说，并给出解法。 */
+  let tail;
+  if(levelFilter>0) tail = '　【只看第 '+levelFilter+' 层】';
+  else if(pd>48) tail = '　↑俯仰偏高，同柱各层会叠住 —— 看层数请压低视角或用「只看某一层」';
+  else tail = '　拖动可任意旋转';
+  ctx.fillText('方位 '+yd+'°　俯仰 '+pd+'°　缩放 '+zoom.toFixed(2)+'x' + tail, 16, CH-16);
+}
+
+/* 画法顺序：地面 → 坐标 → 聚焦地面格 → 阴影 → 立柱/球（按深度）→ 聚焦柱描边
+   → 落点引线 → 可落点幽灵球 → 悬停 → 三缺一整条线 → 提示 → 杀点 → 闪烁 → 浮窗 */
+function draw(){
+  ctx.clearRect(0,0,CW,CH);
+  drawFloor();
+  drawFloorCoords();
+  drawFocusGround();
+  drawShadows();
+  buildPrimitives();
+  drawFocusCol();
+  drawDropLines();
+  drawHover();
+  drawTriple();
+  drawGhostHint();
+  if(document.getElementById('cbThreat').checked) drawThreatRings();
+  drawFlash();
+  drawLayerLabels();
+  drawToast();
+  drawStyleTag();
+}
+
+/* ================= 音效 ================= */
+let AC=null;
+function audio(){ if(!AC){ try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ AC=null; } } return AC; }
+function click(freq, dur, type, vol){
+  if(!document.getElementById('cbSound').checked) return;
+  const ac=audio(); if(!ac) return;
+  const o=ac.createOscillator(), g=ac.createGain();
+  o.type=type||'triangle'; o.frequency.value=freq;
+  g.gain.setValueAtTime(0, ac.currentTime);
+  g.gain.linearRampToValueAtTime(vol||0.06, ac.currentTime+0.008);
+  g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime+dur);
+  o.connect(g); g.connect(ac.destination);
+  o.start(); o.stop(ac.currentTime+dur+0.02);
+}
+
+/* ================= 交互：命中 =================
+   棋子是**球**，而球的投影在任何视角下都是**半径 PR*S 的正圆** —— 命中判定因此极为干净：
+     dx² + dy² ≤ (PR*S)²
+   优先级：
+     ① 淡蓝幽灵球（能落的位置）—— **归一化距离最近的球心赢**。
+        瞄准某个球的圆心点下去，距离就是 0，永远不可能被别的球抢走。
+        → "所见即所点"是构造上保证的，不依赖视角、不依赖俯仰角。
+     ② 已经放上去的球 —— 点哪颗球，就换成它所在柱子的顶端。
+     ③ 柱身本体 —— 投影里 z 不影响屏幕 x，所以一根立柱就是一条竖线。
+        取"屏幕 x 距离最近"的柱子（并列时取离相机近的）。
+   ============================================================================ */
+function pick(mx,my){
+  const R=PR*S, R2=R*R;
+
+  /* ① 能落的淡蓝幽灵球 —— 最近球心赢 */
+  let hit=-1, bq=1e9;
+  for(const t of TARGETS){
+    const p=proj(t.x,t.y,t.k+0.5);
+    const dx=mx-p[0], dy=my-p[1];
+    const q=(dx*dx+dy*dy)/R2;
+    if(q<=1 && q<bq){ bq=q; hit=t.i; }
+  }
+  if(hit>=0) return hit;
+
+  /* ② 已经放上去的球 —— 点哪颗就归到哪根柱子 */
+  bq=1e9;
+  for(let i=0;i<SZ;i++){
+    if(!board[i]) continue;
+    const p=proj(XO(i),YO(i),ZO(i)+0.5);
+    const dx=mx-p[0], dy=my-p[1];
+    const q=(dx*dx+dy*dy)/R2;
+    if(q<=1 && q<bq){ bq=q; hit=i; }
+  }
+  if(hit>=0) return hit;
+
+  /* ③ 立柱本体 —— 屏幕 x 最近的柱子，并列时取近的 */
+  let bx=-1, by=-1, bdx=1e9, bd=1e9;
+  const lim=RP*S+7;
+  const cyw=Math.cos(yaw), syw=Math.sin(yaw);
+  for(let x=0;x<N;x++) for(let y=0;y<N;y++){
+    const cxp = OX + ((x-2)*cyw - (y-2)*syw)*SPX*S;
+    const dx=Math.abs(mx-cxp);
+    if(dx>lim) continue;
+    const pt=proj(x,y,N), pb=proj(x,y,0);     // 柱顶（屏幕靠上）、柱底
+    if(my < pt[1]-16 || my > pb[1]+16) continue;
+    const d=depthAt(x,y,ZC);
+    if(dx < bdx-0.6){ bdx=dx; bd=d; bx=x; by=y; }
+    else if(dx <= bdx+0.6 && d < bd){ bd=d; bx=x; by=y; }
+  }
+  if(bx>=0){
+    const t=colTop(bx,by);
+    return t>=0 ? t : idx(bx,by,N-1);
+  }
+  return -1;
+}
+function toCanvas(e){
+  const r=cv.getBoundingClientRect();
+  return [(e.clientX-r.left)*(CW/r.width), (e.clientY-r.top)*(CH/r.height)];
+}
+
+const VIEWS = { iso:[45,40], top:[45,76], side:[45,16], diag:[0,40] };
+let drag=null;
+cv.addEventListener('pointerdown', e=>{
+  cv.setPointerCapture(e.pointerId);
+  drag={x:e.clientX, y:e.clientY, yaw0:yawT, pitch0:pitchT, moved:false};
+  cv.classList.add('grabbing');
+});
+cv.addEventListener('pointermove', e=>{
+  const [mx,my]=toCanvas(e);
+  if(drag){
+    const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
+    if(Math.abs(dx)>5 || Math.abs(dy)>5) drag.moved=true;
+    if(drag.moved){
+      yawT   = drag.yaw0 + dx*0.0085;
+      pitchT = Math.max(6*Math.PI/180, Math.min(88*Math.PI/180, drag.pitch0 - dy*0.0062));
+    }
+    return;
+  }
+  /* 原始命中的那一颗（可能已经是放上去的球）要单独留一份：
+     hover 会被规范化成柱顶（那是要落子的位置），
+     但「选中某颗已放的球看它是不是三缺一」需要的是原始那颗。 */
+  const raw = pick(mx,my);
+  hoverStone = (raw>=0 && board[raw]!==0) ? raw : -1;
+  hover = raw;
+  if(hover>=0 && board[hover]!==0){
+    const t=colTop(XO(hover),YO(hover));
+    hover = t>=0 ? t : hover;
+  }
+  focusCol = hover>=0 ? XO(hover)+YO(hover)*N : -1;
+  hoverStatus();
+  cv.style.cursor = (hover>=0 && turn===human && !busy && !over) ? 'pointer' : 'default';
+});
+cv.addEventListener('pointerup', e=>{
+  const moved = drag && drag.moved;
+  drag=null;
+  cv.classList.remove('grabbing');
+  if(moved) return;
+  const [mx,my]=toCanvas(e);
+  const i=pick(mx,my);
+  if(i<0){
+    if(turn===human && !busy && !over) setStatus('点空地方了 —— 请点某根柱子（或它顶上的淡蓝幽灵球）');
+    return;
+  }
+  humanMove(i);
+});
+cv.addEventListener('pointerleave', ()=>{ hover=-1; hoverStone=-1; focusCol=-1; drag=null; cv.classList.remove('grabbing'); if(!over) turnStatus(); });
+cv.addEventListener('wheel', e=>{
+  e.preventDefault();
+  zoom = Math.min(2.2, Math.max(0.5, zoom * (e.deltaY<0 ? 1.08 : 0.926)));
+}, {passive:false});
+
+/* ================= 流程 ================= */
+let genId = 0;
+const elStatus = document.getElementById('status');
+function setStatus(t, cls){
+  elStatus.textContent=t;
+  elStatus.className='status'+(cls?' '+cls:'');
+}
+function turnStatus(){
+  const me='轮到你（'+(human===P1?'蓝':'橙')+'）';
+  if(turn===human) setStatus(me+' · 点柱子，球落在它最上面那一格');
+  else setStatus('AI 思考中…','think');
+}
+/* 鼠标指到的那一格若凑成了「三缺一」，把整条线的信息写成一句话。
+   原来只有画面底部的一行小字，太容易漏 —— 同时写进状态栏。 */
+function triText(tri){
+  const it=tri[0], g=it.gap;
+  return (it.who===human?'你':'AI') + ' 三缺一：差 L'+(ZO(g)+1)+' · x'+(XO(g)+1)+' y'+(YO(g)+1)
+       + (tri.length>1 ? '（共 '+tri.length+' 条）' : '')
+       + (isLegal(g) ? '　← 现在就能落' : '　暂时够不到');
+}
+function hoverStatus(){
+  if(over) return;
+  const cell = hoverStone>=0 ? hoverStone : hover;
+  const tri = threatLinesAt(cell);
+  if(tri.length) setStatus(triText(tri), tri[0].who===human?'win':'lose');
+  else turnStatus();
+}
+function flash(i){ flashCell=i; flashT=26; }
+function humanMove(i){
+  if(busy||over) return;
+  if(turn!==human) return;
+  if(board[i]!==0){
+    // 兜底：万一拿到的是棋子，换成这根柱子的顶端
+    const x=XO(i), y=YO(i), t=colTop(x,y);
+    if(t<0){ flash(i); setStatus('这一柱（x'+(x+1)+' y'+(y+1)+'）已经堆满了'); return; }
+    i=t;
+  }
+  if(!isLegal(i)){
+    flash(i);
+    setStatus('下面一层还没有子 —— 必须先有下层子，才能往上套');
+    return;
+  }
+  const layer=ZO(i);
+  if(layer>0){
+    const dp=proj(XO(i),YO(i),layer+0.5);
+    toast={msg:'↑ 落在第 '+(layer+1)+' 层', t:100, x:dp[0], y:dp[1]-PR*S-18};
+  }
+  doMove(i, human);
+  if(!over) setTimeout(aiTurn, 40);
+}
+function doMove(i, who){
+  put(i, who);
+  history.push(i);
+  hintCell=-1;
+  refreshThreats();
+  const w = findWin(i, who);
+  click(who===human?560:440, 0.07, 'triangle', 0.05);
+  if(w){
+    over={winner:who}; winLine=w; winSide=who;
+    if(who===human){ setStatus('四连达成，你赢了！', 'win'); click(660,0.12,'sine',0.05); setTimeout(()=>click(880,0.18,'sine',0.05),90); }
+    else { setStatus('AI 连成四子，这局你输了', 'lose'); click(330,0.2,'sine',0.05); }
+    return;
+  }
+  if(legalMoves().length===0){
+    over={winner:0}; setStatus('棋盘填满，和棋', 'think'); return;
+  }
+  turn = 3-who;
+  turnStatus();
+}
+function aiTurn(){
+  if(over) return;
+  busy=true; thinking=true;
+  turnStatus();
+  const g = genId;
+  setTimeout(()=>{
+    if(g!==genId || over){ busy=false; thinking=false; return; }
+    const m = thinkMove(ai);
+    busy=false; thinking=false;
+    if(g!==genId || over) return;
+    if(m===null){ setStatus('轮到你落子'); return; }
+    doMove(m, ai);
+  }, 30);
+}
+function undo(){
+  if(!history.length || thinking) return;
+  const pop = ()=>{
+    const i=history.pop(); if(i===undefined) return;
+    lift(i);
+  };
+  if(history.length>=2 && turn===human){ pop(); pop(); }
+  else pop();
+  over=null; winLine=null; hintCell=-1;
+  busy=false; thinking=false;
+  refreshThreats();
+  turn = (history.length%2===0) ? (humanFirst?human:ai) : (humanFirst?ai:human);
+  turnStatus();
+  if(turn===ai) setTimeout(aiTurn, 120);
+}
+function hint(){
+  if(over||thinking||turn!==human) return;
+  const m=thinkMove(human);
+  if(m!==null){
+    hintCell=m; setTimeout(()=>{ if(hintCell===m) hintCell=-1; }, 6000);
+  }
+}
+function reset(){
+  genId++;
+  busy=false; thinking=false;
+  board.fill(0); touch.fill(0);
+  resetLines();
+  history=[]; over=null; winLine=null; hintCell=-1; hover=-1; hoverStone=-1; focusCol=-1;
+  human = humanFirst ? P1 : P2;
+  ai = 3-human;
+  turn = humanFirst ? human : ai;
+  refreshThreats();
+  turnStatus();
+  if(turn!==human) setTimeout(aiTurn, 260);
+}
+
+/* ================= 面板绑定 ================= */
+function bindSeg(idName, cb){
+  const el=document.getElementById(idName);
+  el.addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    [...el.children].forEach(c=>c.classList.toggle('on', c===b));
+    cb(b.dataset.v);
+  });
+}
+bindSeg('segView', v=>{ const a=VIEWS[v]; if(!a) return; yawT=a[0]*Math.PI/180; pitchT=a[1]*Math.PI/180; });
+bindSeg('segLayer', v=>{ levelFilter=+v; collectTargets(); });
+bindSeg('segGap', v=>{ const g=GAPS[v]; if(!g) return; SPX=g[0]; SPZ=g[1]; });
+bindSeg('segLv', v=>{ level=+v; });
+bindSeg('segFirst', v=>{ humanFirst = v==='1'; reset(); });
+document.getElementById('btnUndo').onclick=undo;
+document.getElementById('btnHint').onclick=hint;
+document.getElementById('btnNew').onclick=reset;
+document.addEventListener('keydown', e=>{
+  if(e.metaKey||e.ctrlKey) return;
+  const k=e.key.toLowerCase();
+  if(k==='r'){ yawT=45*Math.PI/180; pitchT=40*Math.PI/180; zoom=1; }
+  else if(k==='h'){ hint(); }
+  else if(k==='u'){ undo(); }
+  else if(k==='n'){ reset(); }
+});
+
+/* ================= 主循环 ================= */
+const lnEl = document.getElementById('ln');
+if(lnEl) lnEl.textContent = LINES.length;
+function loop(){
+  pulse+=0.09;
+  if(flashT>0) flashT--;
+  if(toast.t>0) toast.t--;
+  /* 视角平滑：拖 / 切预设都是缓动过去，板子不会"跳" */
+  yaw   += (yawT-yaw)*0.20;
+  pitch += (pitchT-pitch)*0.20;
+  if(Math.abs(yawT-yaw)<1e-4) yaw=yawT;
+  if(Math.abs(pitchT-pitch)<1e-4) pitch=pitchT;
+  recenter();
+  collectTargets();
+  draw();
+  requestAnimationFrame(loop);
+}
+recenter();
+reset();
+loop();
+})();
+</script>
+</body>
+</html>
