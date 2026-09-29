@@ -49,6 +49,21 @@ canvas.grabbing{cursor:grabbing}
   background:linear-gradient(90deg,rgba(126,120,106,.62) 0 1.5px,rgba(238,234,226,.18) 1.5px calc(100% - 1.5px),rgba(126,120,106,.62) calc(100% - 1.5px) 100%)}
 .tips{font-size:11.5px;color:#8A877F;line-height:1.75;margin-top:10px}
 kbd{font-family:inherit;font-size:11px;background:#F2F1EC;border:1px solid rgba(0,0,0,.1);border-radius:4px;padding:1px 5px}
+
+.rv{margin-top:16px;background:#FFF;border:1px solid rgba(0,0,0,.09);border-radius:14px;padding:13px 14px}
+.rv-head{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.rv-title{font-size:14px;font-weight:500}
+.rv-sub{font-size:12px;color:#8A877F}
+.rv-btn{padding:5px 10px;font-size:12.5px;border:1px solid rgba(0,0,0,.14);background:#fff;color:#2C2C2A;border-radius:7px;cursor:pointer;font-family:inherit}
+.rv-btn:hover{border-color:rgba(0,0,0,.3);background:#FAFAF8}
+#rvCurve{display:block;width:100%;height:auto;margin-bottom:7px;background:#FCFCFA;border:1px solid rgba(0,0,0,.07);border-radius:9px}
+.rv-ctl{display:flex;align-items:center;gap:8px}
+#rvRange{flex:1;accent-color:#2C2C2A;min-width:120px}
+.rv-step{font-size:12px;color:#6E6C66;min-width:98px;text-align:right;font-variant-numeric:tabular-nums}
+.rv-note{margin-top:10px;font-size:12.5px;line-height:1.75;color:#4A4844}
+.rv-note .hit{background:#FCEBEB;color:#993C1D;border-radius:5px;padding:5px 8px;display:block;margin-bottom:7px}
+.rv-note .ok{background:#E1F5EE;color:#0F6E56;border-radius:5px;padding:5px 8px;display:block;margin-bottom:7px}
+.rv-note .mono{font-variant-numeric:tabular-nums}
 @media(max-width:860px){.layout{flex-direction:column}.panel{flex:1 1 auto;width:100%}}
 </style>
 </head>
@@ -60,6 +75,25 @@ kbd{font-family:inherit;font-size:11px;background:#F2F1EC;border:1px solid rgba(
   <div class="layout">
     <div class="stage">
       <canvas id="cv" width="720" height="760"></canvas>
+
+      <div class="rv" id="rvBar" hidden>
+        <div class="rv-head">
+          <span class="rv-title">复盘</span>
+          <span class="rv-sub" id="rvInfo"></span>
+          <span style="flex:1"></span>
+          <button id="rvExit" class="rv-btn">退出复盘</button>
+        </div>
+        <canvas id="rvCurve" width="860" height="82"></canvas>
+        <div class="rv-ctl">
+          <button id="rvFirst" class="rv-btn" title="回到开局">|&lt;</button>
+          <button id="rvPrev" class="rv-btn" title="上一手">&lt;</button>
+          <input type="range" id="rvRange" min="0" max="0" value="0">
+          <button id="rvNext" class="rv-btn" title="下一手">&gt;</button>
+          <button id="rvLast" class="rv-btn" title="跳到终局">&gt;|</button>
+          <span class="rv-step" id="rvStep"></span>
+        </div>
+        <div class="rv-note" id="rvNote"></div>
+      </div>
     </div>
     <aside class="panel">
       <div class="row">
@@ -119,6 +153,7 @@ kbd{font-family:inherit;font-size:11px;background:#F2F1EC;border:1px solid rgba(
           <button id="btnUndo">悔棋</button>
           <button id="btnHint">提示</button>
           <button id="btnNew">新局</button>
+          <button id="btnReview">复盘</button>
         </div>
       </div>
       <div class="row">
@@ -735,7 +770,9 @@ function fillPrimitives(){
      之前幽灵球画在所有东西之上，25 颗半透明球会把身后的真球染上一层蓝，
      实测球心可读率从 99.2% 掉到 94.0% —— 提示反而把主体吃掉了，本末倒置。
      （点击判定不受影响：pick() 不看绘制顺序，柱顶照旧点得到。） */
-  if(turn===human && !busy && !over && document.getElementById('cbGhost').checked){
+  /* 复盘时一律不画落点提示：复盘看的是历史，满屏 25 颗幽灵球会把
+     "该走这里"的绿虚线球整个淹掉 —— 而那个绿球才是复盘要你看的东西。 */
+  if(turn===human && !busy && !over && !rv.on && document.getElementById('cbGhost').checked){
     for(const t of TARGETS){
       PRIM.push({d:depthAt(t.x,t.y,t.k+0.5), ord:0.5,
                  f:()=>drawTarget(t.x,t.y,t.k, hover===t.i)});
@@ -1042,6 +1079,7 @@ function draw(){
   drawDropLines();
   drawHover();
   drawTriple();
+  drawReviewMarks();
   drawGhostHint();
   if(document.getElementById('cbThreat').checked) drawThreatRings();
   drawFlash();
@@ -1205,6 +1243,7 @@ function hoverStatus(){
 }
 function flash(i){ flashCell=i; flashT=26; }
 function humanMove(i){
+  if(rv.on) return;                 // 复盘时棋盘是"历史画面"，不接受落子
   if(busy||over) return;
   if(turn!==human) return;
   if(board[i]!==0){
@@ -1260,6 +1299,7 @@ function aiTurn(){
   }, 30);
 }
 function undo(){
+  if(rv.on) exitReview();            // 悔棋会改 history，之前算的分析就作废了
   if(!history.length || thinking) return;
   const pop = ()=>{
     const i=history.pop(); if(i===undefined) return;
@@ -1282,6 +1322,7 @@ function hint(){
   }
 }
 function reset(){
+  if(rv.on){ rv.on=false; document.getElementById('rvBar').hidden=true; }   // 新局直接收起复盘条
   genId++;
   busy=false; thinking=false;
   board.fill(0); touch.fill(0);
@@ -1293,6 +1334,275 @@ function reset(){
   refreshThreats();
   turnStatus();
   if(turn!==human) setTimeout(aiTurn, 260);
+}
+
+/* ============================================================================
+   复盘 —— 把一局棋拆成"每一手值多少分"，找出掉分最多的那几手，
+   并专门挑出两个专项：**漏掉的双杀机会** 和 **被对手造出的双杀**。
+
+   设计取舍：**对局中不做任何分析**，只在点「复盘」时批量算一次。
+   对局里只留 history（一串落子下标，几十字节），代价是复盘要等一两秒，
+   收益是下棋时完全不卡 —— 分析要下 25 个候选 × 25 个应手，插不进每帧。
+   ============================================================================ */
+
+/* 第 k 手（0-based）是谁走的。history 就是完整手序，先手固定，不用额外记。 */
+function whoAt(k){
+  const first = humanFirst ? human : ai;
+  return (k%2===0) ? first : (3-first);
+}
+/* 把棋盘重建成"走了 n 手之后"的样子。复盘靠它在任意手之间来回跳。 */
+function rebuildBoard(upto){
+  board.fill(0); touch.fill(0); resetLines();
+  const n = (upto===undefined) ? history.length : upto;
+  for(let k=0;k<n;k++) put(history[k], whoAt(k));
+  refreshThreats();
+}
+/* 走 mv 之后，who 手里"够得到"的三缺一有几个 —— 这就是 fork（双杀）计数。
+   够得到 = 那个缺口正好是某根柱子的顶端（isLegal）。
+   关键：crit[who] 存的是**缺口格**而不是线，所以两条线缺同一格只算一个 ——
+   对手堵那一格两条都堵住了，那不叫双杀。不同格 ≥2 才是真双杀。 */
+function liveFork(mv, who){
+  put(mv, who);
+  let n=0;
+  for(const c of crit[who]) if(isLegal(c)) n++;
+  lift(mv);
+  return n;
+}
+/* 单手浅评：走 mv 之后让对手应一手（深度 2）。
+   深度 1 只能看到"我落子后的静态形"，抓不到"这手是不是送对面成四"；
+   深度 2 刚好够抓送四和送双杀，25×25=625 次模拟，一局几十手也就一两秒。 */
+function scoreMoveAt(mv, who, depth){
+  put(mv, who);
+  const sc = findWin(mv, who) ? (1e6+10)
+           : -negamax(3-who, depth-1, -Infinity, Infinity, Date.now()+5000);
+  lift(mv);
+  return sc;
+}
+
+let rv = { on:false, k:0, steps:[], curve:[], tops:[], forkMiss:[], forkHit:[],
+           ms:0, savedOver:null, savedWin:null, savedSide:0 };
+
+function analyzeGame(){
+  const t0 = Date.now();
+  const H = history.slice();
+  const steps=[], curve=[];
+  const D = 2;
+  board.fill(0); touch.fill(0); resetLines();
+  for(let k=0;k<H.length;k++){
+    const who = whoAt(k), mv = H[k];
+    curve.push(evaluate(human));            // 落子前，人类视角的局面分
+    /* 落子前对手手里"够得到"的杀点 —— 用来判断这一手是不是该去堵。
+       必须在下面那圈 put/lift 之前读，否则读到的是临时试落子后的状态。 */
+    const foeLive = [];
+    for(const c of crit[3-who]) if(isLegal(c)) foeLive.push(c);
+    const cands = legalMoves();
+    let best=-Infinity, bestMv=null, bestFork=-1, actual=-Infinity, actualFork=0;
+    for(const c of cands){
+      const sc = scoreMoveAt(c, who, D);
+      const fk = liveFork(c, who);
+      if(c===mv){ actual=sc; actualFork=fk; }
+      if(sc > best+1e-6){ best=sc; bestMv=c; bestFork=fk; }
+      else if(Math.abs(sc-best)<=1e-6 && fk>bestFork){ bestMv=c; bestFork=fk; }
+    }
+    if(!isFinite(actual)) actual = best;
+    steps.push({mv, who, isHuman:(who===human), sc:actual, best, bestMv,
+                loss:(best-actual), fork:actualFork, bestFork,
+                /* 归因用的三类事实：对手当时有几个够得到的杀点、我堵了没、最佳手是不是去堵 */
+                foeLive, blocked:(foeLive.indexOf(mv)>=0), bestBlocks:(foeLive.indexOf(bestMv)>=0)});
+    put(mv, who);
+  }
+  curve.push(evaluate(human));
+  rebuildBoard();                            // 算完必须还原，否则棋盘会被留在中间局面
+  /* 败着：只看人类的手，排除已经连成四子的那一手（1e6 量级，不是"错"）。
+     阈值 40 分 ≈ 一个三缺一（SC[3]=160）的四分之一，再小就是噪声。 */
+  rv.steps = steps;
+  rv.curve = curve;
+  rv.tops = steps.map((s,k)=>({k,s}))
+    .filter(o=> o.s.isHuman && o.s.sc < 1e5 && o.s.loss > 40)
+    .sort((a,b)=> b.s.loss - a.s.loss)
+    .slice(0,3).map(o=>o.k);
+  rv.forkMiss = steps.map((s,k)=>({k,s}))
+    .filter(o=> o.s.isHuman && o.s.bestFork>=2 && o.s.fork<2).map(o=>o.k);
+  rv.forkHit  = steps.map((s,k)=>({k,s}))
+    .filter(o=> !o.s.isHuman && o.s.fork>=2).map(o=>o.k);
+  rv.ms = Date.now()-t0;
+}
+
+/* ---- 复盘控制 ---- */
+function rvGoto(k){
+  rv.k = Math.max(0, Math.min(history.length, k));
+  rebuildBoard(rv.k);
+  over=null; winLine=null; winSide=0;
+  hintCell=-1; hover=-1; hoverStone=-1; focusCol=-1;
+  if(rv.k>0){
+    const last=history[rv.k-1], w=findWin(last, whoAt(rv.k-1));
+    if(w){ winLine=w; winSide=whoAt(rv.k-1); over={winner:winSide}; }
+  }
+  document.getElementById('rvRange').value = rv.k;
+  rvPaint();
+}
+const cellName = i=> 'L'+(ZO(i)+1)+' x'+(XO(i)+1)+' y'+(YO(i)+1);
+function rvNote(){
+  const el=document.getElementById('rvNote'); if(!el) return;
+  const n=history.length;
+  if(!n){ el.innerHTML=''; return; }
+  const idxStep = rv.k-1;                       // 当前"刚走完第几手"（-1 = 开局）
+  let h='';
+  const miss=rv.forkMiss.length, hit=rv.forkHit.length;
+  h += (miss||hit)
+    ? '<span class="hit">双杀专项：你漏掉 <b>'+miss+'</b> 次双杀机会，被 AI 双杀 <b>'+hit+'</b> 次</span>'
+    : '<span class="ok">双杀专项：本局没有漏掉的双杀机会，也没被 AI 双杀</span>';
+  if(idxStep>=0 && idxStep<rv.steps.length){
+    const s=rv.steps[idxStep];
+    const isTop = rv.tops.indexOf(idxStep)>=0;
+    /* 漏杀：这一步本来能同时造两个三缺一却没造 */
+    const isMiss = s.isHuman && s.bestFork>=2 && s.fork<2;
+    const R=t=>'<span style="color:#993C1D">'+t+'</span>';
+    const G=t=>'<span style="color:#0F6E56">'+t+'</span>';
+    const C=t=>'<span class="mono">'+t+'</span>';
+    h += '第 '+C(idxStep+1)+' 手 · '+(s.isHuman ? '你' : 'AI ')+'落在 '+C(cellName(s.mv))+'　';
+    /* 一句主判语。顺序有讲究：漏杀 > 漏防 > 送胜负 > 一般败着 ——
+       越具体的归因越有教学价值，先说出来。 */
+    if(s.sc>=1e5) h += '<b>这一手连成四子</b>';
+    else if(isTop && isMiss)
+      h += R('<b>败着·漏杀</b>：走 '+C(cellName(s.bestMv))
+         + ' 能<b>同时造两个三缺一</b>，对手一手堵不完；你走了 '+C(cellName(s.mv)));
+    else if(isTop && !s.blocked && s.bestBlocks && s.foeLive.length)
+      h += R('<b>败着·漏防</b>：AI 已在 '+C(cellName(s.foeLive[0]))+' 凑齐三缺一且够得到，你没堵');
+    else if(isTop && s.loss>1e5)
+      h += R('<b>败着</b>：这一手之后胜负已定（不堵必输）');
+    else if(isTop)
+      h += R('<b>败着</b>：比最佳手差 '+C(Math.round(s.loss))+' 分，该走 '+C(cellName(s.bestMv)));
+    else if(isMiss)
+      h += G('<b>漏杀</b>（还没到败着的程度）：走 '+C(cellName(s.bestMv))+' 能造双杀');
+    if(!s.isHuman && s.fork>=2)
+      h += R('<b>漏防</b>：AI 这一手造了<b>双杀</b>（'+s.fork+' 个够得到的三缺一），上一手就该拆');
+    h += '<br><span style="color:#8A877F">这一手落子后的 fork 数＝'+s.fork
+       + '，同局面最好能到 '+s.bestFork+'</span>';
+  } else {
+    h += '开局（还没落子）。拖上面的滑块，或用 <kbd>←</kbd> <kbd>→</kbd> 一手手看。';
+  }
+  el.innerHTML=h;
+}
+function rvCurveDraw(){
+  const cv=document.getElementById('rvCurve'); if(!cv) return;
+  const g=cv.getContext('2d'), W=cv.width, H=cv.height;
+  g.clearRect(0,0,W,H);
+  const c=rv.curve; if(!c.length) return;
+  let mx=1; for(const v of c) mx=Math.max(mx, Math.abs(v));
+  const PL=38, PR=10, PT=12, PB=16;
+  const X=i=> PL + (W-PL-PR) * (c.length>1 ? i/(c.length-1) : 0);
+  const Y=v=> PT + (H-PT-PB) * (0.5 - 0.5*(v/mx));
+  g.font='10px -apple-system,sans-serif'; g.fillStyle='#8A877F';
+  g.textAlign='right'; g.textBaseline='middle';
+  g.fillText('+'+Math.round(mx), PL-5, Y(mx));
+  g.fillText('0', PL-5, Y(0));
+  g.fillText('-'+Math.round(mx), PL-5, Y(-mx));
+  g.strokeStyle='rgba(0,0,0,.13)'; g.lineWidth=1;
+  g.beginPath(); g.moveTo(PL,Y(0)); g.lineTo(W-PR,Y(0)); g.stroke();
+  /* 正分区域淡绿、负分区域淡红 —— 一眼看出"什么时候翻盘/被翻" */
+  for(let i=0;i+1<c.length;i++){
+    const x0=X(i), x1=X(i+1), v=(c[i]+c[i+1])/2;
+    g.fillStyle = v>=0 ? 'rgba(29,158,117,0.09)' : 'rgba(226,75,74,0.09)';
+    g.fillRect(x0, Math.min(Y(v),Y(0)), Math.max(1,x1-x0), Math.abs(Y(v)-Y(0)));
+  }
+  g.beginPath();
+  for(let i=0;i<c.length;i++){ const px=X(i), py=Y(c[i]); i?g.lineTo(px,py):g.moveTo(px,py); }
+  g.strokeStyle='#378ADD'; g.lineWidth=1.8; g.stroke();
+  /* 败着：红色竖虚线 + 红点 */
+  for(const k of rv.tops){
+    const px=X(k+1);
+    g.setLineDash([3,3]); g.strokeStyle='rgba(226,75,74,.55)'; g.lineWidth=1.4;
+    g.beginPath(); g.moveTo(px,PT); g.lineTo(px,H-PB); g.stroke(); g.setLineDash([]);
+    g.beginPath(); g.arc(px, Y(c[k+1]||0), 4, 0, Math.PI*2);
+    g.fillStyle='#E24B4A'; g.fill();
+  }
+  /* 漏掉的双杀机会：顶部绿三角（点它可以跳过去） */
+  for(const k of rv.forkMiss){
+    const px=X(k+1);
+    g.beginPath(); g.moveTo(px,PT+1); g.lineTo(px-4,PT+8); g.lineTo(px+4,PT+8); g.closePath();
+    g.fillStyle='#0F6E56'; g.fill();
+  }
+  /* 被 AI 双杀：底部红三角 */
+  for(const k of rv.forkHit){
+    const px=X(k+1);
+    g.beginPath(); g.moveTo(px,H-PB-1); g.lineTo(px-4,H-PB-8); g.lineTo(px+4,H-PB-8); g.closePath();
+    g.fillStyle='#A32D2D'; g.fill();
+  }
+  /* 当前游标 */
+  const cx=X(rv.k);
+  g.strokeStyle='#2C2C2A'; g.lineWidth=1.4;
+  g.beginPath(); g.moveTo(cx,PT-4); g.lineTo(cx,H-PB+4); g.stroke();
+  g.beginPath(); g.arc(cx, Y(c[rv.k]||0), 3.4, 0, Math.PI*2);
+  g.fillStyle='#2C2C2A'; g.fill();
+}
+function rvPaint(){
+  const n=history.length;
+  const st=document.getElementById('rvStep');
+  if(st) st.textContent = '第 '+rv.k+' / '+n+' 手';
+  rvNote();
+  rvCurveDraw();
+}
+function enterReview(){
+  if(rv.on) return;
+  if(!history.length){ setStatus('还没落子，没什么可复盘的'); return; }
+  rv.savedOver=over; rv.savedWin=winLine; rv.savedSide=winSide;
+  busy=false; thinking=false; genId++;          // 掐掉可能还在排队的 AI 回调
+  rv.on=true;
+  document.getElementById('rvBar').hidden=false;
+  document.getElementById('rvRange').max = history.length;
+  setStatus('分析中…（'+history.length+' 手）','think');
+  /* 让浏览器先把"分析中"画出来，再跑这一两秒的同步计算 */
+  setTimeout(()=>{
+    /* 分析要动 board（重放 + 试落子），万一抛异常必须把棋盘还原，否则界面会卡在半个局面 */
+    try{ analyzeGame(); } catch(err){ rebuildBoard(); console.error('复盘分析失败', err); }
+    const info=document.getElementById('rvInfo');
+    if(info) info.textContent = history.length+' 手 · 用时 '+(rv.ms/1000).toFixed(1)+'s'
+      + ' · 败着 '+rv.tops.length+' 处 · 漏杀 '+rv.forkMiss.length+' 次 · 被双杀 '+rv.forkHit.length+' 次';
+    rvGoto(history.length);
+    setStatus('复盘：黄圈＝这一手，红圈＝败着，绿圈＝该走的地方','think');
+    /* 复盘条在棋盘正下方，但用户可能已经把页面滚到别处了 —— 主动带他一眼 */
+    const bar=document.getElementById('rvBar');
+    if(bar && bar.scrollIntoView) bar.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }, 40);
+}
+function exitReview(){
+  if(!rv.on) return;
+  rv.on=false;
+  document.getElementById('rvBar').hidden=true;
+  over=rv.savedOver; winLine=rv.savedWin; winSide=rv.savedSide;
+  rebuildBoard();
+  turn = (history.length%2===0) ? (humanFirst?human:ai) : (humanFirst?ai:human);
+  turnStatus();
+  if(!over && turn===ai) setTimeout(aiTurn, 220);   // 进复盘时掐掉的 AI 回调，退出后补上
+}
+/* 棋盘上的复盘标记：黄圈（这一手）/ 红圈（败着）/ 绿虚线球（本该走哪） */
+function drawReviewMarks(){
+  if(!rv.on || !rv.steps.length) return;
+  const k=rv.k, R=PR*S;
+  if(k>0 && k-1<rv.steps.length){
+    const s=rv.steps[k-1];
+    const a=proj(XO(s.mv),YO(s.mv),ZO(s.mv)+0.5);
+    const bad = rv.tops.indexOf(k-1)>=0;
+    ctx.beginPath(); ctx.arc(a[0],a[1],R+4.5,0,Math.PI*2);
+    ctx.strokeStyle = bad ? '#E24B4A' : '#EF9F27';
+    ctx.lineWidth = bad ? 2.8 : 2.4; ctx.stroke();
+    /* 绿虚线球：漏杀优先（信息更具体），否则败着也标出最佳手 */
+    const showBest = (s.isHuman && s.bestFork>=2 && s.fork<2) || (bad && s.bestMv!==s.mv);
+    if(showBest && s.bestMv!==null && s.bestMv!==undefined){
+      const b=proj(XO(s.bestMv),YO(s.bestMv),ZO(s.bestMv)+0.5);
+      ctx.beginPath(); ctx.arc(b[0],b[1],R,0,Math.PI*2);
+      ctx.fillStyle='rgba(29,158,117,0.20)'; ctx.fill();
+      ctx.setLineDash([4,3]); ctx.strokeStyle='#0F6E56'; ctx.lineWidth=2.4;
+      ctx.stroke(); ctx.setLineDash([]);
+      ctx.font='11px -apple-system,sans-serif'; ctx.textAlign='center';
+      const isFork = s.isHuman && s.bestFork>=2 && s.fork<2;
+      ctx.fillStyle='#0F6E56'; ctx.textBaseline='bottom';
+      ctx.fillText(isFork ? '这里能双杀' : '该走这里', b[0], b[1]-R-5);
+      ctx.fillStyle='#993C1D'; ctx.textBaseline='top';
+      ctx.fillText('你走了这里', a[0], a[1]+R+5);
+    }
+  }
 }
 
 /* ================= 面板绑定 ================= */
@@ -1312,7 +1622,28 @@ bindSeg('segFirst', v=>{ humanFirst = v==='1'; reset(); });
 document.getElementById('btnUndo').onclick=undo;
 document.getElementById('btnHint').onclick=hint;
 document.getElementById('btnNew').onclick=reset;
+document.getElementById('btnReview').onclick=enterReview;
+document.getElementById('rvExit').onclick=exitReview;
+document.getElementById('rvFirst').onclick=()=>rvGoto(0);
+document.getElementById('rvLast').onclick=()=>rvGoto(history.length);
+document.getElementById('rvPrev').onclick=()=>rvGoto(rv.k-1);
+document.getElementById('rvNext').onclick=()=>rvGoto(rv.k+1);
+document.getElementById('rvRange').oninput=e=>rvGoto(+e.target.value);
+/* 点曲线直接跳到那一手：把画布内 x 换算回手序 */
+document.getElementById('rvCurve').onclick=e=>{
+  if(!rv.curve.length) return;
+  const cv=e.target, r=cv.getBoundingClientRect();
+  const fx=(e.clientX-r.left)*(cv.width/r.width);
+  const PL=38, PR=10, span=cv.width-PL-PR;
+  rvGoto(Math.round(((fx-PL)/span)*(rv.curve.length-1)));
+};
 document.addEventListener('keydown', e=>{
+  /* 复盘时 ←/→ 逐手看，Esc 退出 —— 这几个键在复盘里有专属含义，先吃掉 */
+  if(rv.on){
+    if(e.key==='ArrowLeft'){ rvGoto(rv.k-1); e.preventDefault(); return; }
+    if(e.key==='ArrowRight'){ rvGoto(rv.k+1); e.preventDefault(); return; }
+    if(e.key==='Escape'){ exitReview(); e.preventDefault(); return; }
+  }
   if(e.metaKey||e.ctrlKey) return;
   const k=e.key.toLowerCase();
   if(k==='r'){ yawT=45*Math.PI/180; pitchT=40*Math.PI/180; zoom=1; }
