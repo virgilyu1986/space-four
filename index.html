@@ -440,8 +440,15 @@ function thinkMove(me){
         v = 地面内的"远近"方向（越大越远）
         screenX = OX + u*S
         screenY = OY - (v*sinp + (z-2.5)*cosp)*S
-        depth   = v*cosp - (z-2.5)*sinp        （越大越远 → 先画）
+        depth   = v*cosp - (z-2.5)*sinp        （d 越小越近 → 降序排、远的先画）
    ---------------------------------------------------------------------------
+   判据：d 是"沿相机视线方向的深度"，相机在 d = -D 那一侧，所以
+   **d 越大越远、d 越小越近**。同柱上下两层：上面那层 pz 更大（更靠近相机上方的眼）
+   → 它的 d 更小 → 必须**后画**才能盖住下面那颗。低俯仰时同柱两球在屏幕上
+   本来就分开（层缝 63px > 球径 41px），画反了也看不出来；俯仰一高（76°）层缝
+   压到 13px，两球重叠，画反了就会变成"下面的球盖住上面的球"——从上方看
+   高层那颗反而被吃掉。pick() 里的"并列取 d 更小的柱子"用的也是这个方向，别翻。
+
    关键好性质：z 只影响 screenY，不影响 screenX。
    所以一根立柱在屏幕上永远是**一条竖直线**：同一根柱子上的球上下排成一列，
    高度差直接就是屏幕上的竖直位移 —— 这是"看清第几层"的几何基础。
@@ -786,10 +793,11 @@ function fillPrimitives(){
     /* 邻域聚焦：不在这根柱子 3×3 里的球压到 0.20 透明度。
        注意不能简单"不画" —— 还得看得见有个东西在那儿，只是不抢视线。 */
     const dim = useFocus && !inFocus(x,y);
-    /* +1e-6 而不是 -1e-6：球和"包住它的那一小段柱身"深度完全相同（z 相同），
-       这点偏置把球压到柱段之后画 —— 否则半透明的玻璃管身会给球蒙一层灰蓝，
-       球立刻发闷。球必须画在自己那根柱子的上面，才透亮。 */
-    PRIM.push({d:depthAt(x,y,z)+1e-6, ord:1, f:()=>{
+    /* -1e-6 而不是 +1e-6：球和"包住它的那一小段柱身"深度完全相同（z 相同），
+       偏置方向必须跟着排序方向走 —— 现在 PRIM 是**降序**（d 小的后画），
+       所以要 d 更小才能压在自己那根柱段之上，否则半透明的玻璃管身会给球
+       蒙一层灰蓝，球立刻发闷。球必须画在自己那根柱子的上面，才透亮。 */
+    PRIM.push({d:depthAt(x,y,z)-1e-6, ord:1, f:()=>{
       if(dim){ ctx.save(); ctx.globalAlpha=0.22; drawSphere(x,y,z,board[i],lit,0); ctx.restore(); }
       else drawSphere(x,y,z,board[i],lit,0);
     }});
@@ -804,7 +812,12 @@ function paintPrimitives(onePass){
      实测球心可读率，一趟排到底 95.1%，两趟 100%。
      球与球之间仍然按深度互遮（都在第 2 趟里，谁近谁在上），前后关系是对的。
      onePass=true 是给 A/B 对照用的（还原成"一趟排到底"的老行为）。 */
-  PRIM.sort((p,q)=> (p.d-q.d) || (p.ord-q.ord));
+  /* 画家算法：**降序**（d 大的先画 = 远的先画 = 近的后画压在上面）。
+     这里必须是降序而不是升序：d = v*cosp - (z-2.5)*sinp，d 越小越近。
+     写反了的后果很隐蔽 —— 低俯仰（16°~45°）时同柱两球在屏幕上分得开，
+     看不出问题；俯仰一高（76°）层缝压到 13px、两球重叠，就会变成
+     "下面的球盖住上面的球"，从上方看高层那颗反而被吃掉。 */
+  PRIM.sort((p,q)=> (q.d-p.d) || (p.ord-q.ord));
   if(onePass){ for(const p of PRIM) p.f(); }
   else {
     for(const p of PRIM) if(p.ord<1) p.f();
@@ -830,7 +843,7 @@ function collectTargets(){
     if(levelFilter>0 && k+1!==levelFilter) continue;   // 只看某层 → 只留这一层的落点
     TARGETS.push({i, x, y, k, d:depthAt(x,y,k+0.5)});
   }
-  TARGETS.sort((a,b)=> a.d-b.d);   // 远的先画 → 最近的压在最上面
+  TARGETS.sort((a,b)=> b.d-a.d);   // 与 PRIM 同口径：远的先画 → 最近的压在最上面
 }
 function drawTarget(x,y,k,strong){
   drawSphere(x,y,k+0.5,human,false,strong?2:1);
