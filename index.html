@@ -100,7 +100,8 @@ kbd{font-family:inherit;font-size:11px;background:#F2F1EC;border:1px solid rgba(
         <div class="lab">规则</div>
         <div class="rule">叠放 —— 下面一层有子，才能往上放；25 根柱子各自从第 1 层开始往上堆<br>
         <span style="color:#5B7796">看不清第几层？用「只看某一层」：那层的网格整片点亮，棋子与可落点也只显示这一层<br>
-        判不准落在哪格？顺着球下面那条竖虚线往下走，末端那个色点就是它的格子</span></div>
+        判不准落在哪格？顺着球下面那条竖虚线往下走，末端那个色点就是它的格子<br>
+        看不清某摞堆了什么？鼠标指到那根柱子上 —— 只剩它亮着，其余全部淡出（可在「悬停聚焦」里切成 3×3）</span></div>
       </div>
       <div class="row">
         <div class="lab">视角（拖动可随意转）</div>
@@ -128,6 +129,14 @@ kbd{font-family:inherit;font-size:11px;background:#F2F1EC;border:1px solid rgba(
           <button data-v="3">3</button>
           <button data-v="4">4</button>
           <button data-v="5">5</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="lab">悬停聚焦（鼠标指到哪根柱子，就只亮那根柱子上的棋子）</div>
+        <div class="seg" id="segFocus">
+          <button data-v="0">关</button>
+          <button data-v="1" class="on">本柱</button>
+          <button data-v="2">3×3</button>
         </div>
       </div>
       <div class="row">
@@ -163,7 +172,6 @@ kbd{font-family:inherit;font-size:11px;background:#F2F1EC;border:1px solid rgba(
           <label class="chk"><input type="checkbox" id="cbGrid" checked>层参考线</label>
           <label class="chk"><input type="checkbox" id="cbStub" checked>短柱</label>
           <label class="chk"><input type="checkbox" id="cbTri" checked>三缺一连线</label>
-          <label class="chk"><input type="checkbox" id="cbFocus" checked>邻域聚焦</label>
           <label class="chk"><input type="checkbox" id="cbDrop" checked>落点引线</label>
           <label class="chk"><input type="checkbox" id="cbGhost" checked>落点提示</label>
         </div>
@@ -174,7 +182,7 @@ kbd{font-family:inherit;font-size:11px;background:#F2F1EC;border:1px solid rgba(
         <div class="lg" style="margin-top:3px"><span class="sw" style="background:rgba(74,146,223,.30);border:1px solid rgba(38,88,150,.75);border-radius:50%"></span>淡蓝幽灵球＝现在能落的位置</div>
         <div class="lg" style="margin-top:3px"><span class="sw" style="background:rgba(150,186,226,.45);border:1px solid rgba(56,110,170,.6)"></span>淡蓝薄片＝聚焦层（悬停/筛选的那一层）</div>
         <div class="lg" style="margin-top:3px"><span class="sw" style="width:17px;height:3px;background:#1D9E75;border-radius:2px"></span>悬停三缺一：整条线＋缺口一起亮</div>
-        <div class="lg" style="margin-top:3px"><span class="sw" style="background:rgba(27,78,120,.34);border:1px solid rgba(27,78,120,.92)"></span>悬停柱：它＋3×3 高亮，其余淡出</div>
+        <div class="lg" style="margin-top:3px"><span class="sw" style="background:rgba(27,78,120,.34);border:1px solid rgba(27,78,120,.92)"></span>鼠标指到哪根柱子，就只亮那根柱子上的球（可切 3×3）</div>
         <div class="lg" style="margin-top:3px"><span class="sw" style="width:17px;height:3px;background:linear-gradient(90deg,#4A92DF 55%,transparent 55%);border-radius:2px"></span>竖虚线＝球引到它真正的地面格</div>
       </div>
       <div class="tips">
@@ -266,9 +274,24 @@ let hover = -1, hintCell = -1;
    但"选中某个棋子看它是不是三缺一"需要的是原始那颗球，两者必须分开记。 */
 let hoverStone = -1;
 /* focusCol：当前聚焦的柱子 = x + y*N（-1 = 没有）。
-   聚焦时该柱 + 周围 3×3 的柱子正常显示，其余柱子的球淡出 ——
-   这是"点击某个杆子，就展示这个杆子以及周边有关的杆子上的棋子"。 */
+   鼠标指到哪根柱子，就把注意力收到哪根柱子上 —— 这解决的是 3D 里
+   最要命的一个问题：**"这一摞到底堆了什么"在斜视/侧视下根本读不出来**，
+   因为别处的球会在屏幕上和它重合成一堆。 */
 let focusCol = -1;
+/* focusMode：聚焦范围 —— 0=关，1=只亮这一根柱子上的球（默认），2=它 + 3×3 邻域。
+   1 回答"这摞堆了什么"，2 回答"这一柱跟周边能凑出什么四连"
+   （任何一条四连线跨度都不超过 3 格，所以经过中心柱的四连必然整体落在 3×3 里）。 */
+let focusMode = 1;
+/* 虚化强度：本柱模式要"画面里只剩一根"，压得狠一些；
+   3×3 模式本来就留了周边做参照，压太狠反而看不出关系。 */
+const DIM_LEVEL = {
+  1: {stone:0.13, pillar:0.20, target:0.16},
+  2: {stone:0.22, pillar:0.34, target:0.55},
+};
+function dimStone(){ return DIM_LEVEL[focusMode] ? DIM_LEVEL[focusMode].stone : 1; }
+function dimPillar(){ return DIM_LEVEL[focusMode] ? DIM_LEVEL[focusMode].pillar : 1; }
+function dimTarget(){ return DIM_LEVEL[focusMode] ? DIM_LEVEL[focusMode].target : 1; }
+function focusOn(){ return focusCol>=0 && focusMode>0; }
 let levelFilter = 0;   // 0 = 全部层；1..5 = 只看这一层（棋子按层筛选）
 let threatCache = {1:new Set(), 2:new Set()};
 let pulse = 0;
@@ -326,11 +349,18 @@ function threatLinesAt(cell){
   }
   return out;
 }
-/* 聚焦判定：focusCol 的 3×3 邻域之内算"有关"，之外要淡出 */
+/* 聚焦判定：focusCol 命中的柱子算"要看的东西"，其余淡出。
+   模式 1 = 严格只有这一根柱子；模式 2 = 它 + 3×3 邻域 */
 function inFocus(x,y){
-  if(focusCol<0) return true;
+  if(!focusOn()) return true;
   const fx=focusCol%N, fy=(focusCol/N)|0;
+  if(focusMode===1) return x===fx && y===fy;
   return Math.abs(x-fx)<=1 && Math.abs(y-fy)<=1;
+}
+/* 当前悬停柱上有几颗球（给坐标标签显示 "x3 y3 · 2颗"） */
+function colCount(fx,fy){
+  let n=0; for(let z=0;z<N;z++) if(board[idx(fx,fy,z)]) n++;
+  return n;
 }
 
 /* ================= AI ================= */
@@ -617,7 +647,7 @@ function drawPillarSeg(x,y,k,above,z1,dim){
   const sp=Math.sin(pitch);
   const a=proj(x,y,k), b=proj(x,y,z1);
   const rx=RP*S, ry=RP*S*sp;
-  const m = dim ? 0.34 : 1;          // 邻域聚焦时不相关的柱子整体压暗
+  const m = dim ? dimPillar() : 1;   // 悬停聚焦时不在范围内的柱子整体压暗
   tubePath(a,b,rx,ry);
   ctx.fillStyle = above ? 'rgba(238,234,226,'+(0.06*m).toFixed(3)+')'
                         : 'rgba(238,234,226,'+(0.15*m).toFixed(3)+')';
@@ -640,7 +670,7 @@ function drawPillarSeg(x,y,k,above,z1,dim){
 function drawPillarCap(x,y,H,dim){
   const sp=Math.sin(pitch);
   const p=proj(x,y,H);
-  const m = dim ? 0.34 : 1;
+  const m = dim ? dimPillar() : 1;
   ctx.beginPath(); ctx.ellipse(p[0],p[1],RP*S,RP*S*sp,0,0,Math.PI*2);
   ctx.fillStyle='rgba(238,234,226,'+(0.20*m).toFixed(3)+')'; ctx.fill();
   ctx.strokeStyle='rgba(122,116,102,'+(0.60*m).toFixed(3)+')'; ctx.lineWidth=1.05; ctx.stroke();
@@ -760,7 +790,7 @@ function fillPrimitives(){
     for(let x=0;x<N;x++) for(let y=0;y<N;y++)
       PRIM.push({d:depthAt(x,y,F), ord:-1, f:()=>drawPlaneTile(x,y,F)});
   }
-  const useFocus = focusCol>=0 && document.getElementById('cbFocus').checked;
+  const useFocus = focusOn();
   refreshColFill();
   for(let x=0;x<N;x++) for(let y=0;y<N;y++){
     const n=colFill[x+y*N], H=pillarH(x,y);
@@ -781,8 +811,11 @@ function fillPrimitives(){
      "该走这里"的绿虚线球整个淹掉 —— 而那个绿球才是复盘要你看的东西。 */
   if(turn===human && !busy && !over && !rv.on && document.getElementById('cbGhost').checked){
     for(const t of TARGETS){
-      PRIM.push({d:depthAt(t.x,t.y,t.k+0.5), ord:0.5,
-                 f:()=>drawTarget(t.x,t.y,t.k, hover===t.i)});
+      const td = useFocus && !inFocus(t.x,t.y);
+      PRIM.push({d:depthAt(t.x,t.y,t.k+0.5), ord:0.5, f:()=>{
+        if(td){ ctx.save(); ctx.globalAlpha=dimTarget(); drawTarget(t.x,t.y,t.k, hover===t.i); ctx.restore(); }
+        else drawTarget(t.x,t.y,t.k, hover===t.i);
+      }});
     }
   }
   for(let i=0;i<SZ;i++){
@@ -790,7 +823,7 @@ function fillPrimitives(){
     if(levelFilter>0 && ZO(i)+1!==levelFilter) continue;   // 按层筛选：只显示这一层的球
     const x=XO(i), y=YO(i), z=ZO(i)+0.5;
     const lit = winLine && winLine.indexOf(i)>=0;
-    /* 邻域聚焦：不在这根柱子 3×3 里的球压到 0.20 透明度。
+    /* 悬停聚焦：不在聚焦范围内的球压到很低的透明度。
        注意不能简单"不画" —— 还得看得见有个东西在那儿，只是不抢视线。 */
     const dim = useFocus && !inFocus(x,y);
     /* -1e-6 而不是 +1e-6：球和"包住它的那一小段柱身"深度完全相同（z 相同），
@@ -798,7 +831,7 @@ function fillPrimitives(){
        所以要 d 更小才能压在自己那根柱段之上，否则半透明的玻璃管身会给球
        蒙一层灰蓝，球立刻发闷。球必须画在自己那根柱子的上面，才透亮。 */
     PRIM.push({d:depthAt(x,y,z)-1e-6, ord:1, f:()=>{
-      if(dim){ ctx.save(); ctx.globalAlpha=0.22; drawSphere(x,y,z,board[i],lit,0); ctx.restore(); }
+      if(dim){ ctx.save(); ctx.globalAlpha=dimStone(); drawSphere(x,y,z,board[i],lit,0); ctx.restore(); }
       else drawSphere(x,y,z,board[i],lit,0);
     }});
   }
@@ -928,36 +961,55 @@ function drawTriple(){
   }
 }
 
-/* ---------------- 邻域聚焦：选中某根柱子 → 它 + 周围 3×3 亮出来 ----------------
-   3×3 是"周边有关"的直觉口径，也是四连能发生的最小邻域（任何一条四连线
-   跨度都不超过 3 格，所以只要这条线经过中心柱，它必然整个落在 3×3 里）。
-   中心柱：地面格实心高亮 + 柱身加粗描边 + 顶端标出坐标。
-   邻域柱：地面格淡高亮，正常显示。
-   其余柱：球压到 0.20、柱身压到 0.34 —— 不是"不画"，还能看见东西在那儿。 */
+/* ---------------- 悬停聚焦：鼠标指到哪根柱子 → 只把注意力留在那儿 ----------------
+   focusMode=1（默认）"本柱"：只有这一根柱子上的球保持原色，**其余全部压到 0.13**，
+     顺便把别处的幽灵球也压掉。这是为了解决 3D 里最实际的困扰 ——
+     斜视/侧视下别处的球会在屏幕上跟这一摞重合成一团，"这摞堆了什么"根本读不出来。
+   focusMode=2 "3×3"：它 + 周围一圈保持原样。3×3 是"周边有关"的最小口径
+     （任何一条四连线跨度都不超过 3 格，所以经过中心柱的四连必然整个落在 3×3 里），
+     用来回答"这一柱跟周边能凑出什么四连"。
+   被压掉的东西**不是不画** —— 还得看得见那儿有东西，只是不抢视线。 */
 function drawFocusGround(){
-  if(focusCol<0 || !document.getElementById('cbFocus').checked) return;
+  if(!focusOn()) return;
   const fx=focusCol%N, fy=(focusCol/N)|0;
-  for(let dx=-1;dx<=1;dx++) for(let dy=-1;dy<=1;dy++){
+  const r = focusMode===1 ? 0 : 1;      // 本柱模式只点亮中心那一格
+  for(let dx=-r;dx<=r;dx++) for(let dy=-r;dy<=r;dy++){
     const x=fx+dx, y=fy+dy;
     if(x<0||x>=N||y<0||y>=N) continue;
     const mid=(dx===0&&dy===0);
     drawCellMark(x,y,0,
-      mid ? 'rgba(74,146,223,0.34)' : 'rgba(74,146,223,0.13)',
-      mid ? 'rgba(27,78,120,0.92)'  : 'rgba(27,78,120,0.38)');
+      mid ? 'rgba(74,146,223,0.40)' : 'rgba(74,146,223,0.13)',
+      mid ? 'rgba(27,78,120,0.95)'  : 'rgba(27,78,120,0.38)');
   }
 }
 function drawFocusCol(){
-  if(focusCol<0 || !document.getElementById('cbFocus').checked) return;
+  if(!focusOn()) return;
   const fx=focusCol%N, fy=(focusCol/N)|0, H=pillarH(fx,fy);
   const a=proj(fx,fy,0), b=proj(fx,fy,H);
+  const strong = focusMode===1;
   ctx.beginPath();
   ctx.moveTo(a[0]-RP*S,a[1]); ctx.lineTo(b[0]-RP*S,b[1]);
   ctx.moveTo(a[0]+RP*S,a[1]); ctx.lineTo(b[0]+RP*S,b[1]);
-  ctx.strokeStyle='rgba(27,78,120,0.88)'; ctx.lineWidth=2.4; ctx.stroke();
+  ctx.strokeStyle = strong ? 'rgba(21,64,102,0.95)' : 'rgba(27,78,120,0.88)';
+  ctx.lineWidth = strong ? 2.8 : 2.4; ctx.stroke();
+  /* 本柱模式：给这根柱子上的每颗球描一圈细环。
+     周边全虚化之后，这几颗球本来就跳出来了，再描一圈是为了读成
+     "串在同一根线上的一摞"，顺便明确它们从下往上的次序。 */
+  if(strong){
+    for(let z=0;z<N;z++){
+      const i=idx(fx,fy,z);
+      if(!board[i]) continue;
+      if(levelFilter>0 && z+1!==levelFilter) continue;   // 跟层筛选保持一致
+      const p=proj(fx,fy,z+0.5);
+      ctx.beginPath(); ctx.arc(p[0],p[1],PR*S*1.10,0,Math.PI*2);
+      ctx.strokeStyle='rgba(21,64,102,0.70)'; ctx.lineWidth=1.5; ctx.stroke();
+    }
+  }
+  const n = colCount(fx,fy);
   ctx.font='11.5px -apple-system,sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='bottom';
-  ctx.fillStyle='rgba(27,78,120,0.95)';
-  ctx.fillText('x'+(fx+1)+' y'+(fy+1), b[0], b[1]-6);
+  ctx.fillStyle='rgba(21,64,102,0.98)';
+  ctx.fillText('x'+(fx+1)+' y'+(fy+1)+(n?' · '+n+'颗':''), b[0], b[1]-6);
 }
 
 /* ---------------- 落点引线：球 → 它真正所在的地面格 ----------------
@@ -1251,8 +1303,18 @@ function hoverStatus(){
   if(over) return;
   const cell = hoverStone>=0 ? hoverStone : hover;
   const tri = threatLinesAt(cell);
-  if(tri.length) setStatus(triText(tri), tri[0].who===human?'win':'lose');
-  else turnStatus();
+  if(tri.length){ setStatus(triText(tri), tri[0].who===human?'win':'lose'); return; }
+  /* 没有三缺一时，顺手把"你正指着的这根柱子"报出来：
+     聚焦之后画面里只剩这一摞，状态栏补上它堆了几颗、下一颗落在第几层，
+     就不用再去屏幕上数球了。 */
+  if(focusOn() && turn===human && !busy){
+    const x=focusCol%N, y=(focusCol/N)|0, n=colCount(x,y), t=colTop(x,y);
+    if(t<0){ setStatus('x'+(x+1)+' y'+(y+1)+' · 这一柱已经堆满（5 颗）'); return; }
+    setStatus('轮到你（'+(human===P1?'蓝':'橙')+'） · x'+(x+1)+' y'+(y+1)+
+              ' 现有 '+n+' 颗，下一颗落在第 '+(ZO(t)+1)+' 层');
+    return;
+  }
+  turnStatus();
 }
 function flash(i){ flashCell=i; flashT=26; }
 function humanMove(i){
@@ -1630,6 +1692,7 @@ function bindSeg(idName, cb){
 bindSeg('segView', v=>{ const a=VIEWS[v]; if(!a) return; yawT=a[0]*Math.PI/180; pitchT=a[1]*Math.PI/180; });
 bindSeg('segLayer', v=>{ levelFilter=+v; collectTargets(); });
 bindSeg('segGap', v=>{ const g=GAPS[v]; if(!g) return; SPX=g[0]; SPZ=g[1]; });
+bindSeg('segFocus', v=>{ focusMode=+v; });
 bindSeg('segLv', v=>{ level=+v; });
 bindSeg('segFirst', v=>{ humanFirst = v==='1'; reset(); });
 document.getElementById('btnUndo').onclick=undo;
