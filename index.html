@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>空间四子棋 · 5×5×5</title>
+<!-- 空间四子棋 v0.8 · 教学式复盘（为什么/后续变化/格点价值/全盘报告）+ 棋谱导出导入 -->
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -64,6 +65,47 @@ kbd{font-family:inherit;font-size:11px;background:#F2F1EC;border:1px solid rgba(
 .rv-note .hit{background:#FCEBEB;color:#993C1D;border-radius:5px;padding:5px 8px;display:block;margin-bottom:7px}
 .rv-note .ok{background:#E1F5EE;color:#0F6E56;border-radius:5px;padding:5px 8px;display:block;margin-bottom:7px}
 .rv-note .mono{font-variant-numeric:tabular-nums}
+/* ---- 教学标签页 ---- */
+.rv-tabs{display:flex;gap:5px;margin:11px 0 9px;flex-wrap:wrap}
+.rv-tabs button{padding:5px 11px;font-size:12.5px;border:1px solid rgba(0,0,0,.12);background:#fff;color:#4A4844;border-radius:7px;cursor:pointer;font-family:inherit;transition:.13s}
+.rv-tabs button:hover{border-color:rgba(0,0,0,.28)}
+.rv-tabs button.on{background:#2C2C2A;color:#fff;border-color:#2C2C2A}
+.rv-pane{font-size:12.5px;line-height:1.8;color:#4A4844}
+.rv-sec{font-size:11.5px;color:#8A877F;letter-spacing:.4px;margin:11px 0 5px;border-top:1px dashed rgba(0,0,0,.10);padding-top:9px}
+.rv-sec:first-child{border-top:0;margin-top:2px;padding-top:0}
+.rv-pane ul{margin:2px 0 2px;padding-left:18px}
+.rv-pane li{margin:1px 0}
+.rv-pane .mono{font-variant-numeric:tabular-nums}
+.rv-pane b{font-weight:600}
+.box{border-radius:0 8px 8px 0;padding:7px 10px;margin:7px 0;line-height:1.75}
+.box.info{background:#F2F7FD;border-left:3px solid #4A92DF}
+.box.warn{background:#FDF2F0;border-left:3px solid #E24B4A}
+.box.good{background:#EFF8F4;border-left:3px solid #1D9E75}
+.box.tip{background:#F7F6F2;border-left:3px solid #C9C5BA}
+table.vt{border-collapse:collapse;font-size:11.5px;width:100%;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+table.vt th,table.vt td{border:1px solid rgba(0,0,0,.09);padding:3px 5px;text-align:center}
+table.vt th{background:#F7F6F2;color:#6E6C66;font-weight:400;line-height:1.35}
+table.vt td.l{text-align:left}
+table.vt tr.mine{background:#FDF2E8}
+table.vt tr.top{background:#EFF8F4}
+table.vt tr.mine td:first-child{box-shadow:inset 3px 0 0 #DE6B3D}
+table.vt tr.top td:first-child{box-shadow:inset 3px 0 0 #1D9E75}
+.pv{margin:3px 0 3px;padding-left:2px}
+.pv-row{display:flex;gap:7px;align-items:baseline;padding:2px 0}
+.pv-n{flex:0 0 20px;color:#A9A69E;font-size:11px}
+.pv-w{flex:0 0 26px;font-size:11.5px}
+.pv-m{flex:0 0 96px;font-variant-numeric:tabular-nums}
+.pv-s{margin-left:auto;font-variant-numeric:tabular-nums;color:#6E6C66}
+.rv-ctl2{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 2px}
+.rec-box{width:100%;height:84px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;line-height:1.55;border:1px solid rgba(0,0,0,.13);border-radius:8px;padding:7px 8px;resize:vertical;background:#FCFCFA;color:#3C3B37;white-space:pre}
+.arc{display:flex;align-items:center;gap:8px;padding:5px 7px;border:1px solid rgba(0,0,0,.08);border-radius:7px;margin:4px 0;font-size:12px;background:#FCFCFA}
+.arc .d{color:#8A877F;font-variant-numeric:tabular-nums}
+.arc .r{font-weight:600}
+.arc button{margin-left:auto;padding:3px 9px;font-size:11.5px;border:1px solid rgba(0,0,0,.14);background:#fff;border-radius:6px;cursor:pointer;font-family:inherit}
+.endbar{margin-top:12px;background:#FFF;border:1px solid rgba(0,0,0,.09);border-radius:12px;padding:9px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px}
+.endbar button{padding:6px 11px;font-size:12.5px;border:1px solid rgba(0,0,0,.14);background:#fff;border-radius:7px;cursor:pointer;font-family:inherit}
+.endbar button:hover{border-color:rgba(0,0,0,.3);background:#FAFAF8}
+.endbar button.pri{background:#2C2C2A;color:#fff;border-color:#2C2C2A}
 @media(max-width:860px){.layout{flex-direction:column}.panel{flex:1 1 auto;width:100%}}
 </style>
 </head>
@@ -71,10 +113,19 @@ kbd{font-family:inherit;font-size:11px;background:#F2F1EC;border:1px solid rgba(
 <div class="wrap">
   <h1>空间四子棋 <span style="font-weight:400;color:#8A877F;font-size:14px">5×5×5</span></h1>
   <p class="sub">5×5×5 · <span id="ln">302</span> 条四连线 · 13 个方向 · 每手 <b>25</b> 个落点<br>规则：<b>下面一层有子，才能落在上面一层</b>。点哪根柱子，球就落在它最上面那一格<br>
-  判位三件套：<b>悬停某根柱子</b>＝只突出它和周围 3×3 的棋子；<b>悬停某颗球</b>＝若它已凑齐三颗，整条线连着缺口一起点亮；<b>竖虚线</b>＝从球引到它真正的地面格</p>
+  判位三件套：<b>悬停某根柱子</b>＝只突出它和周围 3×3 的棋子；<b>悬停某颗球</b>＝若它已凑齐三颗，整条线连着缺口一起点亮；<b>竖虚线</b>＝从球引到它真正的地面格<br>
+  下完会自动存棋谱 —— 复盘里能看「为什么」、后续变化、格点价值表，也能把棋谱导出后重新导入分析</p>
   <div class="layout">
     <div class="stage">
       <canvas id="cv" width="720" height="760"></canvas>
+
+      <div class="endbar" id="endBar" hidden>
+        <span id="endText"></span>
+        <span style="flex:1"></span>
+        <button id="endRv" class="pri">复盘讲解</button>
+        <button id="endCopy">复制棋谱</button>
+        <button id="endDl">下载棋谱</button>
+      </div>
 
       <div class="rv" id="rvBar" hidden>
         <div class="rv-head">
@@ -93,6 +144,37 @@ kbd{font-family:inherit;font-size:11px;background:#F2F1EC;border:1px solid rgba(
           <span class="rv-step" id="rvStep"></span>
         </div>
         <div class="rv-note" id="rvNote"></div>
+        <div class="rv-tabs" id="rvTabs">
+          <button data-t="why" class="on">为什么</button>
+          <button data-t="pv">后续变化</button>
+          <button data-t="val">格点价值</button>
+          <button data-t="rep">全盘报告</button>
+          <button data-t="rec">棋谱</button>
+        </div>
+        <div class="rv-pane" id="paneWhy"></div>
+        <div class="rv-pane" id="panePv" hidden></div>
+        <div class="rv-pane" id="paneVal" hidden></div>
+        <div class="rv-pane" id="paneRep" hidden></div>
+        <div class="rv-pane" id="paneRec" hidden>
+          <div class="rv-sec">本局棋谱（结束时自动存到本机浏览器）</div>
+          <div id="recMeta" style="color:#8A877F;font-size:11.5px"></div>
+          <textarea class="rec-box" id="recBox" spellcheck="false" readonly></textarea>
+          <div class="rv-ctl2">
+            <button id="recCopy" class="rv-btn">复制棋谱</button>
+            <button id="recDl" class="rv-btn">下载 .sfg</button>
+            <button id="recDlAll" class="rv-btn">导出全部存档</button>
+          </div>
+          <div class="rv-sec">导入棋谱，让我分析你哪里能提高</div>
+          <textarea class="rec-box" id="impBox" spellcheck="false"
+            placeholder="把棋谱粘到这里（SF1;… 一行即可，也支持多局一起粘），或者点「选文件」"></textarea>
+          <div class="rv-ctl2">
+            <input type="file" id="impFile" accept=".sfg,.txt,.text,text/plain" hidden>
+            <button id="impPick" class="rv-btn">选文件</button>
+            <button id="impGo" class="rv-btn">导入并分析</button>
+          </div>
+          <div class="rv-sec">本机存档（点「分析」直接载入复盘）</div>
+          <div id="recList" style="color:#8A877F;font-size:12px">暂无存档</div>
+        </div>
       </div>
     </div>
     <aside class="panel">
@@ -174,6 +256,7 @@ kbd{font-family:inherit;font-size:11px;background:#F2F1EC;border:1px solid rgba(
           <label class="chk"><input type="checkbox" id="cbTri" checked>三缺一连线</label>
           <label class="chk"><input type="checkbox" id="cbDrop" checked>落点引线</label>
           <label class="chk"><input type="checkbox" id="cbGhost" checked>落点提示</label>
+          <label class="chk"><input type="checkbox" id="cbAutoRv" checked>下完自动复盘</label>
         </div>
       </div>
       <div class="legend">
@@ -187,7 +270,10 @@ kbd{font-family:inherit;font-size:11px;background:#F2F1EC;border:1px solid rgba(
       </div>
       <div class="tips">
         <kbd>拖动</kbd> 任意旋转视角　<kbd>滚轮</kbd> 放大 / 缩小（放大后会溢出画布，是故意的）<br>
-        <kbd>R</kbd> 复位视角　<kbd>H</kbd> 提示　<kbd>U</kbd> 悔棋　<kbd>N</kbd> 新局
+        <kbd>R</kbd> 复位视角　<kbd>H</kbd> 提示　<kbd>U</kbd> 悔棋　<kbd>N</kbd> 新局<br>
+        <span style="color:#5B7796">下完自动存档棋谱，并自动进复盘。<b>复盘不是告诉你"该下哪"，是告诉你"为什么"</b>：
+        「为什么」讲清推导、「后续变化」推演三五手、「格点价值」把 25 个落点的价值拆开比、
+        「全盘报告」指出你反复犯的是哪一类错、「棋谱」可导出 / 粘贴导入重新分析。</span>
       </div>
     </aside>
   </div>
@@ -1351,13 +1437,22 @@ function doMove(i, who){
     over={winner:who}; winLine=w; winSide=who;
     if(who===human){ setStatus('四连达成，你赢了！', 'win'); click(660,0.12,'sine',0.05); setTimeout(()=>click(880,0.18,'sine',0.05),90); }
     else { setStatus('AI 连成四子，这局你输了', 'lose'); click(330,0.2,'sine',0.05); }
+    finishGame();
     return;
   }
   if(legalMoves().length===0){
-    over={winner:0}; setStatus('棋盘填满，和棋', 'think'); return;
+    over={winner:0}; setStatus('棋盘填满，和棋', 'think'); finishGame(); return;
   }
   turn = 3-who;
   turnStatus();
+}
+/* 一局结束：先把棋谱落到本机（不依赖用户点任何东西），再问要不要马上复盘。
+   "下完自动导出"是这条学习闭环的起点 —— 没有棋谱，跨局的进步就无从对比。 */
+function finishGame(){
+  archiveGame();
+  const cb=document.getElementById('cbAutoRv');
+  if(cb && cb.checked) setTimeout(enterReview, 500);
+  else showEndBar();
 }
 function aiTurn(){
   if(over) return;
@@ -1398,6 +1493,9 @@ function hint(){
 }
 function reset(){
   if(rv.on){ rv.on=false; document.getElementById('rvBar').hidden=true; }   // 新局直接收起复盘条
+  hideEndBar();
+  PV_CACHE.clear();
+  rv.rep=null; rv.steps=[]; rv.curve=[]; rv.tops=[]; rv.forkMiss=[]; rv.forkHit=[];
   genId++;
   busy=false; thinking=false;
   board.fill(0); touch.fill(0);
@@ -1409,6 +1507,93 @@ function reset(){
   refreshThreats();
   turnStatus();
   if(turn!==human) setTimeout(aiTurn, 260);
+}
+
+/* ============================================================================
+   教学用的局面度量 —— 复盘能不能"讲明白为什么"，全看这几个数够不够干净。
+
+   空间四子棋的胜负只由一件事决定：**谁能先凑出"三缺一"，且那个缺口够得到**。
+   所以这里所有的指标都围绕"三缺一"展开，而不是笼统的"形势好坏"：
+     · cntLive(who)    —— 该方现在能马上落成的杀点有几个（够得到的缺口）
+     · gapMapOf(who)   —— 该方全部三缺一的缺口（含暂时够不到的）
+     · cellPotential   —— 某个空位能把我方几条"二缺二"变成"三缺一"
+   玩家真正要学的判断，就是把这三件事和"对手的同一组数"对比着看。
+   ============================================================================ */
+
+/* 该方"现在就能落成四"的杀点个数 —— 只数够得到的缺口。
+   注意 crit[who] 存的是**缺口格**：两条线缺同一格只算一个，
+   因为对手堵那一格两条都堵住了，那不叫双杀。 */
+function cntLive(who){
+  let n=0;
+  for(const c of crit[who]) if(isLegal(c)) n++;
+  return n;
+}
+/* 该方全部三缺一的缺口 → 参与这格的线有几条（≥2 = 这一格堵住两条线） */
+function gapMapOf(who){
+  const m=new Map();
+  for(let id=0; id<NL; id++){
+    if(thrWho[id]!==who) continue;
+    const g=thrCell[id];
+    if(!m.has(g)) m.set(g,[]);
+    m.get(g).push(id);
+  }
+  return m;
+}
+/* 空位 cell 的"生长潜力"：走这里能把几条「我方已有 2 颗且无对手」的线变成三缺一。
+   m3 必然意味着这一手直接连成四（线里已有 3 颗我方 + 这个空位）。
+   必须在"还没落子"的局面下调用。 */
+function cellPotential(cell, who){
+  let m2=0, m3=0, best=0;
+  for(const id of CELL_LINES[cell]){
+    const L=LINES[id]; let mine=0, foe=0;
+    for(let t=0;t<4;t++){ const v=board[L[t]]; if(v===who) mine++; else if(v) foe++; }
+    if(foe) continue;                       // 这条线已经被对手堵死，没价值
+    if(mine>=2) m2++;
+    if(mine>=3) m3++;
+    if(mine>best) best=mine;
+  }
+  return {m2, m3, best};
+}
+/* 分数文案。必须把三种"大数"分开说，否则玩家读不出区别：
+   · 这一手自己连成四（imm=true，分值 1e6+10）
+   · 对手挡不住 —— 即所谓"必胜"（搜索看到对方所有应手都输，分值也是 1e6 量级）
+   · 已经必输
+   把前两种都说成"已成四连"会让人以为自己赢了，其实只是"下一步赢"。 */
+function scText(v, imm){
+  if(imm) return '这手直接连成四子';
+  if(v>=1e5)  return '必胜（对手挡不住）';
+  if(v<=-1e5) return '必输（对手下一步就成四）';
+  return (v>0?'+':'') + Math.round(v);
+}
+/* 主要变化：从 startMv 起，双方都走"搜索认为最好"的那一手，推 plies 步。
+   这回答的是玩家最想知道的问题 —— "你说我该走这里，那之后呢？"
+   一路上我临时落子、算完必须全部撤掉（lift 顺序无关，但一个都不能漏）。 */
+function pvLine(startMv, who, plies){
+  const applied=[], seq=[];
+  const dl = Date.now() + 2600;
+  let cur = startMv, w = who;
+  try{
+    for(let p=0; p<plies; p++){
+      if(cur===null || cur===undefined || !isLegal(cur)) break;
+      put(cur, w); applied.push(cur);
+      const win = !!findWin(cur, w);
+      ABORT=false;
+      const sc = win ? 1e6+10 : -negamax(3-w, 2, -Infinity, Infinity, dl);
+      seq.push({mv:cur, who:w, win, sc});
+      if(win || Date.now()>dl) break;
+      w = 3-w;
+      let bm=null, bs=-Infinity;
+      for(const c of legalMoves()){
+        const s = scoreMoveAt(c, w, 2);
+        if(s > bs+1e-6){ bs=s; bm=c; }
+        if(Date.now()>dl) break;
+      }
+      cur = bm;
+    }
+  } finally {
+    for(const i of applied) lift(i);
+  }
+  return seq;
 }
 
 /* ============================================================================
@@ -1455,7 +1640,10 @@ function scoreMoveAt(mv, who, depth){
 }
 
 let rv = { on:false, k:0, steps:[], curve:[], tops:[], forkMiss:[], forkHit:[],
-           ms:0, savedOver:null, savedWin:null, savedSide:0 };
+           ms:0, savedOver:null, savedWin:null, savedSide:0, tab:'why', rep:null };
+/* 后续变化是唯一需要现场搜索的东西，按 (手序, 起点手, 谁走) 缓存 ——
+   拖着滑块来回看时不重复算。进复盘/换局时清空。 */
+const PV_CACHE = new Map();
 
 function analyzeGame(){
   const t0 = Date.now();
@@ -1470,20 +1658,39 @@ function analyzeGame(){
        必须在下面那圈 put/lift 之前读，否则读到的是临时试落子后的状态。 */
     const foeLive = [];
     for(const c of crit[3-who]) if(isLegal(c)) foeLive.push(c);
+    /* 落子前的双方"三缺一"全景（含暂时够不到的缺口）—— 讲"为什么"时要交代局面。 */
+    const foeGaps = gapMapOf(3-who).size, myGaps = gapMapOf(who).size;
+    const mineLive = cntLive(who);
     const cands = legalMoves();
+    /* 25 个候选逐个拆解。一次 put/lift 顺手把 5 个数都读出来 ——
+       "为什么这手好"就是把这 5 个数和最佳手的同一组数并排放。 */
+    const ci = [];
     let best=-Infinity, bestMv=null, bestFork=-1, actual=-Infinity, actualFork=0;
     for(const c of cands){
-      const sc = scoreMoveAt(c, who, D);
-      const fk = liveFork(c, who);
+      const pot = cellPotential(c, who);                 // 必须落子前读
+      put(c, who);
+      const win = !!findWin(c, who);
+      ABORT = false;
+      const sc = win ? (1e6+10)
+               : -negamax(3-who, D-1, -Infinity, Infinity, Date.now()+5000);
+      const fk = cntLive(who), fa = cntLive(3-who);
+      /* 破掉了对手几个原有杀点：原来的缺口现在要么被占、要么已经不在柱顶（够不到）。 */
+      let fb=0;
+      for(const g of foeLive) if(!(crit[3-who].has(g) && isLegal(g))) fb++;
+      lift(c);
+      ci.push({c, sc, fk, fa, fb, win, m2:pot.m2, m3:pot.m3});
       if(c===mv){ actual=sc; actualFork=fk; }
       if(sc > best+1e-6){ best=sc; bestMv=c; bestFork=fk; }
       else if(Math.abs(sc-best)<=1e-6 && fk>bestFork){ bestMv=c; bestFork=fk; }
     }
     if(!isFinite(actual)) actual = best;
+    const mineCi = ci.filter(o=>o.c===mv)[0] || {fa:cntLive(3-who)};
     steps.push({mv, who, isHuman:(who===human), sc:actual, best, bestMv,
                 loss:(best-actual), fork:actualFork, bestFork,
                 /* 归因用的三类事实：对手当时有几个够得到的杀点、我堵了没、最佳手是不是去堵 */
-                foeLive, blocked:(foeLive.indexOf(mv)>=0), bestBlocks:(foeLive.indexOf(bestMv)>=0)});
+                foeLive, blocked:(foeLive.indexOf(mv)>=0), bestBlocks:(foeLive.indexOf(bestMv)>=0),
+                /* 教学用的局面快照 */
+                foeGaps, myGaps, mineLive, foeAfter:mineCi.fa, cands:ci});
     put(mv, who);
   }
   curve.push(evaluate(human));
@@ -1501,7 +1708,116 @@ function analyzeGame(){
   rv.forkHit  = steps.map((s,k)=>({k,s}))
     .filter(o=> !o.s.isHuman && o.s.fork>=2).map(o=>o.k);
   rv.ms = Date.now()-t0;
+  PV_CACHE.clear();
 }
+
+/* ============================================================================
+   教练：把"每一手扣了多少分"翻译成"你缺的是哪一个判断动作"。
+   玩家嘴上问的是"该下哪"，真正要补的是**落子前的那套检查顺序**。
+   所以报告只回答三件事：最贵的那一手在哪、你的固定毛病是什么、下次练什么。
+   ============================================================================ */
+
+/* 给人类每一手打一个失误类型。顺序有讲究：越具体的越先判。 */
+const MISS = {
+  win:    {t:'连成四子',   c:'ok',   adv:''},
+  forkMiss:{t:'漏杀',      c:'bad',  adv:'你本可以一手造出两个杀点（对手堵不完），却放过了'},
+  blockMiss:{t:'漏防',     c:'bad',  adv:'对手已经出现可以马上落成的杀点，你没去堵'},
+  giveWin:{t:'送胜负',     c:'bad',  adv:'这一手之后对手已经必胜，属于"没检查对手的立即威胁"'},
+  blunder:{t:'一般败着',   c:'warn', adv:'没有立刻致命，但与最佳手差距明显'},
+  ok:     {t:'正常',       c:'ok',   adv:''},
+};
+function classify(s){
+  if(!s) return 'ok';
+  if(!s.isHuman) return s.fork>=2 ? 'threat' : 'ok';
+  if(s.sc >= 1e5) return 'win';
+  if(s.bestFork>=2 && s.fork<2) return 'forkMiss';
+  if(s.foeLive.length && !s.blocked && s.foeAfter>0) return 'blockMiss';
+  if(s.loss > 1e5) return 'giveWin';
+  if(s.loss > 40) return 'blunder';
+  return 'ok';
+}
+function coachReport(){
+  const S = rv.steps;
+  const H = S.map((s,k)=>({s,k})).filter(o=>o.s.isHuman);
+  if(!H.length) return null;
+  const count = {};
+  for(const o of H){ const c=classify(o.s); count[c]=(count[c]||0)+1; }
+  /* 「对手有杀点时你有没有去堵」—— 这是整个游戏里最值钱的一个习惯指标，
+     比"赢了几局"有用得多，因为它不依赖对手强弱。 */
+  const mustBlock = H.filter(o=>o.s.foeLive.length>0);
+  const didBlock  = mustBlock.filter(o=>o.s.blocked);
+  /* 造杀点：你自己主动造出三缺一次数 / 双杀次数 */
+  const madeThreat = H.filter(o=>o.s.fork>=1).length;
+  const madeFork   = H.filter(o=>o.s.fork>=2).length;
+  const worst = rv.tops.length ? rv.tops[0] : -1;
+  const bads = H.filter(o=>['forkMiss','blockMiss','giveWin','blunder'].indexOf(classify(o.s))>=0)
+                .map(o=>o.k).sort((a,b)=>a-b);
+  /* 同一个"该走而没走"的点出现了几次 —— 这是最可操作的一条：
+     不是"你判断不准"，而是"你反复漏掉同一类格子"。 */
+  const rep = {};
+  for(const o of H){
+    const s=o.s;
+    if(s.bestFork>=2 && s.fork<2 && s.bestMv!=null) rep[s.bestMv]=(rep[s.bestMv]||0)+1;
+  }
+  let repCell=null, repN=0;
+  for(const c in rep) if(rep[c]>repN){ repN=rep[c]; repCell=+c; }
+  return {
+    n:H.length, count, mustBlock:mustBlock.length, didBlock:didBlock.length,
+    madeThreat, madeFork, worst, bads,
+    forkMiss:rv.forkMiss.length, forkHit:rv.forkHit.length,
+    blockRate: mustBlock.length ? didBlock.length/mustBlock.length : 1,
+    repCell: repN>=2 ? repCell : null, repN,
+  };
+}
+/* 把报告写成人话。规则简单但都指向"下次怎么做"，不做没有依据的心理揣测。 */
+function reportText(r){
+  if(!r) return '这局还没有你的落子。';
+  const L=[];
+  const pos = (k)=> '第 '+(k+1)+' 手';
+  L.push('你一共下了 '+r.n+' 手：漏杀 '+r.forkMiss+' 次、漏防 '+r.forkHit+' 次、'
+        +'败着 '+(r.bads.length)+' 处。');
+  if(r.worst>=0){
+    const s=rv.steps[r.worst];
+    L.push('最贵的一手是'+pos(r.worst)+'（'+cellName(s.mv)+'），比最佳手差 '
+          +Math.round(s.loss)+' 分 —— 这一手基本决定了这盘的结果。');
+  }
+  if(r.forkMiss===0 && r.count['blockMiss']===0 && r.count['giveWin']===0){
+    L.push('你的落子在"该防的防住、该杀的杀了"这两件事上没有明显失手，'
+          +'输赢更多来自中盘的形与势 —— 这种局面要把注意力放在"多造一个杀点"上。');
+  } else if(r.count['forkMiss'] && r.count['blockMiss']){
+    L.push('漏杀 '+r.count['forkMiss']+' 次、漏防 '+r.count['blockMiss']+' 次同时出现，'
+          +'说明你落子前只盯着自己的进攻线，没有同时扫一遍对手的。');
+  } else if(r.count['forkMiss']){
+    L.push('你的失误集中在"有杀不杀" —— 能算到自己的三缺一，但没意识到'
+          +'一手造两个杀点等于必胜。');
+  } else if(r.count['blockMiss']){
+    L.push('你的失误集中在"不堵" —— 对手的三缺一出现后你没有第一时间处理，'
+          +'这是最容易被对手抓住的一种错。');
+  }
+  if(r.mustBlock>0){
+    const pct = Math.round(r.blockRate*100);
+    L.push('对手出现可落成的杀点共 '+r.mustBlock+' 次，你去堵了 '+r.didBlock+' 次（'+pct+'%）。'
+          + (pct>=80 ? '这个比例很好，保持。'
+             : '每手落子前把对手所有杀点先数一遍，目标先提到 80%。'));
+  } else {
+    L.push('这一局对手始终没能摆出可以直接落成的杀点 —— "该堵时堵了吗"这一项没有样本。');
+  }
+  if(r.repCell!==null)
+    L.push('同一个点你放过了 '+r.repN+' 次：'+cellName(r.repCell)
+          + '。这不是"算不出来"，而是没有养成"落子前先数一数这手能造几条三缺一"的习惯 —— '
+          + '下次遇到类似的交叉点，先看「格点价值」表里那一行的数字再决定。');
+  L.push('你自己的进攻端：造出三缺一 '+r.madeThreat+' 次，其中双杀 '+r.madeFork+' 次。'
+        + (r.madeFork ? '双杀是空间四子棋的唯一必杀，能造出来就尽量造。'
+                      : '一次双杀都没造出来 —— 试着有意识地把两颗子摆到"同一格能同时补两条线"的位置上。'));
+  return L;
+}
+/* 一局里可复制的"练习单"，跟局面无关，只讲方法。 */
+const DRILLS = [
+  ['落子前先问三句', '① 我这一手能直接连成四吗？② 对手下一手能直接连成四吗（他有没有可以马上落成的杀点）？③ 我能一手造出两个杀点吗？这三句按顺序问，能挡掉本局绝大多数败着。'],
+  ['把"红圈"当红灯', '画面上红圈 = AI 还差一颗就成的三缺一。看到红圈，先判断它够不够得到（在柱子顶端就是够得到），够得到就必须处理：要么堵它，要么自己先连四。'],
+  ['找"一格补两线"的交叉点', '同一格里参与的三缺一越多，这一格越值钱。点开「格点价值」表，看"造出三缺一"那一列 —— 数字 ≥2 就是双杀，对手一手堵不完。'],
+  ['别只看自己那摞', '3D 里斜视会把不同柱子的球在屏幕上叠成一团，最容易漏掉对手的线。用「悬停聚焦」把注意力收在一根柱子上，一次只想一摞。'],
+];
 
 /* ---- 复盘控制 ---- */
 function rvGoto(k){
@@ -1558,6 +1874,311 @@ function rvNote(){
     h += '开局（还没落子）。拖上面的滑块，或用 <kbd>←</kbd> <kbd>→</kbd> 一手手看。';
   }
   el.innerHTML=h;
+}
+/* ============================================================================
+   教学面板 —— 复盘真正的价值在这里。
+   一句"该走这里"只给了答案；玩家要的是**推导**。所以每个面板各答一个问题：
+     为什么   ：落子前局面怎么样 → 你做了什么 → 该走的那手做了什么 → 差在哪
+     后续变化 ：你说该走这里，那之后三五手会怎样？（双方都用最优应手推演）
+     格点价值 ：眼前这 25 个落点，哪个值钱？值在哪个指标上？
+     全盘报告 ：这一局你缺的是哪一种判断动作？下次练什么？
+   ============================================================================ */
+const R_ = t=>'<span style="color:#993C1D">'+t+'</span>';
+const G_ = t=>'<span style="color:#0F6E56">'+t+'</span>';
+const M_ = t=>'<span class="mono">'+t+'</span>';
+const B_ = t=>'<b>'+t+'</b>';
+const nmOf = w=> (w===human ? '你' : 'AI');
+const toneOf = w=> (w===human ? '#1C5C93' : '#8E3618');
+
+function drillsHtml(){
+  let h='<div class="rv-sec">可以反复用的四条判断法</div>';
+  for(const [t,d] of DRILLS) h += '<div class="box tip"><b>'+t+'</b><br>'+d+'</div>';
+  return h;
+}
+/* 「读盘五步」—— 空间四子棋只有这五类判断，按优先级问一遍就够了。
+   这一手到底用了哪一步、漏了哪一步，就是"为什么错"的全部答案。 */
+function checklistHtml(s, k){
+  const nx = rv.steps[k+1];
+  const winNow  = s.cands.some(o=>o.win);
+  const foeNow  = s.foeLive.length>0;
+  const myFork  = s.bestFork>=2;
+  const foeFork = nx && !nx.isHuman ? nx.fork : -1;
+  const item=(hit,txt,note)=>{
+    const c = hit===true ? '#1D9E75' : hit===false ? '#C9C5BA' : '#C9C5BA';
+    const m = hit===true ? '✓' : '·';
+    return '<li style="list-style:none;margin:2px 0"><span style="color:'+c+';font-weight:700">'+m+'</span> '
+         + '<span style="color:'+(hit===true?'#2C2C2A':'#8A877F')+'">'+txt+'</span>'
+         + (note?' <span style="color:#8A877F">'+note+'</span>':'') + '</li>';
+  };
+  let h='<div class="rv-sec">读盘五步（本手相关的打 ✓）</div><ul style="padding-left:2px;margin:2px 0">';
+  h += item(winNow, '① 我这一手能不能直接连成四？',
+            winNow ? '能 —— 有必杀，其他都不用想了' : (s.win?'（你确实连成了）':''));
+  h += item(foeNow, '② 对手下一手能不能直接连成四？',
+            foeNow ? '能 —— 这是必防局面' + (s.blocked?'（你堵了）':R_('（你没堵）')) : '不能');
+  h += item(myFork, '③ 我能不能一手造出两个杀点（双杀）？',
+            myFork ? '能 —— '+(s.fork>=2?'你造出来了':'你放过了') : '');
+  h += item(foeFork>0, '④ 对手下一手能不能造出双杀？', foeFork>0 ? '能，AI 接着真的造了 '+foeFork+' 个杀点' : (nx&&!nx.isHuman?'不能':''));
+  h += item(null, '⑤ 都没有 → 挑"同时参与最多条未完成线"的交叉点', '<span style="color:#8A877F">看「格点价值」表</span>');
+  return h+'</ul>';
+}
+function paneWhy(){
+  const el=document.getElementById('paneWhy'); if(!el) return;
+  const k=rv.k-1;
+  if(k<0){
+    el.innerHTML = '<div class="box tip">还没落子。开局要做的不是"摆得好看"，'
+      + '而是<b>尽快把两颗子放到"同一格能同时补两条线"的位置上</b> —— '
+      + '那就是未来长出双杀的结构。拖上面的滑块到你想看的那一手，这一页会解释那一手的判断依据。</div>'
+      + drillsHtml();
+    return;
+  }
+  const s=rv.steps[k];
+  if(!s){ el.innerHTML='<div class="box tip">这一手还没有分析数据（手序变了？）。拖动上面的滑块换个位置。</div>'; return; }
+  const cls=classify(s);
+  const foeName = s.isHuman ? 'AI' : '你', meName = s.isHuman ? '你' : 'AI';
+  const bestCi = s.cands.filter(o=>o.c===s.bestMv)[0] || null;
+  const mineCi = s.cands.filter(o=>o.c===s.mv)[0] || null;
+  let h='';
+
+  /* ---- ① 落子前：双方威胁清单 ---- */
+  h += '<div class="rv-sec">第 '+(k+1)+' 手落子之前，局面是这样的</div><ul>';
+  h += '<li>'+foeName+'已有 <b>'+s.foeGaps+'</b> 个三缺一（差一颗就成四的位置），其中 '
+     + B_(s.foeLive.length+' 个现在就能落成')+'；'
+     + (s.foeLive.length? '它们是 '+s.foeLive.map(cellName).join('、') : '暂时一个都够不到') + '</li>';
+  h += '<li>'+meName+'自己已有 <b>'+s.myGaps+'</b> 个三缺一，其中 <b>'+s.mineLive+'</b> 个够得到</li>';
+  h += '<li>轮到 '+meName+'走，有 25 个合法落点，搜索给出的最佳手是 '+M_(cellName(s.bestMv))+'</li>';
+  h += '</ul>';
+  if(s.foeLive.length)
+    h += '<div class="box warn">这是<b>必防局面</b>：对手已经站在"再落一颗就成四"的位置上。'
+       + '此时的判断顺序是 —— 先看自己能不能更快连成四，不能的话就必须让对手的杀点归零。</div>';
+  else
+    h += '<div class="box info">对手暂时没有一个"马上能落成"的杀点，所以这一手可以争主动：'
+       + '去造自己的三缺一、尤其是双杀。</div>';
+
+  /* ---- ② 你这手 vs 该走那手 ---- */
+  if(mineCi && bestCi && s.bestMv!==s.mv){
+    h += '<div class="rv-sec">你走的那手 vs 该走的那手</div>';
+    h += '<table class="vt"><tr><th>看什么</th><th>你走了 '+cellName(s.mv)+'</th>'
+       + '<th>该走 '+cellName(s.bestMv)+'</th></tr>';
+    const row=(lab,a,b,hi)=>'<tr'+(hi?' class="'+hi+'"':'')+'><td class="l">'+lab+'</td><td>'+a+'</td><td>'+b+'</td></tr>';
+    h += row('能立刻连成四吗', mineCi.win?'是':'否', bestCi.win?'是':'否');
+    h += row('造出几个三缺一（杀点）', mineCi.fk+' 个', bestCi.fk+' 个', bestCi.fk>mineCi.fk?'top':'');
+    h += row('堵掉对手几个杀点', mineCi.fb+' 个', bestCi.fb+' 个', bestCi.fb>mineCi.fb?'top':'');
+    h += row('走完后对手还剩几个杀点', mineCi.fa+' 个', bestCi.fa+' 个', bestCi.fa<mineCi.fa?'top':'');
+    h += row('本手评分（越高越好）', scText(mineCi.sc, mineCi.win), scText(bestCi.sc, bestCi.win), 'top');
+    h += '</table>';
+    /* 把"差在哪"说成一句人能记住的话 */
+    const dFk = bestCi.fk-mineCi.fk, dFb = bestCi.fb-mineCi.fb;
+    if(bestCi.win) h+='<div class="box warn">该走的那手是<b>直接连成四</b>的必杀手，你走了别的，等于把已经到手的胜利放掉了。</div>';
+    else if(dFk>=2) h+='<div class="box warn">差距全在<b>造杀点</b>上：该走的那手一手造出 '+bestCi.fk
+      +' 个三缺一，对手一手堵不完 → 下一手你就必成四。这就是"双杀"，空间四子棋里最干脆的取胜方式。</div>';
+    else if(dFb>=1 && bestCi.fa<mineCi.fa) h+='<div class="box warn">差距全在<b>防守</b>上：该走的那手把对手的杀点从 '
+      +mineCi.fa+' 个压到 '+bestCi.fa+' 个，你的那一手一个都没拆，对手下一手就能成四。</div>';
+    else if(mineCi.fa>bestCi.fa) h+='<div class="box warn">你的那一手走完，对手还剩 '+mineCi.fa
+      +' 个杀点（该走的那手只剩 '+bestCi.fa+' 个）—— 对手下一步就能兑现。</div>';
+    else h+='<div class="box warn">两手都不致命，差距体现在别人看不到的地方：'
+      + '该走的那手让<b>后面的线路更长</b>（参与更多条还没完成的四连线），属于"形"上的投资。</div>';
+  } else if(mineCi){
+    h += '<div class="rv-sec">你的这一手</div>';
+    h += '<div class="box good">你的选择和搜索给出的最佳手一致。落子后你有 '+mineCi.fk+' 个三缺一，'
+       + '对手剩 '+mineCi.fa+' 个杀点。这是这一局面下最值钱的一手。</div>';
+  }
+
+  /* ---- ③ 这一手前后，对手那边的变化 ---- */
+  const nx = rv.steps[k+1];
+  if(nx){
+    h += '<div class="rv-sec">你这一手之后，对手做了什么</div>';
+    h += '<div class="box '+(nx.fork>=2?'warn':'info')+'">对手接着走了 '+M_(cellName(nx.mv))
+       + '，落子后对手自己造出 <b>'+nx.fork+'</b> 个够得到的杀点'
+       + (nx.fork>=2 ? ' —— 这就是双杀，你下一手无论堵哪边都会漏另一边。'
+                     : nx.fork===1 ? '（一个杀点，一手能堵住）。' : '（没有形成威胁）。')
+       + '</div>';
+  }
+  h += checklistHtml(s,k);
+  h += drillsHtml();
+  el.innerHTML=h;
+}
+
+/* ---- 后续变化（唯一需要现场搜索的面板，算完缓存） ---- */
+let pvPending=-1;
+function pvHtml(k,kb,ka){
+  const s=rv.steps[k];
+  if(!s) return '<div class="box tip">这一手没有分析数据。</div>';
+  const seqs = [[kb, '按该走的那手（'+cellName(s.bestMv)+'）打下去'], [ka, '按你实际走的那手（'+cellName(s.mv)+'）']];
+  const line=(key)=>{
+    const seq=PV_CACHE.get(key)||[];
+    let h='<div class="pv">';
+    if(!seq.length) return h+'<div style="color:#8A877F">推演不出来（局面异常）</div></div>';
+    seq.forEach((n,i)=>{
+      const sh = (n.who===human) ? n.sc : -n.sc;      // 一律换成"你的形势分"
+      const label = n.win
+        ? '<b style="color:'+(n.who===human?'#0F6E56':'#993C1D')+'">连成四子 '+(n.who===human?'（你赢）':'（AI 赢）')+'</b>'
+        : scText(sh);
+      let tag='';
+      if(i===1){
+        const act = history[k+1];
+        if(act!==undefined) tag = (act===n.mv) ? '　<span style="color:#0F6E56">✓ 与实际对局一致</span>'
+                                               : '　<span style="color:#8A877F">（实战里 AI 走的是 '+cellName(act)+'）</span>';
+      }
+      h += '<div class="pv-row"><span class="pv-n">'+(i+1)+'</span>'
+         + '<span class="pv-w" style="color:'+toneOf(n.who)+'">'+nmOf(n.who)+'</span>'
+         + '<span class="pv-m">'+cellName(n.mv)+'</span>'
+         + '<span class="pv-s">'+label+'</span></div>'
+         + (tag?'<div style="margin:-2px 0 3px 33px;font-size:11.5px">'+tag+'</div>':'');
+    });
+    return h+'</div>';
+  };
+  let h='<div class="box tip">双方都走"搜索认为最好"的那一手，推演 4 步。'
+       + '<b>分数统一换算成你的形势分</b>：正数＝对你有利，负数＝对你不利。'
+       + '看第一行到第二行的落差，就知道这一手的代价是什么。</div>';
+  h += '<div class="rv-sec">'+seqs[0][1]+'</div>'+line(seqs[0][0]);
+  if(s.bestMv!==s.mv){
+    h += '<div class="rv-sec">'+seqs[1][1]+'</div>'+line(seqs[1][0]);
+    h += '<div class="box tip">对比两组的第一行：同一局面下，两种走法各自的形势分差多少，'
+       + '这个差值就是"败着"这两个字的实际含义。</div>';
+  }
+  /* 全局面倾向：把"这是必输/必胜"说穿 */
+  const first=(PV_CACHE.get(kb)||[])[0];
+  if(first && first.sc<=-1e5) h += '<div class="box warn">注意：推演显示对手在你选的那条线上有必胜手段，剩下的只是执行。</div>';
+  return h;
+}
+function panePv(){
+  const el=document.getElementById('panePv'); if(!el) return;
+  const k=rv.k-1;
+  if(k<0){ el.innerHTML='<div class="box tip">开局没有"后续变化"。拖上面的滑块到你想看的那一手。</div>'; return; }
+  const kb='k'+rv.k+'b', ka='k'+rv.k+'a';
+  const s=rv.steps[k];
+  if(!s){ el.innerHTML='<div class="box tip">这一手没有分析数据。</div>'; return; }
+  if(PV_CACHE.has(kb) && PV_CACHE.has(ka)){ el.innerHTML=pvHtml(k,kb,ka); return; }
+  el.innerHTML='<div class="box info">正在推演后续变化…（当场搜索每一手的最优应手，约一秒）</div>';
+  if(pvPending===rv.k) return;
+  pvPending=rv.k;
+  setTimeout(()=>{
+    try{
+      rebuildBoard(k);                                   // 回到"这一手之前"
+      PV_CACHE.set(kb, pvLine(s.bestMv, s.who, 4));
+      PV_CACHE.set(ka, pvLine(s.mv, s.who, 4));
+    }catch(err){ console.error('推演失败', err); }
+    finally { rebuildBoard(rv.k); }
+    const same = (pvPending===rv.k);
+    pvPending=-1;
+    if(same && rv.on && rv.tab==='pv') panePv();
+  }, 20);
+}
+
+/* ---- 格点价值表：把"哪一手价值高"拆成看得见的指标 ---- */
+function paneVal(){
+  const el=document.getElementById('paneVal'); if(!el) return;
+  const k=rv.k-1;
+  if(k<0){
+    el.innerHTML='<div class="box tip">这一页会在你选中某一手后，列出当时 25 个落点的价值分解 —— '
+      + '这是"怎么判断哪一手值钱"最直接的教材。<br><br>'
+      + '三个指标的含义：<br>'
+      + '<b>造出三缺一</b>：走这里之后，你有几条线变成"差一颗就成四"。≥2 就是双杀，对手一手堵不完。<br>'
+      + '<b>堵掉对手杀点</b>：走这里把对手几个"马上能落成"的威胁直接消灭。<br>'
+      + '<b>走完后对手剩几个杀点</b>：这个数越接近 0 越安全；大于 0 意味着对手下一手就能成四。</div>';
+    return;
+  }
+  const s=rv.steps[k];
+  if(!s){ el.innerHTML='<div class="box tip">这一手没有分析数据。</div>'; return; }
+  const sorted=s.cands.slice().sort((a,b)=> b.sc-a.sc);
+  let rows=sorted.slice(0,6);
+  if(!rows.some(o=>o.c===s.mv)) rows=rows.concat([sorted.filter(o=>o.c===s.mv)[0]]);
+  let h='<div class="box tip">第 '+(k+1)+' 手之前的局面，25 个落点里最值钱的 6 个。'
+       + '<b>橙边＝你实际走的</b>，<b>绿边＝搜索认为最好的</b>。判断价值高低的读法是'
+       + '"先看能不能立刻赢 / 再看到底堵掉几个威胁 / 再看自己能造几个威胁"。</div>';
+  h+='<table class="vt"><tr><th>落点</th><th>立刻<br>连四</th><th>造出<br>三缺一</th><th>堵掉对手<br>杀点</th>'
+    +'<th>走完对手<br>剩杀点</th><th>本手<br>评分</th></tr>';
+  const maxFk = Math.max.apply(null, sorted.map(o=>o.fk));
+  for(const o of rows){
+    const c = o.c===s.mv ? 'mine' : (o.c===s.bestMv ? 'top' : '');
+    const fk = (o.fk>=2) ? '<b style="color:#0F6E56">'+o.fk+'</b>' : (o.fk||0);
+    const fkTxt = (o.fk===maxFk && maxFk>=2) ? fk+' <span style="color:#0F6E56">双杀</span>' : fk;
+    h+='<tr class="'+c+'"><td class="l">'+cellName(o.c)
+      + (o.c===s.mv?' <span style="color:#DE6B3D">←你</span>':'')
+      + (o.c===s.bestMv?' <span style="color:#0F6E56">←最佳</span>':'')+'</td>'
+      +'<td>'+(o.win?'<b style="color:#0F6E56">是</b>':'·')+'</td>'
+      +'<td>'+fkTxt+'</td><td>'+(o.fb||0)+'</td>'
+      +'<td>'+(o.fa>0?'<span style="color:#993C1D">'+o.fa+'</span>':'0')+'</td>'
+      +'<td>'+scText(o.sc, o.win)+'</td></tr>';
+  }
+  h+='</table>';
+  h+='<div class="box info">这张表就是"该下哪"的答案来源：'
+    + '<b>先看「立刻连四」列有没有"是"</b>（有就必须走）；'
+    + '没有的话看 <b>「造出三缺一」≥2</b>（双杀，直接赢）；'
+    + '再看 <b>「走完对手剩杀点」是不是 0</b>（不是 0 且对手下一手能成四，就必须堵）。'
+    + '三关都不触发，才是拼"形"的中盘功。</div>';
+  el.innerHTML=h;
+}
+
+/* ---- 全盘报告 ---- */
+function paneRep(){
+  const el=document.getElementById('paneRep'); if(!el) return;
+  const r = rv.rep || (rv.rep = coachReport());
+  if(!r){ el.innerHTML='<div class="box tip">还没有你的落子。</div>'; return; }
+  let h='<div class="rv-sec">这一局的体检</div><ul>';
+  h+='<li>你下了 <b>'+r.n+'</b> 手；分类：正常 '+(r.count['ok']||0)
+    +'、漏杀 '+r.forkMiss+'、漏防 '+(r.count['blockMiss']||0)
+    +'、送胜负 '+(r.count['giveWin']||0)+'、一般败着 '+(r.count['blunder']||0)+'</li>';
+  h+='<li>对手出现"马上能落成"的杀点共 <b>'+r.mustBlock+'</b> 次，你去堵了 <b>'+r.didBlock+'</b> 次'
+    +(r.mustBlock ? '（'+Math.round(r.blockRate*100)+'%）' : '（本局没有样本）')+'</li>';
+  h+='<li>你自己的进攻：造出三缺一 <b>'+r.madeThreat+'</b> 次，其中双杀 <b>'+r.madeFork+'</b> 次</li>';
+  h+='</ul>';
+  h+='<div class="rv-sec">教练评语</div>';
+  reportText(r).forEach((line,i)=>{
+    /* 第一行只是体检数字，别涂成"警报色"，否则后面真正的评语就不显眼了 */
+    const cls = (i===0) ? 'info' : (/漏杀|漏防|不堵|送胜负|放过/.test(line) ? 'warn' : 'info');
+    h+='<div class="box '+cls+'">'+line+'</div>';
+  });
+  h+='<div class="rv-sec">关键手（按掉分排序，点一下跳过去）</div>';
+  if(!rv.tops.length) h+='<div class="box good">没有明显的败着。</div>';
+  else{
+    h+='<ul>';
+    for(const k of rv.tops){
+      const s=rv.steps[k];
+      h+='<li><a href="#" data-k="'+(k+1)+'" style="color:#4A92DF">第 '+(k+1)+' 手 '+cellName(s.mv)+'</a>'
+        +' —— 差 '+Math.round(s.loss)+' 分，该走 '+cellName(s.bestMv)+'（'+MISS[classify(s)].t+'）</li>';
+    }
+    h+='</ul>';
+  }
+  h+='<div class="rv-sec">下次练什么</div>' + drillsHtml();
+  h+='<div class="rv-ctl2"><button id="repCopy" class="rv-btn">复制报告</button></div>';
+  el.innerHTML=h;
+  el.querySelectorAll('a[data-k]').forEach(a=>{
+    a.onclick=e=>{ e.preventDefault(); rvGoto(+a.dataset.k); };
+  });
+  const cp=document.getElementById('repCopy');
+  if(cp) cp.onclick=()=>copyText('【空间四子棋 · 复盘报告】\n'+reportText(r).map(t=>'· '+t.replace(/<[^>]+>/g,'')).join('\n')
+    +'\n\n关键手：'+(rv.tops.map(k=>'第'+(k+1)+'手 '+cellName(rv.steps[k].mv)+'（差'+Math.round(rv.steps[k].loss)
+    +'分，该走'+cellName(rv.steps[k].bestMv)+'）').join('；')||'无'), cp);
+}
+
+function copyText(t, btn){
+  const done=()=>{ const o=btn.textContent; btn.textContent='已复制'; setTimeout(()=>{ btn.textContent=o; },1200); };
+  const fallback=()=>{
+    const ta=document.createElement('textarea'); ta.value=t;
+    ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta);
+    ta.select(); try{ document.execCommand('copy'); done(); }catch(e){} document.body.removeChild(ta);
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done).catch(fallback);
+  else fallback();
+}
+/* 切换标签页：只渲染当前那一页（推演很贵，不能一进复盘就算） */
+function rvShowTab(t){
+  rv.tab=t;
+  const tabs=document.getElementById('rvTabs');
+  if(tabs) [...tabs.children].forEach(b=>b.classList.toggle('on', b.dataset.t===t));
+  for(const [id,name] of [['paneWhy','why'],['panePv','pv'],['paneVal','val'],['paneRep','rep'],['paneRec','rec']]){
+    const el=document.getElementById(id); if(el) el.hidden = (name!==t);
+  }
+  rvFillPane();
+}
+function rvFillPane(){
+  if(!rv.on) return;
+  if(rv.tab==='why') paneWhy();
+  else if(rv.tab==='val') paneVal();
+  else if(rv.tab==='rep') paneRep();
+  else if(rv.tab==='rec') fillRecPane();
+  else if(rv.tab==='pv') panePv();
 }
 function rvCurveDraw(){
   const cv=document.getElementById('rvCurve'); if(!cv) return;
@@ -1617,6 +2238,7 @@ function rvPaint(){
   if(st) st.textContent = '第 '+rv.k+' / '+n+' 手';
   rvNote();
   rvCurveDraw();
+  rvFillPane();
 }
 function enterReview(){
   if(rv.on) return;
@@ -1624,18 +2246,28 @@ function enterReview(){
   rv.savedOver=over; rv.savedWin=winLine; rv.savedSide=winSide;
   busy=false; thinking=false; genId++;          // 掐掉可能还在排队的 AI 回调
   rv.on=true;
+  hideEndBar();
   document.getElementById('rvBar').hidden=false;
+  /* rv.k 必须先对齐到这一局的手数：它还留着上一局的位置，
+     而 rv.steps 会在 40ms 后换成新的 —— 中间这一瞬间 if 面板按旧 k 取
+     新手序，就会越界取到 undefined（曾经真的炸过一次）。 */
+  rv.k = history.length;
   document.getElementById('rvRange').max = history.length;
+  document.getElementById('rvRange').value = rv.k;
   setStatus('分析中…（'+history.length+' 手）','think');
   /* 让浏览器先把"分析中"画出来，再跑这一两秒的同步计算 */
   setTimeout(()=>{
     /* 分析要动 board（重放 + 试落子），万一抛异常必须把棋盘还原，否则界面会卡在半个局面 */
+    PV_CACHE.clear();                     // 局面变了，旧的推演缓存必须作废
     try{ analyzeGame(); } catch(err){ rebuildBoard(); console.error('复盘分析失败', err); }
+    rv.rep=null;
     const info=document.getElementById('rvInfo');
     if(info) info.textContent = history.length+' 手 · 用时 '+(rv.ms/1000).toFixed(1)+'s'
       + ' · 败着 '+rv.tops.length+' 处 · 漏杀 '+rv.forkMiss.length+' 次 · 被双杀 '+rv.forkHit.length+' 次';
+    rv.tab = rv.tab || 'why';
+    rvShowTab(rv.tab);
     rvGoto(history.length);
-    setStatus('复盘：黄圈＝这一手，红圈＝败着，绿圈＝该走的地方','think');
+    setStatus('复盘：切下面的标签看「为什么 / 后续变化 / 格点价值 / 全盘报告」','think');
     /* 复盘条在棋盘正下方，但用户可能已经把页面滚到别处了 —— 主动带他一眼 */
     const bar=document.getElementById('rvBar');
     if(bar && bar.scrollIntoView) bar.scrollIntoView({behavior:'smooth', block:'nearest'});
@@ -1645,10 +2277,12 @@ function exitReview(){
   if(!rv.on) return;
   rv.on=false;
   document.getElementById('rvBar').hidden=true;
+  PV_CACHE.clear();
   over=rv.savedOver; winLine=rv.savedWin; winSide=rv.savedSide;
   rebuildBoard();
   turn = (history.length%2===0) ? (humanFirst?human:ai) : (humanFirst?ai:human);
   turnStatus();
+  if(over) showEndBar(); else hideEndBar();
   if(!over && turn===ai) setTimeout(aiTurn, 220);   // 进复盘时掐掉的 AI 回调，退出后补上
 }
 /* 棋盘上的复盘标记：黄圈（这一手）/ 红圈（败着）/ 绿虚线球（本该走哪） */
@@ -1680,6 +2314,217 @@ function drawReviewMarks(){
   }
 }
 
+/* ============================================================================
+   棋谱 —— 让"练"这个动作可以跨局、跨设备累积。
+
+   格式设计成**自描述的一行**：人来读得懂，程序也只认这一行。
+     SF1;v=1;d=2026-09-30T14:19;lv=2;f=1;r=L;m=3-3-1,3-2-1,…
+   v=格式版本 d=时间 lv=难度 f=谁先手(1=人) r=结果(W人胜/L电脑胜/D和/U未完)
+   m=手序，坐标 x-y-z 全部 1-based（x 列 / y 行 / z 层，跟界面上 "L3 x3 y2" 一致）。
+   前面可以带 # 注释行，导入时忽略 —— 这样下载下来的文件人也能直接看。
+   ============================================================================ */
+const ARCH_KEY = 'sf_records_v1';
+function stamp(){
+  const d=new Date(), p=n=>String(n).padStart(2,'0');
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes());
+}
+function resOf(){
+  if(!over) return 'U';
+  if(over.winner===0) return 'D';
+  return over.winner===human ? 'W' : 'L';
+}
+const RES_TEXT = {W:'你赢了', L:'AI 赢了', D:'和棋', U:'未完'};
+const LV_TEXT = {1:'简单', 2:'普通', 3:'困难'};
+function buildRecord(){
+  const m = history.map(i=> (XO(i)+1)+'-'+(YO(i)+1)+'-'+(ZO(i)+1)).join(',');
+  return 'SF1;v=1;d='+stamp()+';lv='+level+';f='+(humanFirst?1:0)+';r='+resOf()+';m='+m;
+}
+function buildRecordFile(){
+  return ['# 空间四子棋棋谱 SF1 · 坐标 x-y-z 全部 1-based（x 列 / y 行 / z 层）',
+          '# '+stamp().replace('T',' ')+' · 难度 '+LV_TEXT[level]+' · '+(humanFirst?'我先':'AI 先')
+            +' · 结果 '+RES_TEXT[resOf()]+' · '+history.length+' 手',
+          '# 导入：打开游戏 → 复盘 → 「棋谱」页 → 粘贴到下面的框里 → 导入并分析',
+          buildRecord()].join('\n');
+}
+/* 合法性校验：叠放规则下，每一手必须是"自己那一柱最底下的空格"。
+   不校验的话，一份抄错的棋谱会安静地算出一堆无意义的结论。 */
+function validateMoves(ms){
+  const b=new Uint8Array(SZ);
+  for(let k=0;k<ms.length;k++){
+    const i=ms[k], x=XO(i), y=YO(i), z=ZO(i);
+    if(b[i]) return {ok:false, k, why:'这一格已经有子了'};
+    let low=-1;
+    for(let zz=0; zz<N; zz++){ const j=idx(x,y,zz); if(!b[j]){ low=zz; break; } }
+    if(low<0) return {ok:false, k, why:'这一柱（x'+(x+1)+' y'+(y+1)+'）已经堆满 5 颗'};
+    if(low!==z) return {ok:false, k, why:'第 '+(z+1)+' 层下面还是空的 —— 规则要求下面一层有子'};
+    b[i]=1;
+  }
+  return {ok:true};
+}
+function parseOne(line, errs){
+  const f={};
+  for(const kv of line.replace(/^SF1;?/,'').split(';')){
+    const p=kv.indexOf('='); if(p<0) continue;
+    f[kv.slice(0,p).trim()] = kv.slice(p+1).trim();
+  }
+  if(!f.m){ errs.push('这条棋谱缺 m=（手序）字段'); return null; }
+  const ms=[];
+  for(const t of f.m.split(/[,，\s]+/)){
+    if(!t) continue;
+    const g=t.split(/[-_x×X]/).filter(s=>s!=='');
+    if(g.length!==3){ errs.push('看不懂这一手：'+t); return null; }
+    const x=+g[0], y=+g[1], z=+g[2];
+    if(!(x>=1&&x<=5&&y>=1&&y<=5&&z>=1&&z<=5)){ errs.push('坐标超出 5×5×5 范围：'+t); return null; }
+    ms.push(idx(x-1,y-1,z-1));
+  }
+  if(!ms.length){ errs.push('手序是空的'); return null; }
+  const v=validateMoves(ms);
+  if(!v.ok){
+    const i=ms[v.k];
+    errs.push('第 '+(v.k+1)+' 手 '+cellName(i)+' 不合法：'+v.why+'（后面还有 '
+      +Math.max(0, ms.length-v.k-1)+' 手没有分析）');
+    return null;
+  }
+  const ff = (f.f===undefined) ? 1 : (+f.f ? 1 : 0);
+  return {first:!!ff, lv:(+f.lv||2), moves:ms, date:f.d||'', res:f.r||'U', raw:line};
+}
+function parseRecords(text){
+  const recs=[], errs=[];
+  if(!text || !text.trim()){ errs.push('内容是空的'); return {recs, errs}; }
+  for(const ln of text.split(/\r?\n/)){
+    const s=ln.trim();
+    if(/^SF1[;\s]/.test(s)) { const r=parseOne(s, errs); if(r) recs.push(r); }
+  }
+  if(!recs.length){
+    /* 没有 SF1 头时退一步：把整段里所有 "x-y-z" 三元组按顺序当成手序。
+       限定 1..5 且必须三段齐全，避免把日期之类的数字串卷进来。 */
+    const ms=[], re=/(?:^|[^\d])([1-5])\s*[-_x×X]\s*([1-5])\s*[-_x×X]\s*([1-5])(?=[^\d]|$)/g;
+    let m;
+    while((m=re.exec(text))!==null) ms.push(idx(+m[1]-1, +m[2]-1, +m[3]-1));
+    if(ms.length>=3){
+      const v=validateMoves(ms);
+      if(v.ok){ recs.push({first:true, lv:2, moves:ms, date:'', res:'U', raw:'(无头棋谱，按坐标序列解析)'}); errs.push('没有找到 SF1 头，已按"坐标三元组序列"解析出 '+ms.length+' 手'); }
+      else errs.push('没有找到 SF1 头；按坐标序列解析后发现不合法的手');
+    } else if(!errs.length) errs.push('没有找到棋谱 —— 需要一行以 SF1; 开头的记录，或者至少 3 组 x-y-z 坐标');
+  }
+  return {recs, errs};
+}
+/* ---- 存档 ---- */
+function loadArch(){ try{ return JSON.parse(localStorage.getItem(ARCH_KEY)||'[]'); }catch(e){ return []; } }
+function saveArch(a){ try{ localStorage.setItem(ARCH_KEY, JSON.stringify(a.slice(0,60))); }catch(e){} }
+function archiveGame(){
+  if(!history.length) return;
+  const rec=buildRecord();
+  const a=loadArch();
+  if(a.some(x=>x.rec===rec)) return;
+  a.unshift({ts:Date.now(), rec, moves:history.slice(), lv:level, first:humanFirst,
+             res:over?over.winner:(0), n:history.length});
+  saveArch(a);
+  if(rv.on && rv.tab==='rec') fillRecPane();
+}
+function delArch(i){
+  const a=loadArch(); a.splice(i,1); saveArch(a); fillRecPane();
+}
+function download(name, text){
+  try{
+    const blob=new Blob([text], {type:'text/plain;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download=name;
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 600);
+  }catch(e){ setStatus('下载失败：'+e.message); }
+}
+function fmtTs(ts){
+  const d=new Date(ts), p=n=>String(n).padStart(2,'0');
+  return (d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+}
+function fillRecPane(){
+  const box=document.getElementById('recBox'); if(!box) return;
+  box.value = history.length ? buildRecordFile() : '（还没落子）';
+  const meta=document.getElementById('recMeta');
+  if(meta) meta.textContent = history.length
+    ? '结果 '+RES_TEXT[resOf()]+' · '+history.length+' 手 · 难度 '+LV_TEXT[level]+' · 结束时自动存到本机'
+    : '';
+  const list=document.getElementById('recList'); if(!list) return;
+  const a=loadArch();
+  if(!a.length){ list.innerHTML='<span style="color:#8A877F">暂无存档 —— 下完一局会自动出现在这里</span>'; return; }
+  list.innerHTML = a.map((g,i)=>{
+    const r = g.res===0 ? '和' : (g.res===human ? '你胜' : 'AI 胜');
+    const col = g.res===human ? '#0F6E56' : (g.res===0 ? '#8A877F' : '#993C1D');
+    return '<div class="arc"><span class="d">'+fmtTs(g.ts)+'</span>'
+      +'<span class="r" style="color:'+col+'">'+r+'</span>'
+      +'<span class="d">'+g.n+' 手</span>'
+      +'<button data-act="open" data-i="'+i+'">分析</button>'
+      +'<button data-act="copy" data-i="'+i+'">复制</button>'
+      +'<button data-act="del" data-i="'+i+'">删除</button></div>';
+  }).join('');
+  list.querySelectorAll('button[data-act]').forEach(b=>{
+    b.onclick=()=>{
+      const i=+b.dataset.i, g=loadArch()[i];
+      if(!g) return;
+      if(b.dataset.act==='del'){ delArch(i); return; }
+      if(b.dataset.act==='copy'){ copyText(g.rec, b); return; }
+      applyRecord({first:!!g.first, lv:g.lv, moves:g.moves.slice(), res:g.res, raw:g.rec});
+      setStatus('已载入存档，开始分析…','think');
+    };
+  });
+}
+/* ---- 载入一份棋谱并直接进复盘 ---- */
+function setSeg(id, val){
+  const el=document.getElementById(id); if(!el) return;
+  [...el.children].forEach(b=>b.classList.toggle('on', b.dataset.v===String(val)));
+}
+function applyRecord(rec){
+  if(rv.on){ rv.on=false; document.getElementById('rvBar').hidden=true; }
+  genId++; busy=false; thinking=false;
+  board.fill(0); touch.fill(0); resetLines();
+  humanFirst = !!rec.first;
+  human = humanFirst ? P1 : P2; ai = 3-human;
+  history = rec.moves.slice();
+  level = rec.lv || level;
+  const first = humanFirst ? human : ai;
+  turn = (history.length%2===0) ? first : (3-first);
+  rebuildBoard(history.length);
+  over=null; winLine=null; winSide=0; hintCell=-1; hover=-1; hoverStone=-1; focusCol=-1;
+  const last=history[history.length-1];
+  if(last!==undefined){
+    const w=findWin(last, whoAt(history.length-1));
+    if(w){ over={winner:whoAt(history.length-1)}; winLine=w; winSide=whoAt(history.length-1); }
+  }
+  setSeg('segLv', level); setSeg('segFirst', humanFirst?1:0);
+  hideEndBar();
+  enterReview();
+}
+function importFromBox(){
+  const box=document.getElementById('impBox');
+  const r=parseRecords(box ? box.value : '');
+  if(r.errs.length) console.warn('棋谱解析：', r.errs);
+  if(!r.recs.length){
+    setStatus('导入失败：'+r.errs.join('；'), 'lose');
+    return;
+  }
+  if(r.recs.length>1){
+    /* 一次粘了好几局 —— 塞进存档列表让用户挑，比"默认取第一条"更不容易出错 */
+    const a=loadArch();
+    for(const q of r.recs) a.unshift({ts:Date.now(), rec:q.raw, moves:q.moves.slice(), lv:q.lv, first:q.first, res:(q.res==='W'?1:q.res==='L'?2:0), n:q.moves.length});
+    saveArch(a);
+    fillRecPane();
+    setStatus('这份文本里有 '+r.recs.length+' 局，已全部列到下面的存档里，点「分析」选一局','think');
+    return;
+  }
+  applyRecord(r.recs[0]);
+  setStatus('已导入 '+r.recs[0].moves.length+' 手，开始分析…','think');
+}
+/* ---- 终局结束条 ---- */
+function showEndBar(){
+  const bar=document.getElementById('endBar'); if(!bar) return;
+  const n=loadArch().length;
+  document.getElementById('endText').innerHTML =
+    '<b>'+RES_TEXT[resOf()]+'</b> · '+history.length+' 手 · 棋谱已自动存档（本机共 '+n+' 局）';
+  bar.hidden=false;
+}
+function hideEndBar(){ const b=document.getElementById('endBar'); if(b) b.hidden=true; }
+
 /* ================= 面板绑定 ================= */
 function bindSeg(idName, cb){
   const el=document.getElementById(idName);
@@ -1700,6 +2545,40 @@ document.getElementById('btnHint').onclick=hint;
 document.getElementById('btnNew').onclick=reset;
 document.getElementById('btnReview').onclick=enterReview;
 document.getElementById('rvExit').onclick=exitReview;
+/* 教学标签页 */
+document.getElementById('rvTabs').onclick=e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  rvShowTab(b.dataset.t);
+};
+/* 棋谱：导出 */
+document.getElementById('recCopy').onclick=e=>copyText(document.getElementById('recBox').value, e.target);
+document.getElementById('recDl').onclick=()=>download('space-four-'+stamp().replace(/[:T]/g,'')+'.sfg', document.getElementById('recBox').value);
+document.getElementById('recDlAll').onclick=()=>{
+  const a=loadArch();
+  if(!a.length){ setStatus('还没有存档'); return; }
+  download('space-four-存档'+a.length+'局-'+stamp().replace(/[:T]/g,'')+'.sfg',
+    a.map(g=>buildRecordFile2(g)).join('\n\n'));
+};
+function buildRecordFile2(g){
+  const ms=g.moves.map(i=>(XO(i)+1)+'-'+(YO(i)+1)+'-'+(ZO(i)+1)).join(',');
+  return '# '+fmtTs(g.ts)+' · 难度 '+LV_TEXT[g.lv]+' · '+(g.first?'人先手':'AI 先手')
+       + ' · '+g.n+' 手\n'+g.rec;
+}
+/* 棋谱：导入 */
+document.getElementById('impPick').onclick=()=>document.getElementById('impFile').click();
+document.getElementById('impFile').onchange=e=>{
+  const f=e.target.files && e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{ document.getElementById('impBox').value = String(rd.result||''); importFromBox(); };
+  rd.onerror=()=>setStatus('文件读不出来','lose');
+  rd.readAsText(f, 'utf-8');
+  e.target.value='';
+};
+document.getElementById('impGo').onclick=importFromBox;
+/* 终局条 */
+document.getElementById('endRv').onclick=enterReview;
+document.getElementById('endCopy').onclick=e=>copyText(buildRecordFile(), e.target);
+document.getElementById('endDl').onclick=()=>download('space-four-'+stamp().replace(/[:T]/g,'')+'.sfg', buildRecordFile());
 document.getElementById('rvFirst').onclick=()=>rvGoto(0);
 document.getElementById('rvLast').onclick=()=>rvGoto(history.length);
 document.getElementById('rvPrev').onclick=()=>rvGoto(rv.k-1);
