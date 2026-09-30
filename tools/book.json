@@ -1,0 +1,7777 @@
+{
+ "meta": {
+  "engine": "sf-book v1",
+  "date": "2026-09-30 07:54",
+  "budgetMs": 35000,
+  "maxDepth": 13,
+  "moves": 45,
+  "totalMs": 983656,
+  "note": "每手 25 个落点全窗口搜索；分数＝从我方视角的静态分。|分| ≥ 999500 表示搜索树里出现连四（真杀棋）。",
+  "tailMs": 8000
+ },
+ "board": {
+  "N": 5,
+  "lines": 302,
+  "vertical": 50,
+  "inPlane": 140,
+  "rising": 162
+ },
+ "classes": [
+  {
+   "key": "2-3",
+   "cells": [
+    7,
+    11,
+    13,
+    17
+   ],
+   "lines": 8,
+   "rising": 2,
+   "inPlane": 6,
+   "vertical": 1,
+   "searchVal": 61.6
+  },
+  {
+   "key": "2-2",
+   "cells": [
+    6,
+    8,
+    16,
+    18
+   ],
+   "lines": 10,
+   "rising": 4,
+   "inPlane": 6,
+   "vertical": 1,
+   "searchVal": 49.6
+  },
+  {
+   "key": "1-2",
+   "cells": [
+    1,
+    3,
+    5,
+    9,
+    15,
+    19,
+    21,
+    23
+   ],
+   "lines": 8,
+   "rising": 4,
+   "inPlane": 4,
+   "vertical": 1,
+   "searchVal": 40.9
+  },
+  {
+   "key": "3-3",
+   "cells": [
+    12
+   ],
+   "lines": 9,
+   "rising": 1,
+   "inPlane": 8,
+   "vertical": 1,
+   "searchVal": 37.4
+  },
+  {
+   "key": "1-1",
+   "cells": [
+    0,
+    4,
+    20,
+    24
+   ],
+   "lines": 7,
+   "rising": 4,
+   "inPlane": 3,
+   "vertical": 1,
+   "searchVal": 15.8
+  },
+  {
+   "key": "1-3",
+   "cells": [
+    2,
+    10,
+    14,
+    22
+   ],
+   "lines": 5,
+   "rising": 2,
+   "inPlane": 3,
+   "vertical": 1,
+   "searchVal": 15.2
+  }
+ ],
+ "stats": {
+  "inCenter3": 24,
+  "layerHist": [
+   0,
+   18,
+   13,
+   8,
+   4,
+   2
+  ],
+  "typeHist": {
+   "build": 15,
+   "stack": 10,
+   "fork": 1,
+   "threat": 10,
+   "block": 7,
+   "spread": 1,
+   "four": 1
+  },
+  "threatTurns": 8,
+  "forkTurns": 1
+ },
+ "result": {
+  "winner": 1,
+  "mv": 45
+ },
+ "moves": [
+  {
+   "k": 1,
+   "who": 1,
+   "cell": 6,
+   "x": 1,
+   "y": 1,
+   "z": 0,
+   "sc": -0.37200000000000033,
+   "depth": 10,
+   "ms": 35012,
+   "nodes": 25387008,
+   "stable": true,
+   "gap2": 1.5520000000000027,
+   "ties": 8,
+   "second": 12,
+   "secondSc": -1.924000000000003,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 0,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 0,
+    "to3": 0,
+    "linesThrough": 10,
+    "rising": 4,
+    "inPlane": 6,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "build",
+   "evalBefore": 0,
+   "cands": [
+    {
+     "cell": 6,
+     "sc": -0.37200000000000033,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 8,
+     "sc": -0.37200000000000033,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 16,
+     "sc": -0.37200000000000033,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 18,
+     "sc": -0.37200000000000033,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 7,
+     "sc": -0.37200000000000033,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 11,
+     "sc": -0.37200000000000033,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 12,
+     "sc": 9.540000000000001
+    },
+    {
+     "d": 2,
+     "cell": 6,
+     "sc": -0.8560000000000003
+    },
+    {
+     "d": 3,
+     "cell": 6,
+     "sc": 25.904000000000003
+    },
+    {
+     "d": 4,
+     "cell": 12,
+     "sc": -3.0840000000000005
+    },
+    {
+     "d": 5,
+     "cell": 7,
+     "sc": 36.07200000000001
+    },
+    {
+     "d": 6,
+     "cell": 12,
+     "sc": -3.168000000000001
+    },
+    {
+     "d": 7,
+     "cell": 12,
+     "sc": 46.507999999999996
+    },
+    {
+     "d": 8,
+     "cell": 6,
+     "sc": -1.0120000000000022
+    },
+    {
+     "d": 9,
+     "cell": 6,
+     "sc": 62.468
+    },
+    {
+     "d": 10,
+     "cell": 6,
+     "sc": -0.37200000000000033
+    }
+   ]
+  },
+  {
+   "k": 2,
+   "who": 2,
+   "cell": 12,
+   "x": 2,
+   "y": 2,
+   "z": 0,
+   "sc": 0.6960000000000086,
+   "depth": 11,
+   "ms": 21733,
+   "nodes": 44119848,
+   "stable": true,
+   "gap2": 999991.696,
+   "ties": 1,
+   "second": 0,
+   "secondSc": -999991,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 2,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 0,
+    "to3": 0,
+    "linesThrough": 9,
+    "rising": 1,
+    "inPlane": 8,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "build",
+   "evalBefore": -8.692,
+   "cands": [
+    {
+     "cell": 12,
+     "sc": 0.6960000000000086,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 9,
+     "height": 1
+    },
+    {
+     "cell": 0,
+     "sc": -999991,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 24,
+     "sc": -999991,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 9,
+     "sc": -999991,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 21,
+     "sc": -999991,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 19,
+     "sc": -999991,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 31,
+     "sc": 0.8560000000000003
+    },
+    {
+     "d": 2,
+     "cell": 18,
+     "sc": -25.904000000000003
+    },
+    {
+     "d": 3,
+     "cell": 31,
+     "sc": 2.4520000000000026
+    },
+    {
+     "d": 4,
+     "cell": 12,
+     "sc": -28.832000000000004
+    },
+    {
+     "d": 5,
+     "cell": 18,
+     "sc": -13.692000000000005
+    },
+    {
+     "d": 6,
+     "cell": 12,
+     "sc": -44.348
+    },
+    {
+     "d": 7,
+     "cell": 12,
+     "sc": -30.060000000000002
+    },
+    {
+     "d": 8,
+     "cell": 12,
+     "sc": -49.624
+    },
+    {
+     "d": 9,
+     "cell": 12,
+     "sc": -30.060000000000002
+    },
+    {
+     "d": 10,
+     "cell": 12,
+     "sc": -49.624
+    },
+    {
+     "d": 11,
+     "cell": 12,
+     "sc": 0.6960000000000086
+    }
+   ]
+  },
+  {
+   "k": 3,
+   "who": 1,
+   "cell": 13,
+   "x": 3,
+   "y": 2,
+   "z": 0,
+   "sc": 36.246,
+   "depth": 11,
+   "ms": 28657,
+   "nodes": 65396506,
+   "stable": false,
+   "gap2": 7.039999999999999,
+   "ties": 4,
+   "second": 31,
+   "secondSc": 29.206000000000003,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 2,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 0,
+    "to3": 0,
+    "linesThrough": 8,
+    "rising": 2,
+    "inPlane": 6,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "build",
+   "evalBefore": -0.6200000000000001,
+   "cands": [
+    {
+     "cell": 13,
+     "sc": 36.246,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 17,
+     "sc": 36.246,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 8,
+     "sc": 36.246,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 16,
+     "sc": 36.246,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 31,
+     "sc": 29.206000000000003,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 7,
+     "sc": 26.970000000000006,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 8,
+     "sc": 26.376000000000005
+    },
+    {
+     "d": 2,
+     "cell": 37,
+     "sc": -12.568000000000005
+    },
+    {
+     "d": 3,
+     "cell": 18,
+     "sc": 27.888000000000005
+    },
+    {
+     "d": 4,
+     "cell": 13,
+     "sc": -11.400000000000004
+    },
+    {
+     "d": 5,
+     "cell": 8,
+     "sc": 31.64
+    },
+    {
+     "d": 6,
+     "cell": 13,
+     "sc": -1.5679999999999978
+    },
+    {
+     "d": 7,
+     "cell": 37,
+     "sc": 16.800000000000004
+    },
+    {
+     "d": 8,
+     "cell": 13,
+     "sc": -0.6960000000000086
+    },
+    {
+     "d": 9,
+     "cell": 37,
+     "sc": 22.318000000000005
+    },
+    {
+     "d": 10,
+     "cell": 13,
+     "sc": -0.6960000000000086
+    },
+    {
+     "d": 11,
+     "cell": 13,
+     "sc": 36.246
+    }
+   ]
+  },
+  {
+   "k": 4,
+   "who": 2,
+   "cell": 17,
+   "x": 2,
+   "y": 3,
+   "z": 0,
+   "sc": 5.408000000000001,
+   "depth": 11,
+   "ms": 23081,
+   "nodes": 82731768,
+   "stable": false,
+   "gap2": 5.735999999999998,
+   "ties": 1,
+   "second": 7,
+   "secondSc": -0.32799999999999674,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 1,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 2,
+    "to3": 0,
+    "linesThrough": 8,
+    "rising": 2,
+    "inPlane": 6,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "build",
+   "evalBefore": -8.568000000000001,
+   "cands": [
+    {
+     "cell": 17,
+     "sc": 5.408000000000001,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 7,
+     "sc": -0.32799999999999674,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 8,
+     "sc": -0.32799999999999674,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 18,
+     "sc": -0.32799999999999674,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 23,
+     "sc": -2.4479999999999977,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 22,
+     "sc": -999988,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 8,
+     "sc": 19.184
+    },
+    {
+     "d": 2,
+     "cell": 7,
+     "sc": -19.864
+    },
+    {
+     "d": 3,
+     "cell": 37,
+     "sc": 15.902000000000003
+    },
+    {
+     "d": 4,
+     "cell": 37,
+     "sc": -28.936000000000007
+    },
+    {
+     "d": 5,
+     "cell": 37,
+     "sc": 6.609999999999998
+    },
+    {
+     "d": 6,
+     "cell": 17,
+     "sc": -36.246
+    },
+    {
+     "d": 7,
+     "cell": 7,
+     "sc": -2.9399999999999924
+    },
+    {
+     "d": 8,
+     "cell": 17,
+     "sc": -36.246
+    },
+    {
+     "d": 9,
+     "cell": 7,
+     "sc": -20.684000000000005
+    },
+    {
+     "d": 10,
+     "cell": 17,
+     "sc": -36.246
+    },
+    {
+     "d": 11,
+     "cell": 17,
+     "sc": 5.408000000000001
+    }
+   ]
+  },
+  {
+   "k": 5,
+   "who": 1,
+   "cell": 7,
+   "x": 2,
+   "y": 1,
+   "z": 0,
+   "sc": 37.26800000000001,
+   "depth": 11,
+   "ms": 26844,
+   "nodes": 99697114,
+   "stable": true,
+   "gap2": 1000032.268,
+   "ties": 1,
+   "second": 22,
+   "secondSc": -999995,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 2,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 3,
+    "to3": 0,
+    "linesThrough": 8,
+    "rising": 2,
+    "inPlane": 6,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "build",
+   "evalBefore": -17.880000000000003,
+   "cands": [
+    {
+     "cell": 7,
+     "sc": 37.26800000000001,
+     "type": "build",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 22,
+     "sc": -999995,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 2,
+     "sc": -999995,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 16,
+     "sc": -999997,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 18,
+     "sc": -999997,
+     "type": "spread",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 1,
+     "sc": -999997,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 7,
+     "sc": 36.944
+    },
+    {
+     "d": 2,
+     "cell": 7,
+     "sc": -11.400000000000004
+    },
+    {
+     "d": 3,
+     "cell": 7,
+     "sc": 51.288000000000004
+    },
+    {
+     "d": 4,
+     "cell": 7,
+     "sc": -5.408000000000001
+    },
+    {
+     "d": 5,
+     "cell": 7,
+     "sc": 71.03200000000001
+    },
+    {
+     "d": 6,
+     "cell": 7,
+     "sc": -5.408000000000001
+    },
+    {
+     "d": 7,
+     "cell": 7,
+     "sc": -5.408000000000001
+    },
+    {
+     "d": 8,
+     "cell": 7,
+     "sc": -5.408000000000001
+    },
+    {
+     "d": 9,
+     "cell": 7,
+     "sc": -0.5640000000000005
+    },
+    {
+     "d": 10,
+     "cell": 7,
+     "sc": -5.408000000000001
+    },
+    {
+     "d": 11,
+     "cell": 7,
+     "sc": 37.26800000000001
+    }
+   ]
+  },
+  {
+   "k": 6,
+   "who": 2,
+   "cell": 8,
+   "x": 3,
+   "y": 1,
+   "z": 0,
+   "sc": 4.872000000000008,
+   "depth": 11,
+   "ms": 34495,
+   "nodes": 122909129,
+   "stable": true,
+   "gap2": 999999.872,
+   "ties": 1,
+   "second": 5,
+   "secondSc": -999995,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 4,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 2,
+    "to3": 0,
+    "linesThrough": 10,
+    "rising": 4,
+    "inPlane": 6,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "build",
+   "evalBefore": -36.944,
+   "cands": [
+    {
+     "cell": 8,
+     "sc": 4.872000000000008,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 5,
+     "sc": -999995,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 9,
+     "sc": -999995,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 16,
+     "sc": -999997,
+     "type": "spread",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 18,
+     "sc": -999997,
+     "type": "spread",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 19,
+     "sc": -999997,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 8,
+     "sc": 11.400000000000004
+    },
+    {
+     "d": 2,
+     "cell": 8,
+     "sc": -51.288000000000004
+    },
+    {
+     "d": 3,
+     "cell": 8,
+     "sc": -1.8599999999999977
+    },
+    {
+     "d": 4,
+     "cell": 8,
+     "sc": -37.26800000000001
+    },
+    {
+     "d": 5,
+     "cell": 8,
+     "sc": -33.39
+    },
+    {
+     "d": 6,
+     "cell": 8,
+     "sc": -33.39
+    },
+    {
+     "d": 7,
+     "cell": 8,
+     "sc": -33.39
+    },
+    {
+     "d": 8,
+     "cell": 8,
+     "sc": -33.39
+    },
+    {
+     "d": 9,
+     "cell": 8,
+     "sc": -33.39
+    },
+    {
+     "d": 10,
+     "cell": 8,
+     "sc": -37.26800000000001
+    },
+    {
+     "d": 11,
+     "cell": 8,
+     "sc": 4.872000000000008
+    }
+   ]
+  },
+  {
+   "k": 7,
+   "who": 1,
+   "cell": 16,
+   "x": 1,
+   "y": 3,
+   "z": 0,
+   "sc": -4.872000000000008,
+   "depth": 10,
+   "ms": 35002,
+   "nodes": 148657152,
+   "stable": true,
+   "gap2": 11.501999999999995,
+   "ties": 1,
+   "second": 1,
+   "secondSc": -16.374000000000002,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 4,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 2,
+    "to3": 0,
+    "linesThrough": 10,
+    "rising": 4,
+    "inPlane": 6,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "build",
+   "evalBefore": -11.400000000000004,
+   "cands": [
+    {
+     "cell": 16,
+     "sc": -4.872000000000008,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 1
+    },
+    {
+     "cell": 1,
+     "sc": -16.374000000000002,
+     "type": "threat",
+     "win": false,
+     "to2": 1,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 19,
+     "sc": -19.988,
+     "type": "threat",
+     "win": false,
+     "to2": 0,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 4,
+     "sc": -999995,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 20,
+     "sc": -999995,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 11,
+     "sc": -999997,
+     "type": "spread",
+     "win": false,
+     "to2": 5,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 1,
+     "sc": 51.288000000000004
+    },
+    {
+     "d": 2,
+     "cell": 16,
+     "sc": 1.8599999999999977
+    },
+    {
+     "d": 3,
+     "cell": 1,
+     "sc": 71.03200000000001
+    },
+    {
+     "d": 4,
+     "cell": 16,
+     "sc": 2.1359999999999983
+    },
+    {
+     "d": 5,
+     "cell": 16,
+     "sc": 30.060000000000002
+    },
+    {
+     "d": 6,
+     "cell": 16,
+     "sc": -0.6960000000000086
+    },
+    {
+     "d": 7,
+     "cell": 16,
+     "sc": 31.102000000000007
+    },
+    {
+     "d": 8,
+     "cell": 16,
+     "sc": -4.1080000000000005
+    },
+    {
+     "d": 9,
+     "cell": 16,
+     "sc": 21.412000000000003
+    },
+    {
+     "d": 10,
+     "cell": 16,
+     "sc": -4.872000000000008
+    }
+   ]
+  },
+  {
+   "k": 8,
+   "who": 2,
+   "cell": 11,
+   "x": 1,
+   "y": 2,
+   "z": 0,
+   "sc": 4.872000000000008,
+   "depth": 9,
+   "ms": 35001,
+   "nodes": 173856768,
+   "stable": true,
+   "gap2": 41.66000000000002,
+   "ties": 1,
+   "second": 1,
+   "secondSc": -36.78800000000001,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 5,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 3,
+    "to3": 0,
+    "linesThrough": 8,
+    "rising": 2,
+    "inPlane": 6,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "build",
+   "evalBefore": -36.308,
+   "cands": [
+    {
+     "cell": 11,
+     "sc": 4.872000000000008,
+     "type": "build",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 1,
+     "sc": -36.78800000000001,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 37,
+     "sc": -999997,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 2
+    },
+    {
+     "cell": 21,
+     "sc": -999997,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 42,
+     "sc": -999997,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 5,
+     "sc": -999997,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 11,
+     "sc": -1.8599999999999977
+    },
+    {
+     "d": 2,
+     "cell": 11,
+     "sc": 4.872000000000008
+    },
+    {
+     "d": 3,
+     "cell": 11,
+     "sc": 4.872000000000008
+    },
+    {
+     "d": 4,
+     "cell": 11,
+     "sc": 4.872000000000008
+    },
+    {
+     "d": 5,
+     "cell": 11,
+     "sc": 4.872000000000008
+    },
+    {
+     "d": 6,
+     "cell": 11,
+     "sc": 4.872000000000008
+    },
+    {
+     "d": 7,
+     "cell": 11,
+     "sc": 4.872000000000008
+    },
+    {
+     "d": 8,
+     "cell": 11,
+     "sc": 4.872000000000008
+    },
+    {
+     "d": 9,
+     "cell": 11,
+     "sc": 4.872000000000008
+    }
+   ]
+  },
+  {
+   "k": 9,
+   "who": 1,
+   "cell": 5,
+   "x": 0,
+   "y": 1,
+   "z": 0,
+   "sc": -0.03400000000001313,
+   "depth": 8,
+   "ms": 22603,
+   "nodes": 190048374,
+   "stable": false,
+   "gap2": 5.219999999999992,
+   "ties": 1,
+   "second": 38,
+   "secondSc": -5.254000000000005,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 2,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 0,
+    "to3": 1,
+    "linesThrough": 8,
+    "rising": 4,
+    "inPlane": 4,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "build",
+   "evalBefore": 1.8599999999999977,
+   "cands": [
+    {
+     "cell": 5,
+     "sc": -0.03400000000001313,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 38,
+     "sc": -5.254000000000005,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 23,
+     "sc": -5.348000000000006,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 32,
+     "sc": -6.3160000000000025,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 15,
+     "sc": -6.864000000000006,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 41,
+     "sc": -7.744000000000005,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 1,
+     "sc": 54.444
+    },
+    {
+     "d": 2,
+     "cell": 5,
+     "sc": 2.1359999999999983
+    },
+    {
+     "d": 3,
+     "cell": 32,
+     "sc": 51.322
+    },
+    {
+     "d": 4,
+     "cell": 23,
+     "sc": 0.25200000000000244
+    },
+    {
+     "d": 5,
+     "cell": 31,
+     "sc": 40.45400000000001
+    },
+    {
+     "d": 6,
+     "cell": 23,
+     "sc": 8.464000000000002
+    },
+    {
+     "d": 7,
+     "cell": 37,
+     "sc": 38.562000000000005
+    },
+    {
+     "d": 8,
+     "cell": 5,
+     "sc": -0.03400000000001313
+    }
+   ]
+  },
+  {
+   "k": 10,
+   "who": 2,
+   "cell": 33,
+   "x": 3,
+   "y": 1,
+   "z": 1,
+   "sc": 2.386,
+   "depth": 7,
+   "ms": 35001,
+   "nodes": 214935552,
+   "stable": false,
+   "gap2": 0.10999999999999677,
+   "ties": 1,
+   "second": 32,
+   "secondSc": 2.2760000000000034,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 0,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 1,
+    "to3": 0,
+    "linesThrough": 14,
+    "rising": 8,
+    "inPlane": 6,
+    "vertical": 2,
+    "height": 2,
+    "colFillBefore": 1,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "stack",
+   "evalBefore": -20.044,
+   "cands": [
+    {
+     "cell": 33,
+     "sc": 2.386,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 32,
+     "sc": 2.2760000000000034,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 37,
+     "sc": 0.03400000000001313,
+     "type": "stack",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 2
+    },
+    {
+     "cell": 41,
+     "sc": -0.2859999999999907,
+     "type": "stack",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 36,
+     "sc": -7.8700000000000045,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 4,
+     "sc": -8.651999999999994,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 1,
+     "sc": -2.1359999999999983
+    },
+    {
+     "d": 2,
+     "cell": 37,
+     "sc": 0.03400000000001313
+    },
+    {
+     "d": 3,
+     "cell": 37,
+     "sc": 0.03400000000001313
+    },
+    {
+     "d": 4,
+     "cell": 37,
+     "sc": 0.03400000000001313
+    },
+    {
+     "d": 5,
+     "cell": 37,
+     "sc": 0.03400000000001313
+    },
+    {
+     "d": 6,
+     "cell": 37,
+     "sc": 0.03400000000001313
+    },
+    {
+     "d": 7,
+     "cell": 33,
+     "sc": 2.386
+    }
+   ]
+  },
+  {
+   "k": 11,
+   "who": 1,
+   "cell": 0,
+   "x": 0,
+   "y": 0,
+   "z": 0,
+   "sc": 45.942,
+   "depth": 7,
+   "ms": 35001,
+   "nodes": 239563776,
+   "stable": false,
+   "gap2": 1.7279999999999944,
+   "ties": 1,
+   "second": 31,
+   "secondSc": 44.214000000000006,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 1,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 2,
+    "to3": 0,
+    "linesThrough": 7,
+    "rising": 4,
+    "inPlane": 3,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "build",
+   "evalBefore": 3.6559999999999997,
+   "cands": [
+    {
+     "cell": 0,
+     "sc": 45.942,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 31,
+     "sc": 44.214000000000006,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 15,
+     "sc": 43.312,
+     "type": "spread",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 37,
+     "sc": 38.61399999999999,
+     "type": "stack",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 2
+    },
+    {
+     "cell": 10,
+     "sc": 38.052,
+     "type": "build",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 38,
+     "sc": 37.328,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 1,
+     "sc": 56.768
+    },
+    {
+     "d": 2,
+     "cell": 15,
+     "sc": 43.312
+    },
+    {
+     "d": 3,
+     "cell": 15,
+     "sc": 43.312
+    },
+    {
+     "d": 4,
+     "cell": 15,
+     "sc": 43.312
+    },
+    {
+     "d": 5,
+     "cell": 31,
+     "sc": 56.286
+    },
+    {
+     "d": 6,
+     "cell": 0,
+     "sc": 45.942
+    },
+    {
+     "d": 7,
+     "cell": 0,
+     "sc": 45.942
+    }
+   ]
+  },
+  {
+   "k": 12,
+   "who": 2,
+   "cell": 19,
+   "x": 4,
+   "y": 3,
+   "z": 0,
+   "sc": -34.26200000000001,
+   "depth": 8,
+   "ms": 28341,
+   "nodes": 258628224,
+   "stable": false,
+   "gap2": 4.2379999999999995,
+   "ties": 1,
+   "second": 9,
+   "secondSc": -38.50000000000001,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 2,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 1,
+    "to3": 0,
+    "linesThrough": 8,
+    "rising": 4,
+    "inPlane": 4,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "build",
+   "evalBefore": -20.848000000000006,
+   "cands": [
+    {
+     "cell": 19,
+     "sc": -34.26200000000001,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 9,
+     "sc": -38.50000000000001,
+     "type": "build",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 1,
+     "sc": -43.908,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 42,
+     "sc": -47.772,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 36,
+     "sc": -49.608000000000004,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 4,
+     "sc": -49.62000000000001,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 58,
+     "sc": 43.760000000000005
+    },
+    {
+     "d": 2,
+     "cell": 19,
+     "sc": 10.206
+    },
+    {
+     "d": 3,
+     "cell": 32,
+     "sc": 13.388000000000009
+    },
+    {
+     "d": 4,
+     "cell": 19,
+     "sc": 10.206
+    },
+    {
+     "d": 5,
+     "cell": 32,
+     "sc": 13.388000000000009
+    },
+    {
+     "d": 6,
+     "cell": 19,
+     "sc": 10.206
+    },
+    {
+     "d": 7,
+     "cell": 32,
+     "sc": 13.388000000000009
+    },
+    {
+     "d": 8,
+     "cell": 19,
+     "sc": -34.26200000000001
+    }
+   ]
+  },
+  {
+   "k": 13,
+   "who": 1,
+   "cell": 38,
+   "x": 3,
+   "y": 2,
+   "z": 1,
+   "sc": 34.26200000000001,
+   "depth": 7,
+   "ms": 35001,
+   "nodes": 282088448,
+   "stable": false,
+   "gap2": 2.932000000000002,
+   "ties": 1,
+   "second": 41,
+   "secondSc": 31.330000000000005,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 4,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 1,
+    "to3": 0,
+    "linesThrough": 14,
+    "rising": 8,
+    "inPlane": 6,
+    "vertical": 2,
+    "height": 2,
+    "colFillBefore": 1,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "stack",
+   "evalBefore": 1.967999999999999,
+   "cands": [
+    {
+     "cell": 38,
+     "sc": 34.26200000000001,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 41,
+     "sc": 31.330000000000005,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 1,
+     "sc": 28.022000000000006,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 32,
+     "sc": 26.196000000000005,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 2,
+     "sc": 25.902000000000005,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 31,
+     "sc": 25.402,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 15,
+     "sc": 62.992000000000004
+    },
+    {
+     "d": 2,
+     "cell": 38,
+     "sc": 34.26200000000001
+    },
+    {
+     "d": 3,
+     "cell": 38,
+     "sc": 34.26200000000001
+    },
+    {
+     "d": 4,
+     "cell": 38,
+     "sc": 34.26200000000001
+    },
+    {
+     "d": 5,
+     "cell": 41,
+     "sc": 52.114000000000004
+    },
+    {
+     "d": 6,
+     "cell": 38,
+     "sc": 34.26200000000001
+    },
+    {
+     "d": 7,
+     "cell": 38,
+     "sc": 34.26200000000001
+    }
+   ]
+  },
+  {
+   "k": 14,
+   "who": 2,
+   "cell": 14,
+   "x": 4,
+   "y": 2,
+   "z": 0,
+   "sc": -38.916000000000004,
+   "depth": 8,
+   "ms": 26562,
+   "nodes": 298669496,
+   "stable": false,
+   "gap2": 0.7419999999999973,
+   "ties": 1,
+   "second": 9,
+   "secondSc": -39.658,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 2,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 2,
+    "to3": 1,
+    "linesThrough": 5,
+    "rising": 2,
+    "inPlane": 3,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "build",
+   "evalBefore": -20.084000000000003,
+   "cands": [
+    {
+     "cell": 14,
+     "sc": -38.916000000000004,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 9,
+     "sc": -39.658,
+     "type": "spread",
+     "win": false,
+     "to2": 5,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 36,
+     "sc": -46.194,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 15,
+     "sc": -46.65,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 63,
+     "sc": -49.470000000000006,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 37,
+     "sc": -49.486000000000004,
+     "type": "stack",
+     "win": false,
+     "to2": 6,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 2
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 58,
+     "sc": 45.856
+    },
+    {
+     "d": 2,
+     "cell": 9,
+     "sc": 11.238000000000007
+    },
+    {
+     "d": 3,
+     "cell": 9,
+     "sc": 11.238000000000007
+    },
+    {
+     "d": 4,
+     "cell": 9,
+     "sc": 11.238000000000007
+    },
+    {
+     "d": 5,
+     "cell": 14,
+     "sc": 14.012
+    },
+    {
+     "d": 6,
+     "cell": 9,
+     "sc": 11.238000000000007
+    },
+    {
+     "d": 7,
+     "cell": 14,
+     "sc": 19.658000000000005
+    },
+    {
+     "d": 8,
+     "cell": 14,
+     "sc": -38.916000000000004
+    }
+   ]
+  },
+  {
+   "k": 15,
+   "who": 1,
+   "cell": 9,
+   "x": 4,
+   "y": 1,
+   "z": 0,
+   "sc": 54.692,
+   "depth": 9,
+   "ms": 21164,
+   "nodes": 312054471,
+   "stable": true,
+   "gap2": 22.06799999999999,
+   "ties": 1,
+   "second": 63,
+   "secondSc": 32.62400000000001,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 5,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 2,
+    "to3": 1,
+    "linesThrough": 8,
+    "rising": 4,
+    "inPlane": 4,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "build",
+   "evalBefore": -5.604000000000003,
+   "cands": [
+    {
+     "cell": 9,
+     "sc": 54.692,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 63,
+     "sc": 32.62400000000001,
+     "type": "threat",
+     "win": false,
+     "to2": 1,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 10,
+     "sc": 22.381999999999998,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 15,
+     "sc": 20.442,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 4,
+     "sc": 16.278,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 24,
+     "sc": 14.186000000000003,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 63,
+     "sc": 66.328
+    },
+    {
+     "d": 2,
+     "cell": 63,
+     "sc": -4.219999999999999
+    },
+    {
+     "d": 3,
+     "cell": 63,
+     "sc": 58.88
+    },
+    {
+     "d": 4,
+     "cell": 9,
+     "sc": -10.276000000000003
+    },
+    {
+     "d": 5,
+     "cell": 9,
+     "sc": 38.916000000000004
+    },
+    {
+     "d": 6,
+     "cell": 9,
+     "sc": 38.59400000000001
+    },
+    {
+     "d": 7,
+     "cell": 9,
+     "sc": 38.916000000000004
+    },
+    {
+     "d": 8,
+     "cell": 9,
+     "sc": -8.960000000000008
+    },
+    {
+     "d": 9,
+     "cell": 9,
+     "sc": 54.692
+    }
+   ]
+  },
+  {
+   "k": 16,
+   "who": 2,
+   "cell": 37,
+   "x": 2,
+   "y": 2,
+   "z": 1,
+   "sc": -54.692,
+   "depth": 8,
+   "ms": 35001,
+   "nodes": 333390848,
+   "stable": false,
+   "gap2": 1.107999999999997,
+   "ties": 1,
+   "second": 63,
+   "secondSc": -55.8,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 6,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 6,
+    "to3": 0,
+    "linesThrough": 18,
+    "rising": 10,
+    "inPlane": 8,
+    "vertical": 2,
+    "height": 2,
+    "colFillBefore": 1,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "stack",
+   "evalBefore": -22.014000000000003,
+   "cands": [
+    {
+     "cell": 37,
+     "sc": -54.692,
+     "type": "stack",
+     "win": false,
+     "to2": 6,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 2
+    },
+    {
+     "cell": 63,
+     "sc": -55.8,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 44,
+     "sc": -56.412000000000006,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 42,
+     "sc": -56.526,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 36,
+     "sc": -57.182,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 15,
+     "sc": -63.516000000000005,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 58,
+     "sc": 44.508
+    },
+    {
+     "d": 2,
+     "cell": 58,
+     "sc": -27.810000000000002
+    },
+    {
+     "d": 3,
+     "cell": 58,
+     "sc": 10.276000000000003
+    },
+    {
+     "d": 4,
+     "cell": 10,
+     "sc": -51.544000000000004
+    },
+    {
+     "d": 5,
+     "cell": 58,
+     "sc": 0.2480000000000011
+    },
+    {
+     "d": 6,
+     "cell": 42,
+     "sc": -42.492000000000004
+    },
+    {
+     "d": 7,
+     "cell": 32,
+     "sc": -1.5539999999999914
+    },
+    {
+     "d": 8,
+     "cell": 37,
+     "sc": -54.692
+    }
+   ]
+  },
+  {
+   "k": 17,
+   "who": 1,
+   "cell": 62,
+   "x": 2,
+   "y": 2,
+   "z": 2,
+   "sc": -14.610000000000007,
+   "depth": 8,
+   "ms": 35001,
+   "nodes": 356795392,
+   "stable": false,
+   "gap2": 10.427999999999997,
+   "ties": 1,
+   "second": 32,
+   "secondSc": -25.038000000000004,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 5,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 3,
+    "to3": 0,
+    "linesThrough": 26,
+    "rising": 18,
+    "inPlane": 8,
+    "vertical": 2,
+    "height": 3,
+    "colFillBefore": 2,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "stack",
+   "evalBefore": -2.508000000000001,
+   "cands": [
+    {
+     "cell": 62,
+     "sc": -14.610000000000007,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 26,
+     "height": 3
+    },
+    {
+     "cell": 32,
+     "sc": -25.038000000000004,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 31,
+     "sc": -25.484,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 10,
+     "sc": -26.032000000000007,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 1,
+     "sc": -26.082000000000004,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 3,
+     "sc": -26.082000000000004,
+     "type": "build",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 63,
+     "sc": 72.902
+    },
+    {
+     "d": 2,
+     "cell": 63,
+     "sc": 3.007999999999999
+    },
+    {
+     "d": 3,
+     "cell": 63,
+     "sc": 65.454
+    },
+    {
+     "d": 4,
+     "cell": 63,
+     "sc": -9.572000000000003
+    },
+    {
+     "d": 5,
+     "cell": 15,
+     "sc": 20.587999999999997
+    },
+    {
+     "d": 6,
+     "cell": 63,
+     "sc": -5.202000000000012
+    },
+    {
+     "d": 7,
+     "cell": 41,
+     "sc": 38.92399999999999
+    },
+    {
+     "d": 8,
+     "cell": 62,
+     "sc": -14.610000000000007
+    }
+   ]
+  },
+  {
+   "k": 18,
+   "who": 2,
+   "cell": 41,
+   "x": 1,
+   "y": 3,
+   "z": 1,
+   "sc": -46.93,
+   "depth": 8,
+   "ms": 19411,
+   "nodes": 369684859,
+   "stable": false,
+   "gap2": 1.1580000000000084,
+   "ties": 1,
+   "second": 58,
+   "secondSc": -48.08800000000001,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 2,
+    "newGaps": 2,
+    "blocked": 0,
+    "deadFoe": 3,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 0,
+    "to3": 2,
+    "linesThrough": 14,
+    "rising": 8,
+    "inPlane": 6,
+    "vertical": 2,
+    "height": 2,
+    "colFillBefore": 1,
+    "myGapBefore": 0,
+    "foeGapBefore": 0
+   },
+   "type": "fork",
+   "evalBefore": -26.852000000000004,
+   "cands": [
+    {
+     "cell": 41,
+     "sc": -46.93,
+     "type": "fork",
+     "win": false,
+     "to2": 0,
+     "to3": 2,
+     "newGaps": 2,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 58,
+     "sc": -48.08800000000001,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 3
+    },
+    {
+     "cell": 32,
+     "sc": -62.96600000000001,
+     "type": "stack",
+     "win": false,
+     "to2": 5,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 63,
+     "sc": -65.958,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 31,
+     "sc": -68.464,
+     "type": "stack",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 36,
+     "sc": -75.164,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 58,
+     "sc": 41.688
+    },
+    {
+     "d": 2,
+     "cell": 58,
+     "sc": -42.812000000000005
+    },
+    {
+     "d": 3,
+     "cell": 32,
+     "sc": 11.600000000000009
+    },
+    {
+     "d": 4,
+     "cell": 63,
+     "sc": -54.854
+    },
+    {
+     "d": 5,
+     "cell": 58,
+     "sc": -3.8359999999999914
+    },
+    {
+     "d": 6,
+     "cell": 41,
+     "sc": -46.13600000000001
+    },
+    {
+     "d": 7,
+     "cell": 23,
+     "sc": -20.24000000000001
+    },
+    {
+     "d": 8,
+     "cell": 41,
+     "sc": -46.93
+    }
+   ]
+  },
+  {
+   "k": 19,
+   "who": 1,
+   "cell": 32,
+   "x": 2,
+   "y": 1,
+   "z": 1,
+   "sc": 45.72200000000001,
+   "depth": 9,
+   "ms": 31716,
+   "nodes": 389998625,
+   "stable": true,
+   "gap2": 1.014000000000003,
+   "ties": 2,
+   "second": 58,
+   "secondSc": 44.708000000000006,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 0,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 5,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 5,
+    "to3": 0,
+    "linesThrough": 14,
+    "rising": 8,
+    "inPlane": 6,
+    "vertical": 2,
+    "height": 2,
+    "colFillBefore": 1,
+    "myGapBefore": 0,
+    "foeGapBefore": 2
+   },
+   "type": "stack",
+   "evalBefore": 2.4179999999999957,
+   "cands": [
+    {
+     "cell": 32,
+     "sc": 45.72200000000001,
+     "type": "stack",
+     "win": false,
+     "to2": 5,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 63,
+     "sc": 45.72200000000001,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 58,
+     "sc": 44.708000000000006,
+     "type": "stack",
+     "win": false,
+     "to2": 5,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 3
+    },
+    {
+     "cell": 66,
+     "sc": 42.278000000000006,
+     "type": "stack",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 3
+    },
+    {
+     "cell": 34,
+     "sc": 38.96,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 44,
+     "sc": 37.282000000000004,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 63,
+     "sc": 73.40400000000001
+    },
+    {
+     "d": 2,
+     "cell": 32,
+     "sc": 46.93
+    },
+    {
+     "d": 3,
+     "cell": 10,
+     "sc": 70.48
+    },
+    {
+     "d": 4,
+     "cell": 32,
+     "sc": 46.93
+    },
+    {
+     "d": 5,
+     "cell": 58,
+     "sc": 53.486000000000004
+    },
+    {
+     "d": 6,
+     "cell": 32,
+     "sc": 46.93
+    },
+    {
+     "d": 7,
+     "cell": 32,
+     "sc": 46.93
+    },
+    {
+     "d": 8,
+     "cell": 32,
+     "sc": -3.3820000000000014
+    },
+    {
+     "d": 9,
+     "cell": 32,
+     "sc": 45.72200000000001
+    }
+   ]
+  },
+  {
+   "k": 20,
+   "who": 2,
+   "cell": 66,
+   "x": 1,
+   "y": 3,
+   "z": 2,
+   "sc": 11.007999999999996,
+   "depth": 9,
+   "ms": 35002,
+   "nodes": 412925952,
+   "stable": false,
+   "gap2": 3.57599999999999,
+   "ties": 1,
+   "second": 58,
+   "secondSc": 7.432000000000006,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 3,
+    "newGaps": 1,
+    "blocked": 0,
+    "deadFoe": 4,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 2,
+    "to3": 1,
+    "linesThrough": 14,
+    "rising": 8,
+    "inPlane": 6,
+    "vertical": 2,
+    "height": 3,
+    "colFillBefore": 2,
+    "myGapBefore": 2,
+    "foeGapBefore": 0
+   },
+   "type": "threat",
+   "evalBefore": -21.582000000000008,
+   "cands": [
+    {
+     "cell": 66,
+     "sc": 11.007999999999996,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 3
+    },
+    {
+     "cell": 58,
+     "sc": 7.432000000000006,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 3
+    },
+    {
+     "cell": 36,
+     "sc": 5.476000000000003,
+     "type": "stack",
+     "win": false,
+     "to2": 5,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 63,
+     "sc": 5.476000000000003,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 57,
+     "sc": 5.262000000000008,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 10,
+     "sc": 3.61000000000001,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 58,
+     "sc": 49.204
+    },
+    {
+     "d": 2,
+     "cell": 58,
+     "sc": -29.346000000000004
+    },
+    {
+     "d": 3,
+     "cell": 20,
+     "sc": 41.91199999999999
+    },
+    {
+     "d": 4,
+     "cell": 20,
+     "sc": -37.938
+    },
+    {
+     "d": 5,
+     "cell": 20,
+     "sc": 34.196
+    },
+    {
+     "d": 6,
+     "cell": 20,
+     "sc": -46.93
+    },
+    {
+     "d": 7,
+     "cell": 20,
+     "sc": -15.785999999999994
+    },
+    {
+     "d": 8,
+     "cell": 66,
+     "sc": -45.72200000000001
+    },
+    {
+     "d": 9,
+     "cell": 66,
+     "sc": 11.007999999999996
+    }
+   ]
+  },
+  {
+   "k": 21,
+   "who": 1,
+   "cell": 58,
+   "x": 3,
+   "y": 1,
+   "z": 2,
+   "sc": -8.970000000000006,
+   "depth": 10,
+   "ms": 35001,
+   "nodes": 436059136,
+   "stable": false,
+   "gap2": 4.011999999999986,
+   "ties": 1,
+   "second": 1,
+   "secondSc": -12.981999999999992,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 1,
+    "newGaps": 1,
+    "blocked": 0,
+    "deadFoe": 5,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 4,
+    "to3": 1,
+    "linesThrough": 14,
+    "rising": 8,
+    "inPlane": 6,
+    "vertical": 2,
+    "height": 3,
+    "colFillBefore": 2,
+    "myGapBefore": 0,
+    "foeGapBefore": 3
+   },
+   "type": "threat",
+   "evalBefore": 10.48,
+   "cands": [
+    {
+     "cell": 58,
+     "sc": -8.970000000000006,
+     "type": "threat",
+     "win": false,
+     "to2": 4,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 3
+    },
+    {
+     "cell": 1,
+     "sc": -12.981999999999992,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 91,
+     "sc": -13.700000000000003,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 4
+    },
+    {
+     "cell": 63,
+     "sc": -16.164,
+     "type": "threat",
+     "win": false,
+     "to2": 4,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 57,
+     "sc": -20.334000000000017,
+     "type": "threat",
+     "win": false,
+     "to2": 6,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 34,
+     "sc": -20.814000000000014,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 63,
+     "sc": 84.142
+    },
+    {
+     "d": 2,
+     "cell": 1,
+     "sc": 60.748000000000005
+    },
+    {
+     "d": 3,
+     "cell": 63,
+     "sc": 82.66
+    },
+    {
+     "d": 4,
+     "cell": 1,
+     "sc": 60.748000000000005
+    },
+    {
+     "d": 5,
+     "cell": 57,
+     "sc": 77.876
+    },
+    {
+     "d": 6,
+     "cell": 1,
+     "sc": 60.748000000000005
+    },
+    {
+     "d": 7,
+     "cell": 1,
+     "sc": 60.748000000000005
+    },
+    {
+     "d": 8,
+     "cell": 1,
+     "sc": 60.748000000000005
+    },
+    {
+     "d": 9,
+     "cell": 1,
+     "sc": 60.748000000000005
+    },
+    {
+     "d": 10,
+     "cell": 58,
+     "sc": -8.970000000000006
+    }
+   ]
+  },
+  {
+   "k": 22,
+   "who": 2,
+   "cell": 20,
+   "x": 0,
+   "y": 4,
+   "z": 0,
+   "sc": -27.597999999999992,
+   "depth": 9,
+   "ms": 35002,
+   "nodes": 458247168,
+   "stable": false,
+   "gap2": 4.613999999999997,
+   "ties": 2,
+   "second": 4,
+   "secondSc": -32.21199999999999,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 1,
+    "foeLiveAfter": 0,
+    "myGapAfter": 3,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 3,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 1,
+    "to3": 1,
+    "linesThrough": 7,
+    "rising": 4,
+    "inPlane": 3,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 3,
+    "foeGapBefore": 1
+   },
+   "type": "build",
+   "evalBefore": -30.326000000000008,
+   "cands": [
+    {
+     "cell": 20,
+     "sc": -27.597999999999992,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 91,
+     "sc": -27.597999999999992,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 2,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 4
+    },
+    {
+     "cell": 4,
+     "sc": -32.21199999999999,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 83,
+     "sc": -45.052,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 4
+    },
+    {
+     "cell": 57,
+     "sc": -50.79600000000001,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 31,
+     "sc": -51.194,
+     "type": "stack",
+     "win": false,
+     "to2": 6,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 20,
+     "sc": 31.63600000000001
+    },
+    {
+     "d": 2,
+     "cell": 20,
+     "sc": -31.858000000000004
+    },
+    {
+     "d": 3,
+     "cell": 20,
+     "sc": 28.75399999999999
+    },
+    {
+     "d": 4,
+     "cell": 20,
+     "sc": -35.918000000000006
+    },
+    {
+     "d": 5,
+     "cell": 20,
+     "sc": 21.642000000000003
+    },
+    {
+     "d": 6,
+     "cell": 20,
+     "sc": -44.708000000000006
+    },
+    {
+     "d": 7,
+     "cell": 20,
+     "sc": 5.846000000000004
+    },
+    {
+     "d": 8,
+     "cell": 31,
+     "sc": -51.194
+    },
+    {
+     "d": 9,
+     "cell": 20,
+     "sc": -27.597999999999992
+    }
+   ]
+  },
+  {
+   "k": 23,
+   "who": 1,
+   "cell": 45,
+   "x": 0,
+   "y": 4,
+   "z": 1,
+   "sc": -1.651999999999994,
+   "depth": 10,
+   "ms": 35001,
+   "nodes": 479565824,
+   "stable": true,
+   "gap2": 999997.348,
+   "ties": 1,
+   "second": 25,
+   "secondSc": -999999,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 1,
+    "newGaps": 0,
+    "blocked": 1,
+    "deadFoe": 3,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 1,
+    "to2": 0,
+    "to3": 0,
+    "linesThrough": 8,
+    "rising": 5,
+    "inPlane": 3,
+    "vertical": 2,
+    "height": 2,
+    "colFillBefore": 1,
+    "myGapBefore": 1,
+    "foeGapBefore": 3
+   },
+   "type": "block",
+   "evalBefore": -31.63600000000001,
+   "cands": [
+    {
+     "cell": 45,
+     "sc": -1.651999999999994,
+     "type": "block",
+     "win": false,
+     "to2": 0,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 1,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 2
+    },
+    {
+     "cell": 25,
+     "sc": -999999,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 2
+    },
+    {
+     "cell": 1,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 2,
+     "sc": -999999,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 3,
+     "sc": -999999,
+     "type": "spread",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 4,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 2,
+     "linesThrough": 7,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 45,
+     "sc": 31.858000000000004
+    },
+    {
+     "d": 2,
+     "cell": 45,
+     "sc": 65.36800000000001
+    },
+    {
+     "d": 3,
+     "cell": 45,
+     "sc": 65.36800000000001
+    },
+    {
+     "d": 4,
+     "cell": 45,
+     "sc": 65.36800000000001
+    },
+    {
+     "d": 5,
+     "cell": 45,
+     "sc": 65.36800000000001
+    },
+    {
+     "d": 6,
+     "cell": 45,
+     "sc": 65.36800000000001
+    },
+    {
+     "d": 7,
+     "cell": 45,
+     "sc": 65.36800000000001
+    },
+    {
+     "d": 8,
+     "cell": 45,
+     "sc": 65.36800000000001
+    },
+    {
+     "d": 9,
+     "cell": 45,
+     "sc": 65.36800000000001
+    },
+    {
+     "d": 10,
+     "cell": 45,
+     "sc": -1.651999999999994
+    }
+   ]
+  },
+  {
+   "k": 24,
+   "who": 2,
+   "cell": 70,
+   "x": 0,
+   "y": 4,
+   "z": 2,
+   "sc": -30.775999999999996,
+   "depth": 9,
+   "ms": 35002,
+   "nodes": 502159360,
+   "stable": false,
+   "gap2": 0.5200000000000031,
+   "ties": 1,
+   "second": 91,
+   "secondSc": -31.296,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 1,
+    "foeLiveAfter": 0,
+    "myGapAfter": 2,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 3,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 2,
+    "to3": 0,
+    "linesThrough": 5,
+    "rising": 2,
+    "inPlane": 3,
+    "vertical": 2,
+    "height": 3,
+    "colFillBefore": 2,
+    "myGapBefore": 2,
+    "foeGapBefore": 1
+   },
+   "type": "stack",
+   "evalBefore": -31.858000000000004,
+   "cands": [
+    {
+     "cell": 70,
+     "sc": -30.775999999999996,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 3
+    },
+    {
+     "cell": 91,
+     "sc": -31.296,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 2,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 4
+    },
+    {
+     "cell": 4,
+     "sc": -38.736000000000004,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 31,
+     "sc": -54.23400000000001,
+     "type": "stack",
+     "win": false,
+     "to2": 6,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 83,
+     "sc": -56.638000000000005,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 4
+    },
+    {
+     "cell": 57,
+     "sc": -62.346000000000004,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 91,
+     "sc": 28.75399999999999
+    },
+    {
+     "d": 2,
+     "cell": 91,
+     "sc": -35.918000000000006
+    },
+    {
+     "d": 3,
+     "cell": 70,
+     "sc": 21.642000000000003
+    },
+    {
+     "d": 4,
+     "cell": 70,
+     "sc": -44.708000000000006
+    },
+    {
+     "d": 5,
+     "cell": 4,
+     "sc": 5.986000000000004
+    },
+    {
+     "d": 6,
+     "cell": 57,
+     "sc": -62.346000000000004
+    },
+    {
+     "d": 7,
+     "cell": 36,
+     "sc": -23.55400000000001
+    },
+    {
+     "d": 8,
+     "cell": 57,
+     "sc": -62.346000000000004
+    },
+    {
+     "d": 9,
+     "cell": 70,
+     "sc": -30.775999999999996
+    }
+   ]
+  },
+  {
+   "k": 25,
+   "who": 1,
+   "cell": 95,
+   "x": 0,
+   "y": 4,
+   "z": 3,
+   "sc": 21.36799999999998,
+   "depth": 10,
+   "ms": 35001,
+   "nodes": 524637184,
+   "stable": true,
+   "gap2": 1000020.368,
+   "ties": 1,
+   "second": 25,
+   "secondSc": -999999,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 1,
+    "newGaps": 0,
+    "blocked": 1,
+    "deadFoe": 3,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 1,
+    "to2": 3,
+    "to3": 0,
+    "linesThrough": 8,
+    "rising": 5,
+    "inPlane": 3,
+    "vertical": 2,
+    "height": 4,
+    "colFillBefore": 3,
+    "myGapBefore": 1,
+    "foeGapBefore": 2
+   },
+   "type": "block",
+   "evalBefore": -21.564,
+   "cands": [
+    {
+     "cell": 95,
+     "sc": 21.36799999999998,
+     "type": "block",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 1,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 4
+    },
+    {
+     "cell": 25,
+     "sc": -999999,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 2
+    },
+    {
+     "cell": 1,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 2,
+     "sc": -999999,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 3,
+     "sc": -999999,
+     "type": "spread",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 4,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 2,
+     "linesThrough": 7,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 95,
+     "sc": 40.072
+    },
+    {
+     "d": 2,
+     "cell": 95,
+     "sc": 90.01400000000001
+    },
+    {
+     "d": 3,
+     "cell": 95,
+     "sc": 90.01400000000001
+    },
+    {
+     "d": 4,
+     "cell": 95,
+     "sc": 90.01400000000001
+    },
+    {
+     "d": 5,
+     "cell": 95,
+     "sc": 90.01400000000001
+    },
+    {
+     "d": 6,
+     "cell": 95,
+     "sc": 90.01400000000001
+    },
+    {
+     "d": 7,
+     "cell": 95,
+     "sc": 90.01400000000001
+    },
+    {
+     "d": 8,
+     "cell": 95,
+     "sc": 90.01400000000001
+    },
+    {
+     "d": 9,
+     "cell": 95,
+     "sc": 90.01400000000001
+    },
+    {
+     "d": 10,
+     "cell": 95,
+     "sc": 21.36799999999998
+    }
+   ]
+  },
+  {
+   "k": 26,
+   "who": 2,
+   "cell": 91,
+   "x": 1,
+   "y": 3,
+   "z": 3,
+   "sc": -51.04600000000001,
+   "depth": 9,
+   "ms": 35003,
+   "nodes": 547717120,
+   "stable": false,
+   "gap2": 36.512,
+   "ties": 1,
+   "second": 83,
+   "secondSc": -87.558,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 1,
+    "foeLiveAfter": 0,
+    "myGapAfter": 2,
+    "newGaps": 1,
+    "blocked": 0,
+    "deadFoe": 4,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 3,
+    "to3": 2,
+    "linesThrough": 14,
+    "rising": 8,
+    "inPlane": 6,
+    "vertical": 2,
+    "height": 4,
+    "colFillBefore": 3,
+    "myGapBefore": 1,
+    "foeGapBefore": 1
+   },
+   "type": "threat",
+   "evalBefore": -40.072,
+   "cands": [
+    {
+     "cell": 91,
+     "sc": -51.04600000000001,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 2,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 4
+    },
+    {
+     "cell": 83,
+     "sc": -87.558,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 4
+    },
+    {
+     "cell": 31,
+     "sc": -93.108,
+     "type": "stack",
+     "win": false,
+     "to2": 6,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 4,
+     "sc": -96.476,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 57,
+     "sc": -97.58800000000001,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 10,
+     "sc": -999990,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 91,
+     "sc": 21.642000000000003
+    },
+    {
+     "d": 2,
+     "cell": 91,
+     "sc": -44.708000000000006
+    },
+    {
+     "d": 3,
+     "cell": 4,
+     "sc": 5.986000000000004
+    },
+    {
+     "d": 4,
+     "cell": 63,
+     "sc": -85.98400000000001
+    },
+    {
+     "d": 5,
+     "cell": 36,
+     "sc": -26.94999999999999
+    },
+    {
+     "d": 6,
+     "cell": 63,
+     "sc": -85.98400000000001
+    },
+    {
+     "d": 7,
+     "cell": 42,
+     "sc": -27.61200000000001
+    },
+    {
+     "d": 8,
+     "cell": 10,
+     "sc": -90.01400000000001
+    },
+    {
+     "d": 9,
+     "cell": 91,
+     "sc": -51.04600000000001
+    }
+   ]
+  },
+  {
+   "k": 27,
+   "who": 1,
+   "cell": 116,
+   "x": 1,
+   "y": 3,
+   "z": 4,
+   "sc": 24.909999999999997,
+   "depth": 10,
+   "ms": 35001,
+   "nodes": 570665984,
+   "stable": true,
+   "gap2": 1000023.91,
+   "ties": 1,
+   "second": 25,
+   "secondSc": -999999,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 1,
+    "newGaps": 0,
+    "blocked": 1,
+    "deadFoe": 1,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 1,
+    "to2": 1,
+    "to3": 0,
+    "linesThrough": 10,
+    "rising": 4,
+    "inPlane": 6,
+    "vertical": 1,
+    "height": 5,
+    "colFillBefore": 4,
+    "myGapBefore": 1,
+    "foeGapBefore": 2
+   },
+   "type": "block",
+   "evalBefore": -21.642000000000003,
+   "cands": [
+    {
+     "cell": 116,
+     "sc": 24.909999999999997,
+     "type": "block",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 1,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 5
+    },
+    {
+     "cell": 25,
+     "sc": -999999,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 2
+    },
+    {
+     "cell": 1,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 2,
+     "sc": -999999,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 3,
+     "sc": -999999,
+     "type": "spread",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 4,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 2,
+     "linesThrough": 7,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 116,
+     "sc": 44.708000000000006
+    },
+    {
+     "d": 2,
+     "cell": 116,
+     "sc": -5.846000000000004
+    },
+    {
+     "d": 3,
+     "cell": 116,
+     "sc": 98.98400000000001
+    },
+    {
+     "d": 4,
+     "cell": 116,
+     "sc": 27.597999999999992
+    },
+    {
+     "d": 5,
+     "cell": 116,
+     "sc": 98.98400000000001
+    },
+    {
+     "d": 6,
+     "cell": 116,
+     "sc": 98.98400000000001
+    },
+    {
+     "d": 7,
+     "cell": 116,
+     "sc": 98.98400000000001
+    },
+    {
+     "d": 8,
+     "cell": 116,
+     "sc": 98.98400000000001
+    },
+    {
+     "d": 9,
+     "cell": 116,
+     "sc": 98.98400000000001
+    },
+    {
+     "d": 10,
+     "cell": 116,
+     "sc": 24.909999999999997
+    }
+   ]
+  },
+  {
+   "k": 28,
+   "who": 2,
+   "cell": 57,
+   "x": 2,
+   "y": 1,
+   "z": 2,
+   "sc": -101.624,
+   "depth": 9,
+   "ms": 35002,
+   "nodes": 594334720,
+   "stable": false,
+   "gap2": 1.0540000000000163,
+   "ties": 1,
+   "second": 83,
+   "secondSc": -102.67800000000001,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 2,
+    "newGaps": 1,
+    "blocked": 0,
+    "deadFoe": 9,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 3,
+    "to3": 1,
+    "linesThrough": 18,
+    "rising": 12,
+    "inPlane": 6,
+    "vertical": 2,
+    "height": 3,
+    "colFillBefore": 2,
+    "myGapBefore": 1,
+    "foeGapBefore": 1
+   },
+   "type": "threat",
+   "evalBefore": -44.708000000000006,
+   "cands": [
+    {
+     "cell": 57,
+     "sc": -101.624,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 83,
+     "sc": -102.67800000000001,
+     "type": "stack",
+     "win": false,
+     "to2": 4,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 4
+    },
+    {
+     "cell": 4,
+     "sc": -114.318,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 3,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 87,
+     "sc": -999990,
+     "type": "stack",
+     "win": false,
+     "to2": 4,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 4
+    },
+    {
+     "cell": 42,
+     "sc": -999990,
+     "type": "stack",
+     "win": false,
+     "to2": 6,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 39,
+     "sc": -999990,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 2
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 4,
+     "sc": 5.846000000000004
+    },
+    {
+     "d": 2,
+     "cell": 63,
+     "sc": -94.34
+    },
+    {
+     "d": 3,
+     "cell": 31,
+     "sc": -23.41400000000001
+    },
+    {
+     "d": 4,
+     "cell": 31,
+     "sc": -96.03800000000001
+    },
+    {
+     "d": 5,
+     "cell": 36,
+     "sc": -35.629999999999995
+    },
+    {
+     "d": 6,
+     "cell": 87,
+     "sc": -99.91
+    },
+    {
+     "d": 7,
+     "cell": 39,
+     "sc": -35.522
+    },
+    {
+     "d": 8,
+     "cell": 57,
+     "sc": -101.624
+    },
+    {
+     "d": 9,
+     "cell": 57,
+     "sc": -101.624
+    }
+   ]
+  },
+  {
+   "k": 29,
+   "who": 1,
+   "cell": 10,
+   "x": 0,
+   "y": 2,
+   "z": 0,
+   "sc": 101.624,
+   "depth": 9,
+   "ms": 23037,
+   "nodes": 610327827,
+   "stable": true,
+   "gap2": 6.46599999999998,
+   "ties": 1,
+   "second": 30,
+   "secondSc": 95.15800000000002,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 1,
+    "foeLiveAfter": 0,
+    "myGapAfter": 2,
+    "newGaps": 1,
+    "blocked": 0,
+    "deadFoe": 2,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 3,
+    "to3": 1,
+    "linesThrough": 5,
+    "rising": 2,
+    "inPlane": 3,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 1,
+    "foeGapBefore": 2
+   },
+   "type": "threat",
+   "evalBefore": 29.167999999999985,
+   "cands": [
+    {
+     "cell": 10,
+     "sc": 101.624,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 30,
+     "sc": 95.15800000000002,
+     "type": "stack",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 36,
+     "sc": 94.77600000000001,
+     "type": "stack",
+     "win": false,
+     "to2": 8,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 1,
+     "sc": 94.696,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 44,
+     "sc": 93.542,
+     "type": "threat",
+     "win": false,
+     "to2": 1,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 3,
+     "sc": 92.44200000000001,
+     "type": "spread",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 63,
+     "sc": 100.62800000000001
+    },
+    {
+     "d": 2,
+     "cell": 10,
+     "sc": 101.624
+    },
+    {
+     "d": 3,
+     "cell": 10,
+     "sc": 101.624
+    },
+    {
+     "d": 4,
+     "cell": 10,
+     "sc": 101.624
+    },
+    {
+     "d": 5,
+     "cell": 10,
+     "sc": 101.624
+    },
+    {
+     "d": 6,
+     "cell": 10,
+     "sc": 101.624
+    },
+    {
+     "d": 7,
+     "cell": 10,
+     "sc": 101.624
+    },
+    {
+     "d": 8,
+     "cell": 10,
+     "sc": 101.624
+    },
+    {
+     "d": 9,
+     "cell": 10,
+     "sc": 101.624
+    }
+   ]
+  },
+  {
+   "k": 30,
+   "who": 2,
+   "cell": 15,
+   "x": 0,
+   "y": 3,
+   "z": 0,
+   "sc": -24.983999999999988,
+   "depth": 9,
+   "ms": 35001,
+   "nodes": 633823232,
+   "stable": true,
+   "gap2": 999974.016,
+   "ties": 1,
+   "second": 25,
+   "secondSc": -999999,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 2,
+    "newGaps": 0,
+    "blocked": 1,
+    "deadFoe": 4,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 1,
+    "to2": 5,
+    "to3": 0,
+    "linesThrough": 8,
+    "rising": 4,
+    "inPlane": 4,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 2,
+    "foeGapBefore": 2
+   },
+   "type": "block",
+   "evalBefore": -84.11,
+   "cands": [
+    {
+     "cell": 15,
+     "sc": -24.983999999999988,
+     "type": "block",
+     "win": false,
+     "to2": 5,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 1,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 25,
+     "sc": -999999,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 2
+    },
+    {
+     "cell": 1,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 2,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 3,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 4,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 3,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 7,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 15,
+     "sc": -19.874000000000002
+    },
+    {
+     "d": 2,
+     "cell": 15,
+     "sc": -101.624
+    },
+    {
+     "d": 3,
+     "cell": 15,
+     "sc": -101.624
+    },
+    {
+     "d": 4,
+     "cell": 15,
+     "sc": -101.624
+    },
+    {
+     "d": 5,
+     "cell": 15,
+     "sc": -101.624
+    },
+    {
+     "d": 6,
+     "cell": 15,
+     "sc": -101.624
+    },
+    {
+     "d": 7,
+     "cell": 15,
+     "sc": -101.624
+    },
+    {
+     "d": 8,
+     "cell": 15,
+     "sc": -101.624
+    },
+    {
+     "d": 9,
+     "cell": 15,
+     "sc": -24.983999999999988
+    }
+   ]
+  },
+  {
+   "k": 31,
+   "who": 1,
+   "cell": 35,
+   "x": 0,
+   "y": 2,
+   "z": 1,
+   "sc": 96.994,
+   "depth": 7,
+   "ms": 8002,
+   "nodes": 638834688,
+   "stable": true,
+   "gap2": 1.1559999999999917,
+   "ties": 1,
+   "second": 40,
+   "secondSc": 95.83800000000001,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 2,
+    "newGaps": 1,
+    "blocked": 0,
+    "deadFoe": 2,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 3,
+    "to3": 1,
+    "linesThrough": 8,
+    "rising": 5,
+    "inPlane": 3,
+    "vertical": 2,
+    "height": 2,
+    "colFillBefore": 1,
+    "myGapBefore": 1,
+    "foeGapBefore": 2
+   },
+   "type": "threat",
+   "evalBefore": 19.874000000000002,
+   "cands": [
+    {
+     "cell": 35,
+     "sc": 96.994,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 2
+    },
+    {
+     "cell": 40,
+     "sc": 95.83800000000001,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 36,
+     "sc": 94.44000000000001,
+     "type": "threat",
+     "win": false,
+     "to2": 7,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 1,
+     "sc": 93.294,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 2,
+     "sc": 90.632,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 44,
+     "sc": 88.742,
+     "type": "threat",
+     "win": false,
+     "to2": 1,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 63,
+     "sc": 98.59
+    },
+    {
+     "d": 2,
+     "cell": 35,
+     "sc": 96.994
+    },
+    {
+     "d": 3,
+     "cell": 40,
+     "sc": 101.72200000000001
+    },
+    {
+     "d": 4,
+     "cell": 35,
+     "sc": 96.994
+    },
+    {
+     "d": 5,
+     "cell": 35,
+     "sc": 96.994
+    },
+    {
+     "d": 6,
+     "cell": 35,
+     "sc": 96.994
+    },
+    {
+     "d": 7,
+     "cell": 35,
+     "sc": 96.994
+    }
+   ]
+  },
+  {
+   "k": 32,
+   "who": 2,
+   "cell": 30,
+   "x": 0,
+   "y": 1,
+   "z": 1,
+   "sc": -96.994,
+   "depth": 8,
+   "ms": 8005,
+   "nodes": 643852288,
+   "stable": true,
+   "gap2": 999898.006,
+   "ties": 1,
+   "second": 4,
+   "secondSc": -999995,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 2,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 5,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 1,
+    "to3": 0,
+    "linesThrough": 10,
+    "rising": 6,
+    "inPlane": 4,
+    "vertical": 2,
+    "height": 2,
+    "colFillBefore": 1,
+    "myGapBefore": 2,
+    "foeGapBefore": 2
+   },
+   "type": "stack",
+   "evalBefore": -42.27000000000001,
+   "cands": [
+    {
+     "cell": 30,
+     "sc": -96.994,
+     "type": "stack",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 4,
+     "sc": -999995,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 3,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 42,
+     "sc": -999997,
+     "type": "stack",
+     "win": false,
+     "to2": 6,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 31,
+     "sc": -999997,
+     "type": "stack",
+     "win": false,
+     "to2": 10,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 36,
+     "sc": -999997,
+     "type": "threat",
+     "win": false,
+     "to2": 6,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 44,
+     "sc": -999997,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 4,
+     "sc": 7.506
+    },
+    {
+     "d": 2,
+     "cell": 30,
+     "sc": -96.994
+    },
+    {
+     "d": 3,
+     "cell": 4,
+     "sc": -32.76800000000001
+    },
+    {
+     "d": 4,
+     "cell": 30,
+     "sc": -96.994
+    },
+    {
+     "d": 5,
+     "cell": 30,
+     "sc": -96.994
+    },
+    {
+     "d": 6,
+     "cell": 30,
+     "sc": -96.994
+    },
+    {
+     "d": 7,
+     "cell": 30,
+     "sc": -96.994
+    },
+    {
+     "d": 8,
+     "cell": 30,
+     "sc": -96.994
+    }
+   ]
+  },
+  {
+   "k": 33,
+   "who": 1,
+   "cell": 3,
+   "x": 3,
+   "y": 0,
+   "z": 0,
+   "sc": 26.90999999999999,
+   "depth": 8,
+   "ms": 6395,
+   "nodes": 647880875,
+   "stable": false,
+   "gap2": 1.6059999999999945,
+   "ties": 1,
+   "second": 36,
+   "secondSc": 25.303999999999995,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 2,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 3,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 4,
+    "to3": 0,
+    "linesThrough": 8,
+    "rising": 4,
+    "inPlane": 4,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 2,
+    "foeGapBefore": 2
+   },
+   "type": "spread",
+   "evalBefore": 20.634,
+   "cands": [
+    {
+     "cell": 3,
+     "sc": 26.90999999999999,
+     "type": "spread",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 36,
+     "sc": 25.303999999999995,
+     "type": "threat",
+     "win": false,
+     "to2": 6,
+     "to3": 2,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 60,
+     "sc": 23.94000000000002,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 9,
+     "height": 3
+    },
+    {
+     "cell": 63,
+     "sc": 23.39199999999999,
+     "type": "threat",
+     "win": false,
+     "to2": 6,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 87,
+     "sc": 22.817999999999998,
+     "type": "threat",
+     "win": false,
+     "to2": 5,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 4
+    },
+    {
+     "cell": 42,
+     "sc": 19.92600000000001,
+     "type": "stack",
+     "win": false,
+     "to2": 6,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 63,
+     "sc": 101.33200000000001
+    },
+    {
+     "d": 2,
+     "cell": 3,
+     "sc": 26.90999999999999
+    },
+    {
+     "d": 3,
+     "cell": 40,
+     "sc": 93.196
+    },
+    {
+     "d": 4,
+     "cell": 3,
+     "sc": 26.90999999999999
+    },
+    {
+     "d": 5,
+     "cell": 36,
+     "sc": 85.96000000000001
+    },
+    {
+     "d": 6,
+     "cell": 3,
+     "sc": 26.90999999999999
+    },
+    {
+     "d": 7,
+     "cell": 83,
+     "sc": 77.82400000000001
+    },
+    {
+     "d": 8,
+     "cell": 3,
+     "sc": 26.90999999999999
+    }
+   ]
+  },
+  {
+   "k": 34,
+   "who": 2,
+   "cell": 28,
+   "x": 3,
+   "y": 0,
+   "z": 1,
+   "sc": -97.98200000000001,
+   "depth": 8,
+   "ms": 5093,
+   "nodes": 651382763,
+   "stable": true,
+   "gap2": 8.909999999999982,
+   "ties": 1,
+   "second": 60,
+   "secondSc": -106.892,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 2,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 4,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 2,
+    "to3": 0,
+    "linesThrough": 10,
+    "rising": 6,
+    "inPlane": 4,
+    "vertical": 2,
+    "height": 2,
+    "colFillBefore": 1,
+    "myGapBefore": 2,
+    "foeGapBefore": 2
+   },
+   "type": "stack",
+   "evalBefore": -36.68000000000001,
+   "cands": [
+    {
+     "cell": 28,
+     "sc": -97.98200000000001,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 60,
+     "sc": -106.892,
+     "type": "stack",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 9,
+     "height": 3
+    },
+    {
+     "cell": 55,
+     "sc": -999990,
+     "type": "stack",
+     "win": false,
+     "to2": 5,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 3
+    },
+    {
+     "cell": 39,
+     "sc": -999990,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 2
+    },
+    {
+     "cell": 4,
+     "sc": -999990,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 3,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 87,
+     "sc": -999990,
+     "type": "stack",
+     "win": false,
+     "to2": 5,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 4
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 4,
+     "sc": 13.82200000000001
+    },
+    {
+     "d": 2,
+     "cell": 28,
+     "sc": -26.90999999999999
+    },
+    {
+     "d": 3,
+     "cell": 36,
+     "sc": -24.31599999999999
+    },
+    {
+     "d": 4,
+     "cell": 28,
+     "sc": -26.90999999999999
+    },
+    {
+     "d": 5,
+     "cell": 44,
+     "sc": -25.766000000000002
+    },
+    {
+     "d": 6,
+     "cell": 28,
+     "sc": -26.90999999999999
+    },
+    {
+     "d": 7,
+     "cell": 28,
+     "sc": -26.90999999999999
+    },
+    {
+     "d": 8,
+     "cell": 28,
+     "sc": -97.98200000000001
+    }
+   ]
+  },
+  {
+   "k": 35,
+   "who": 1,
+   "cell": 60,
+   "x": 0,
+   "y": 2,
+   "z": 2,
+   "sc": 31.859999999999992,
+   "depth": 8,
+   "ms": 8001,
+   "nodes": 656393216,
+   "stable": false,
+   "gap2": 9.287999999999997,
+   "ties": 2,
+   "second": 42,
+   "secondSc": 22.571999999999996,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 1,
+    "foeLiveAfter": 0,
+    "myGapAfter": 3,
+    "newGaps": 1,
+    "blocked": 0,
+    "deadFoe": 4,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 3,
+    "to3": 1,
+    "linesThrough": 9,
+    "rising": 6,
+    "inPlane": 3,
+    "vertical": 2,
+    "height": 3,
+    "colFillBefore": 2,
+    "myGapBefore": 2,
+    "foeGapBefore": 2
+   },
+   "type": "threat",
+   "evalBefore": 25.424,
+   "cands": [
+    {
+     "cell": 60,
+     "sc": 31.859999999999992,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 9,
+     "height": 3
+    },
+    {
+     "cell": 63,
+     "sc": 31.859999999999992,
+     "type": "threat",
+     "win": false,
+     "to2": 7,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 42,
+     "sc": 22.571999999999996,
+     "type": "stack",
+     "win": false,
+     "to2": 6,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 87,
+     "sc": 21.70599999999999,
+     "type": "threat",
+     "win": false,
+     "to2": 5,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 4
+    },
+    {
+     "cell": 44,
+     "sc": 19.966,
+     "type": "threat",
+     "win": false,
+     "to2": 1,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 53,
+     "sc": 16.77400000000001,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 3
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 63,
+     "sc": 108.06800000000001
+    },
+    {
+     "d": 2,
+     "cell": 1,
+     "sc": 97.98200000000001
+    },
+    {
+     "d": 3,
+     "cell": 60,
+     "sc": 110.958
+    },
+    {
+     "d": 4,
+     "cell": 1,
+     "sc": 97.98200000000001
+    },
+    {
+     "d": 5,
+     "cell": 60,
+     "sc": 106.79
+    },
+    {
+     "d": 6,
+     "cell": 40,
+     "sc": 97.98200000000001
+    },
+    {
+     "d": 7,
+     "cell": 40,
+     "sc": 97.98200000000001
+    },
+    {
+     "d": 8,
+     "cell": 60,
+     "sc": 31.859999999999992
+    }
+   ]
+  },
+  {
+   "k": 36,
+   "who": 2,
+   "cell": 85,
+   "x": 0,
+   "y": 2,
+   "z": 3,
+   "sc": -999990,
+   "depth": 8,
+   "ms": 2227,
+   "nodes": 657951845,
+   "stable": true,
+   "gap2": 9,
+   "ties": 1,
+   "second": 25,
+   "secondSc": -999999,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 2,
+    "newGaps": 0,
+    "blocked": 1,
+    "deadFoe": 5,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 1,
+    "to2": 1,
+    "to3": 0,
+    "linesThrough": 8,
+    "rising": 5,
+    "inPlane": 3,
+    "vertical": 2,
+    "height": 4,
+    "colFillBefore": 3,
+    "myGapBefore": 2,
+    "foeGapBefore": 3
+   },
+   "type": "block",
+   "evalBefore": -92.26400000000001,
+   "cands": [
+    {
+     "cell": 85,
+     "sc": -999990,
+     "type": "block",
+     "win": false,
+     "to2": 1,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 1,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 4
+    },
+    {
+     "cell": 25,
+     "sc": -999999,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 2
+    },
+    {
+     "cell": 1,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 2,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 53,
+     "sc": -999999,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 3
+    },
+    {
+     "cell": 4,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 3,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 7,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 85,
+     "sc": -27.96
+    },
+    {
+     "d": 2,
+     "cell": 85,
+     "sc": -999990
+    },
+    {
+     "d": 3,
+     "cell": 85,
+     "sc": -999990
+    },
+    {
+     "d": 4,
+     "cell": 85,
+     "sc": -999990
+    },
+    {
+     "d": 5,
+     "cell": 85,
+     "sc": -999990
+    },
+    {
+     "d": 6,
+     "cell": 85,
+     "sc": -999990
+    },
+    {
+     "d": 7,
+     "cell": 85,
+     "sc": -999990
+    },
+    {
+     "d": 8,
+     "cell": 85,
+     "sc": -999990
+    }
+   ]
+  },
+  {
+   "k": 37,
+   "who": 1,
+   "cell": 110,
+   "x": 0,
+   "y": 2,
+   "z": 4,
+   "sc": 999991,
+   "depth": 8,
+   "ms": 3431,
+   "nodes": 660154278,
+   "stable": true,
+   "gap2": 999962.278,
+   "ties": 2,
+   "second": 44,
+   "secondSc": 28.721999999999994,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 3,
+    "newGaps": 1,
+    "blocked": 0,
+    "deadFoe": 1,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 0,
+    "to3": 2,
+    "linesThrough": 5,
+    "rising": 2,
+    "inPlane": 3,
+    "vertical": 1,
+    "height": 5,
+    "colFillBefore": 4,
+    "myGapBefore": 2,
+    "foeGapBefore": 2
+   },
+   "type": "threat",
+   "evalBefore": 27.96,
+   "cands": [
+    {
+     "cell": 110,
+     "sc": 999991,
+     "type": "threat",
+     "win": false,
+     "to2": 0,
+     "to3": 2,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 5
+    },
+    {
+     "cell": 63,
+     "sc": 999991,
+     "type": "fork",
+     "win": false,
+     "to2": 6,
+     "to3": 2,
+     "newGaps": 2,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 44,
+     "sc": 28.721999999999994,
+     "type": "threat",
+     "win": false,
+     "to2": 1,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 42,
+     "sc": 25.497999999999998,
+     "type": "stack",
+     "win": false,
+     "to2": 6,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 87,
+     "sc": 24.672000000000004,
+     "type": "threat",
+     "win": false,
+     "to2": 5,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 4
+    },
+    {
+     "cell": 1,
+     "sc": 21.336,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 3,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 63,
+     "sc": 110.958
+    },
+    {
+     "d": 2,
+     "cell": 110,
+     "sc": 999991
+    },
+    {
+     "d": 3,
+     "cell": 110,
+     "sc": 999991
+    },
+    {
+     "d": 4,
+     "cell": 110,
+     "sc": 999991
+    },
+    {
+     "d": 5,
+     "cell": 110,
+     "sc": 999991
+    },
+    {
+     "d": 6,
+     "cell": 110,
+     "sc": 999991
+    },
+    {
+     "d": 7,
+     "cell": 110,
+     "sc": 999991
+    },
+    {
+     "d": 8,
+     "cell": 110,
+     "sc": 999991
+    }
+   ]
+  },
+  {
+   "k": 38,
+   "who": 2,
+   "cell": 4,
+   "x": 4,
+   "y": 0,
+   "z": 0,
+   "sc": -999993,
+   "depth": 8,
+   "ms": 2235,
+   "nodes": 661777522,
+   "stable": true,
+   "gap2": 2,
+   "ties": 2,
+   "second": 42,
+   "secondSc": -999995,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 1,
+    "foeLiveAfter": 0,
+    "myGapAfter": 2,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 4,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 1,
+    "to3": 3,
+    "linesThrough": 7,
+    "rising": 4,
+    "inPlane": 3,
+    "vertical": 1,
+    "height": 1,
+    "colFillBefore": 0,
+    "myGapBefore": 2,
+    "foeGapBefore": 3
+   },
+   "type": "build",
+   "evalBefore": -36.730000000000004,
+   "cands": [
+    {
+     "cell": 4,
+     "sc": -999993,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 3,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 7,
+     "height": 1
+    },
+    {
+     "cell": 63,
+     "sc": -999993,
+     "type": "threat",
+     "win": false,
+     "to2": 3,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 42,
+     "sc": -999995,
+     "type": "stack",
+     "win": false,
+     "to2": 7,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 2,
+     "sc": -999995,
+     "type": "build",
+     "win": false,
+     "to2": 0,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 44,
+     "sc": -999995,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 87,
+     "sc": -999995,
+     "type": "stack",
+     "win": false,
+     "to2": 6,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 4
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 4,
+     "sc": 11.866000000000014
+    },
+    {
+     "d": 2,
+     "cell": 2,
+     "sc": -92.458
+    },
+    {
+     "d": 3,
+     "cell": 42,
+     "sc": -12.537999999999993
+    },
+    {
+     "d": 4,
+     "cell": 42,
+     "sc": -92.088
+    },
+    {
+     "d": 5,
+     "cell": 4,
+     "sc": -106.07600000000001
+    },
+    {
+     "d": 6,
+     "cell": 4,
+     "sc": -999992
+    },
+    {
+     "d": 7,
+     "cell": 4,
+     "sc": -999992
+    },
+    {
+     "d": 8,
+     "cell": 4,
+     "sc": -999993
+    }
+   ]
+  },
+  {
+   "k": 39,
+   "who": 1,
+   "cell": 29,
+   "x": 4,
+   "y": 0,
+   "z": 1,
+   "sc": 999994,
+   "depth": 8,
+   "ms": 167,
+   "nodes": 661885709,
+   "stable": true,
+   "gap2": 1999993,
+   "ties": 1,
+   "second": 25,
+   "secondSc": -999999,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 1,
+    "foeLiveAfter": 0,
+    "myGapAfter": 4,
+    "newGaps": 1,
+    "blocked": 1,
+    "deadFoe": 3,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 1,
+    "to2": 0,
+    "to3": 1,
+    "linesThrough": 8,
+    "rising": 5,
+    "inPlane": 3,
+    "vertical": 2,
+    "height": 2,
+    "colFillBefore": 1,
+    "myGapBefore": 3,
+    "foeGapBefore": 2
+   },
+   "type": "block",
+   "evalBefore": -11.866000000000014,
+   "cands": [
+    {
+     "cell": 29,
+     "sc": 999994,
+     "type": "block",
+     "win": false,
+     "to2": 0,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 1,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 2
+    },
+    {
+     "cell": 25,
+     "sc": -999999,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 2
+    },
+    {
+     "cell": 1,
+     "sc": -999999,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 3,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 2,
+     "sc": -999999,
+     "type": "fork",
+     "win": false,
+     "to2": 2,
+     "to3": 2,
+     "newGaps": 2,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 53,
+     "sc": -999999,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 3
+    },
+    {
+     "cell": 55,
+     "sc": -999999,
+     "type": "stack",
+     "win": false,
+     "to2": 5,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 3
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 29,
+     "sc": 97.78200000000001
+    },
+    {
+     "d": 2,
+     "cell": 29,
+     "sc": 999994
+    },
+    {
+     "d": 3,
+     "cell": 29,
+     "sc": 999994
+    },
+    {
+     "d": 4,
+     "cell": 29,
+     "sc": 999994
+    },
+    {
+     "d": 5,
+     "cell": 29,
+     "sc": 999994
+    },
+    {
+     "d": 6,
+     "cell": 29,
+     "sc": 999994
+    },
+    {
+     "d": 7,
+     "cell": 29,
+     "sc": 999994
+    },
+    {
+     "d": 8,
+     "cell": 29,
+     "sc": 999994
+    }
+   ]
+  },
+  {
+   "k": 40,
+   "who": 2,
+   "cell": 87,
+   "x": 2,
+   "y": 2,
+   "z": 3,
+   "sc": -999995,
+   "depth": 8,
+   "ms": 2308,
+   "nodes": 663524356,
+   "stable": true,
+   "gap2": 4,
+   "ties": 1,
+   "second": 25,
+   "secondSc": -999999,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 1,
+    "newGaps": 0,
+    "blocked": 1,
+    "deadFoe": 6,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 1,
+    "to2": 6,
+    "to3": 1,
+    "linesThrough": 18,
+    "rising": 10,
+    "inPlane": 8,
+    "vertical": 2,
+    "height": 4,
+    "colFillBefore": 3,
+    "myGapBefore": 1,
+    "foeGapBefore": 4
+   },
+   "type": "block",
+   "evalBefore": -97.78200000000001,
+   "cands": [
+    {
+     "cell": 87,
+     "sc": -999995,
+     "type": "block",
+     "win": false,
+     "to2": 6,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 1,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 4
+    },
+    {
+     "cell": 25,
+     "sc": -999999,
+     "type": "stack",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 2
+    },
+    {
+     "cell": 1,
+     "sc": -999999,
+     "type": "spread",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 2,
+     "sc": -999999,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 53,
+     "sc": -999999,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 8,
+     "height": 3
+    },
+    {
+     "cell": 54,
+     "sc": -999999,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 1,
+     "linesThrough": 5,
+     "height": 3
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 87,
+     "sc": -31.222
+    },
+    {
+     "d": 2,
+     "cell": 87,
+     "sc": -999995
+    },
+    {
+     "d": 3,
+     "cell": 87,
+     "sc": -999995
+    },
+    {
+     "d": 4,
+     "cell": 87,
+     "sc": -999995
+    },
+    {
+     "d": 5,
+     "cell": 87,
+     "sc": -999995
+    },
+    {
+     "d": 6,
+     "cell": 87,
+     "sc": -999995
+    },
+    {
+     "d": 7,
+     "cell": 87,
+     "sc": -999995
+    },
+    {
+     "d": 8,
+     "cell": 87,
+     "sc": -999995
+    }
+   ]
+  },
+  {
+   "k": 41,
+   "who": 1,
+   "cell": 36,
+   "x": 1,
+   "y": 2,
+   "z": 1,
+   "sc": 999996,
+   "depth": 8,
+   "ms": 471,
+   "nodes": 302795,
+   "stable": true,
+   "gap2": 2,
+   "ties": 2,
+   "second": 44,
+   "secondSc": 999994,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 4,
+    "newGaps": 1,
+    "blocked": 0,
+    "deadFoe": 9,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 6,
+    "to3": 2,
+    "selfBlocked": 6,
+    "linesThrough": 14,
+    "rising": 8,
+    "inPlane": 6,
+    "vertical": 2,
+    "height": 2,
+    "colFillBefore": 1,
+    "myGapBefore": 3,
+    "foeGapBefore": 1
+   },
+   "type": "threat",
+   "evalBefore": 31.222,
+   "cands": [
+    {
+     "cell": 36,
+     "sc": 999996,
+     "self": true,
+     "type": "threat",
+     "win": false,
+     "to2": 6,
+     "to3": 2,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 63,
+     "sc": 999996,
+     "self": false,
+     "type": "fork",
+     "win": false,
+     "to2": 6,
+     "to3": 2,
+     "newGaps": 2,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 44,
+     "sc": 999994,
+     "self": false,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 40,
+     "sc": 999994,
+     "self": false,
+     "type": "stack",
+     "win": false,
+     "to2": 4,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 1,
+     "sc": 999994,
+     "self": false,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 3,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 2,
+     "sc": 999994,
+     "self": false,
+     "type": "fork",
+     "win": false,
+     "to2": 2,
+     "to3": 2,
+     "newGaps": 2,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 63,
+     "sc": 111.17800000000001
+    },
+    {
+     "d": 2,
+     "cell": 63,
+     "sc": 31.859999999999992
+    },
+    {
+     "d": 3,
+     "cell": 36,
+     "sc": 999995
+    },
+    {
+     "d": 4,
+     "cell": 36,
+     "sc": 999995
+    },
+    {
+     "d": 5,
+     "cell": 36,
+     "sc": 999996
+    },
+    {
+     "d": 6,
+     "cell": 36,
+     "sc": 999996
+    },
+    {
+     "d": 7,
+     "cell": 36,
+     "sc": 999996
+    },
+    {
+     "d": 8,
+     "cell": 36,
+     "sc": 999996
+    }
+   ]
+  },
+  {
+   "k": 42,
+   "who": 2,
+   "cell": 42,
+   "x": 2,
+   "y": 3,
+   "z": 1,
+   "sc": -999997,
+   "depth": 8,
+   "ms": 1728,
+   "nodes": 1756389,
+   "stable": true,
+   "gap2": 2,
+   "ties": 20,
+   "second": 61,
+   "secondSc": -999999,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 0,
+    "myGapAfter": 1,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 7,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 7,
+    "to3": 0,
+    "selfBlocked": 7,
+    "linesThrough": 14,
+    "rising": 8,
+    "inPlane": 6,
+    "vertical": 2,
+    "height": 2,
+    "colFillBefore": 1,
+    "myGapBefore": 1,
+    "foeGapBefore": 4
+   },
+   "type": "stack",
+   "evalBefore": -52.74200000000001,
+   "cands": [
+    {
+     "cell": 42,
+     "sc": -999997,
+     "self": true,
+     "type": "stack",
+     "win": false,
+     "to2": 7,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 31,
+     "sc": -999997,
+     "self": false,
+     "type": "stack",
+     "win": false,
+     "to2": 9,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 2
+    },
+    {
+     "cell": 21,
+     "sc": -999997,
+     "self": false,
+     "type": "spread",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 1,
+     "sc": -999997,
+     "self": false,
+     "type": "spread",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 44,
+     "sc": -999997,
+     "self": false,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 23,
+     "sc": -999997,
+     "self": false,
+     "type": "build",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 2,
+     "sc": -26.587999999999994
+    },
+    {
+     "d": 2,
+     "cell": 42,
+     "sc": -999996
+    },
+    {
+     "d": 3,
+     "cell": 42,
+     "sc": -999996
+    },
+    {
+     "d": 4,
+     "cell": 42,
+     "sc": -999997
+    },
+    {
+     "d": 5,
+     "cell": 42,
+     "sc": -999997
+    },
+    {
+     "d": 6,
+     "cell": 42,
+     "sc": -999997
+    },
+    {
+     "d": 7,
+     "cell": 42,
+     "sc": -999997
+    },
+    {
+     "d": 8,
+     "cell": 42,
+     "sc": -999997
+    }
+   ]
+  },
+  {
+   "k": 43,
+   "who": 1,
+   "cell": 63,
+   "x": 3,
+   "y": 2,
+   "z": 2,
+   "sc": 999998,
+   "depth": 8,
+   "ms": 108,
+   "nodes": 1817930,
+   "stable": true,
+   "gap2": 2,
+   "ties": 2,
+   "second": 67,
+   "secondSc": 999996,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 2,
+    "foeLiveAfter": 0,
+    "myGapAfter": 5,
+    "newGaps": 1,
+    "blocked": 0,
+    "deadFoe": 6,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 0,
+    "to2": 6,
+    "to3": 2,
+    "selfBlocked": 10,
+    "linesThrough": 18,
+    "rising": 12,
+    "inPlane": 6,
+    "vertical": 2,
+    "height": 3,
+    "colFillBefore": 2,
+    "myGapBefore": 4,
+    "foeGapBefore": 1
+   },
+   "type": "threat",
+   "evalBefore": 29.097999999999978,
+   "cands": [
+    {
+     "cell": 63,
+     "sc": 999998,
+     "self": true,
+     "type": "threat",
+     "win": false,
+     "to2": 6,
+     "to3": 2,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 61,
+     "sc": 999998,
+     "self": false,
+     "type": "fork",
+     "win": false,
+     "to2": 5,
+     "to3": 2,
+     "newGaps": 2,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 67,
+     "sc": 999996,
+     "self": false,
+     "type": "fork",
+     "win": false,
+     "to2": 3,
+     "to3": 2,
+     "newGaps": 2,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 1,
+     "sc": 999996,
+     "self": false,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 3,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 40,
+     "sc": 999996,
+     "self": false,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 2,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 10,
+     "height": 2
+    },
+    {
+     "cell": 2,
+     "sc": 999996,
+     "self": false,
+     "type": "fork",
+     "win": false,
+     "to2": 2,
+     "to3": 2,
+     "newGaps": 2,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 61,
+     "sc": 999997
+    },
+    {
+     "d": 2,
+     "cell": 63,
+     "sc": 999998
+    },
+    {
+     "d": 3,
+     "cell": 63,
+     "sc": 999998
+    },
+    {
+     "d": 4,
+     "cell": 63,
+     "sc": 999998
+    },
+    {
+     "d": 5,
+     "cell": 63,
+     "sc": 999998
+    },
+    {
+     "d": 6,
+     "cell": 63,
+     "sc": 999998
+    },
+    {
+     "d": 7,
+     "cell": 63,
+     "sc": 999998
+    },
+    {
+     "d": 8,
+     "cell": 63,
+     "sc": 999998
+    }
+   ]
+  },
+  {
+   "k": 44,
+   "who": 2,
+   "cell": 25,
+   "x": 0,
+   "y": 0,
+   "z": 1,
+   "sc": -999999,
+   "depth": 8,
+   "ms": 332,
+   "nodes": 1991390,
+   "stable": true,
+   "gap2": null,
+   "ties": 23,
+   "second": null,
+   "secondSc": null,
+   "profile": {
+    "win": false,
+    "myLiveAfter": 0,
+    "foeLiveAfter": 2,
+    "myGapAfter": 1,
+    "newGaps": 0,
+    "blocked": 0,
+    "deadFoe": 2,
+    "threatenedBefore": 0,
+    "foeThreatBefore": 2,
+    "to2": 5,
+    "to3": 0,
+    "selfBlocked": 3,
+    "linesThrough": 8,
+    "rising": 5,
+    "inPlane": 3,
+    "vertical": 2,
+    "height": 2,
+    "colFillBefore": 1,
+    "myGapBefore": 1,
+    "foeGapBefore": 5
+   },
+   "type": "stack",
+   "evalBefore": -999997,
+   "cands": [
+    {
+     "cell": 25,
+     "sc": -999999,
+     "self": true,
+     "type": "stack",
+     "win": false,
+     "to2": 5,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 2,
+     "linesThrough": 8,
+     "height": 2
+    },
+    {
+     "cell": 1,
+     "sc": -999999,
+     "self": false,
+     "type": "spread",
+     "win": false,
+     "to2": 4,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 2,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 2,
+     "sc": -999999,
+     "self": false,
+     "type": "build",
+     "win": false,
+     "to2": 1,
+     "to3": 1,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 2,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 53,
+     "sc": -999999,
+     "self": false,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 2,
+     "linesThrough": 8,
+     "height": 3
+    },
+    {
+     "cell": 54,
+     "sc": -999999,
+     "self": false,
+     "type": "stack",
+     "win": false,
+     "to2": 2,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 2,
+     "linesThrough": 5,
+     "height": 3
+    },
+    {
+     "cell": 55,
+     "sc": -999999,
+     "self": false,
+     "type": "stack",
+     "win": false,
+     "to2": 6,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 2,
+     "linesThrough": 8,
+     "height": 3
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 25,
+     "sc": -999998
+    },
+    {
+     "d": 2,
+     "cell": 25,
+     "sc": -999999
+    },
+    {
+     "d": 3,
+     "cell": 25,
+     "sc": -999999
+    },
+    {
+     "d": 4,
+     "cell": 25,
+     "sc": -999999
+    },
+    {
+     "d": 5,
+     "cell": 25,
+     "sc": -999999
+    },
+    {
+     "d": 6,
+     "cell": 25,
+     "sc": -999999
+    },
+    {
+     "d": 7,
+     "cell": 25,
+     "sc": -999999
+    },
+    {
+     "d": 8,
+     "cell": 25,
+     "sc": -999999
+    }
+   ]
+  },
+  {
+   "k": 45,
+   "who": 1,
+   "cell": 61,
+   "x": 1,
+   "y": 2,
+   "z": 2,
+   "sc": 999999,
+   "depth": 8,
+   "ms": 13,
+   "nodes": 1998033,
+   "stable": true,
+   "gap2": 1,
+   "ties": 2,
+   "second": 50,
+   "secondSc": 999998,
+   "profile": {
+    "win": true,
+    "myLiveAfter": 2,
+    "foeLiveAfter": 0,
+    "myGapAfter": 6,
+    "newGaps": 1,
+    "blocked": 0,
+    "deadFoe": 12,
+    "threatenedBefore": 2,
+    "foeThreatBefore": 0,
+    "to2": 4,
+    "to3": 3,
+    "selfBlocked": 11,
+    "linesThrough": 18,
+    "rising": 12,
+    "inPlane": 6,
+    "vertical": 2,
+    "height": 3,
+    "colFillBefore": 2,
+    "myGapBefore": 5,
+    "foeGapBefore": 1
+   },
+   "type": "four",
+   "evalBefore": 999998,
+   "cands": [
+    {
+     "cell": 61,
+     "sc": 999999,
+     "self": true,
+     "type": "four",
+     "win": true,
+     "to2": 4,
+     "to3": 3,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 18,
+     "height": 3
+    },
+    {
+     "cell": 88,
+     "sc": 999999,
+     "self": false,
+     "type": "four",
+     "win": true,
+     "to2": 1,
+     "to3": 4,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 14,
+     "height": 4
+    },
+    {
+     "cell": 50,
+     "sc": 999998,
+     "self": false,
+     "type": "stack",
+     "win": false,
+     "to2": 3,
+     "to3": 0,
+     "newGaps": 0,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 3
+    },
+    {
+     "cell": 1,
+     "sc": 999998,
+     "self": false,
+     "type": "fork",
+     "win": false,
+     "to2": 1,
+     "to3": 4,
+     "newGaps": 2,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 1
+    },
+    {
+     "cell": 2,
+     "sc": 999998,
+     "self": false,
+     "type": "fork",
+     "win": false,
+     "to2": 2,
+     "to3": 2,
+     "newGaps": 2,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 5,
+     "height": 1
+    },
+    {
+     "cell": 53,
+     "sc": 999998,
+     "self": false,
+     "type": "threat",
+     "win": false,
+     "to2": 2,
+     "to3": 1,
+     "newGaps": 1,
+     "blocked": 0,
+     "foeLiveAfter": 0,
+     "linesThrough": 8,
+     "height": 3
+    }
+   ],
+   "depthLog": [
+    {
+     "d": 1,
+     "cell": 61,
+     "sc": 999999
+    },
+    {
+     "d": 2,
+     "cell": 61,
+     "sc": 999999
+    },
+    {
+     "d": 3,
+     "cell": 61,
+     "sc": 999999
+    },
+    {
+     "d": 4,
+     "cell": 61,
+     "sc": 999999
+    },
+    {
+     "d": 5,
+     "cell": 61,
+     "sc": 999999
+    },
+    {
+     "d": 6,
+     "cell": 61,
+     "sc": 999999
+    },
+    {
+     "d": 7,
+     "cell": 61,
+     "sc": 999999
+    },
+    {
+     "d": 8,
+     "cell": 61,
+     "sc": 999999
+    }
+   ]
+  }
+ ],
+ "firstAll": [
+  {
+   "cell": 7,
+   "x": 2,
+   "y": 1,
+   "sc": 61.6
+  },
+  {
+   "cell": 11,
+   "x": 1,
+   "y": 2,
+   "sc": 61.6
+  },
+  {
+   "cell": 13,
+   "x": 3,
+   "y": 2,
+   "sc": 61.6
+  },
+  {
+   "cell": 17,
+   "x": 2,
+   "y": 3,
+   "sc": 61.6
+  },
+  {
+   "cell": 6,
+   "x": 1,
+   "y": 1,
+   "sc": 49.6
+  },
+  {
+   "cell": 8,
+   "x": 3,
+   "y": 1,
+   "sc": 49.6
+  },
+  {
+   "cell": 16,
+   "x": 1,
+   "y": 3,
+   "sc": 49.6
+  },
+  {
+   "cell": 18,
+   "x": 3,
+   "y": 3,
+   "sc": 49.6
+  },
+  {
+   "cell": 1,
+   "x": 1,
+   "y": 0,
+   "sc": 40.9
+  },
+  {
+   "cell": 3,
+   "x": 3,
+   "y": 0,
+   "sc": 40.9
+  },
+  {
+   "cell": 5,
+   "x": 0,
+   "y": 1,
+   "sc": 40.9
+  },
+  {
+   "cell": 9,
+   "x": 4,
+   "y": 1,
+   "sc": 40.9
+  },
+  {
+   "cell": 15,
+   "x": 0,
+   "y": 3,
+   "sc": 40.9
+  },
+  {
+   "cell": 19,
+   "x": 4,
+   "y": 3,
+   "sc": 40.9
+  },
+  {
+   "cell": 21,
+   "x": 1,
+   "y": 4,
+   "sc": 40.9
+  },
+  {
+   "cell": 23,
+   "x": 3,
+   "y": 4,
+   "sc": 40.9
+  },
+  {
+   "cell": 12,
+   "x": 2,
+   "y": 2,
+   "sc": 37.4
+  },
+  {
+   "cell": 0,
+   "x": 0,
+   "y": 0,
+   "sc": 15.8
+  },
+  {
+   "cell": 4,
+   "x": 4,
+   "y": 0,
+   "sc": 15.8
+  },
+  {
+   "cell": 20,
+   "x": 0,
+   "y": 4,
+   "sc": 15.8
+  },
+  {
+   "cell": 24,
+   "x": 4,
+   "y": 4,
+   "sc": 15.8
+  },
+  {
+   "cell": 2,
+   "x": 2,
+   "y": 0,
+   "sc": 15.2
+  },
+  {
+   "cell": 10,
+   "x": 0,
+   "y": 2,
+   "sc": 15.2
+  },
+  {
+   "cell": 14,
+   "x": 4,
+   "y": 2,
+   "sc": 15.2
+  },
+  {
+   "cell": 22,
+   "x": 2,
+   "y": 4,
+   "sc": 15.2
+  }
+ ],
+ "firstDepth": 11
+}

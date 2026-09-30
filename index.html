@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>空间四子棋 · 5×5×5</title>
-<!-- 空间四子棋 v0.8 · 教学式复盘（为什么/后续变化/格点价值/全盘报告）+ 棋谱导出导入 -->
+<!-- 空间四子棋 v0.9 · 暴力算出的开局棋谱（45 手至先手胜）+ 开局手册四标签 + 背谱模式 -->
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -106,6 +106,32 @@ table.vt tr.top td:first-child{box-shadow:inset 3px 0 0 #1D9E75}
 .endbar button{padding:6px 11px;font-size:12.5px;border:1px solid rgba(0,0,0,.14);background:#fff;border-radius:7px;cursor:pointer;font-family:inherit}
 .endbar button:hover{border-color:rgba(0,0,0,.3);background:#FAFAF8}
 .endbar button.pri{background:#2C2C2A;color:#fff;border-color:#2C2C2A}
+/* ---- 开局手册 / 背谱 ---- */
+.bk-list{max-height:352px;overflow:auto;border:1px solid rgba(0,0,0,.08);border-radius:9px;background:#FCFCFA}
+.bk-row{display:flex;align-items:center;gap:8px;padding:5px 9px;font-size:12px;border-bottom:1px solid rgba(0,0,0,.05);cursor:pointer;font-variant-numeric:tabular-nums}
+.bk-row:last-child{border-bottom:0}
+.bk-row:hover{background:#F2F7FD}
+.bk-row.on{background:#EFF8F4;box-shadow:inset 3px 0 0 #1D9E75}
+.bk-row.now{background:#EEEDFE;box-shadow:inset 3px 0 0 #6C63D8}
+.bk-row.bad{background:#FDF2F0;box-shadow:inset 3px 0 0 #E24B4A}
+.bk-row .n{flex:0 0 26px;color:#A9A69E}
+.bk-row .w{flex:0 0 28px}
+.bk-row .c{flex:0 0 86px;font-weight:600}
+.bk-row .s{flex:0 0 58px;text-align:right;color:#4A4844}
+.bk-row .d{flex:0 0 52px;text-align:right;color:#A9A69E;font-size:11px}
+.bk-row .t{flex:1;text-align:right;color:#6E6C66;font-size:11.5px}
+.bl{color:#2C6FB5 !important}
+.rd{color:#C1553A !important}
+.dr{background:#EEEDFE;border-left:3px solid #6C63D8;border-radius:0 8px 8px 0;padding:7px 10px;margin:7px 0;font-size:12.5px;line-height:1.7}
+.dr.ok{background:#EFF8F4;border-left-color:#1D9E75}
+.dr.no{background:#FDF2F0;border-left-color:#E24B4A}
+.memo{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;background:#F7F6F2;border:1px solid rgba(0,0,0,.08);border-radius:8px;padding:8px 9px;white-space:pre-wrap;line-height:1.75;color:#3C3B37}
+.tag{display:inline-block;font-size:11px;padding:1px 6px;border-radius:5px;border:1px solid rgba(0,0,0,.12);color:#4A4844;background:#fff}
+.tag.g{background:#EFF8F4;border-color:rgba(29,158,117,.35);color:#0F6E56}
+.tag.r{background:#FDF2F0;border-color:rgba(226,75,74,.35);color:#993C1D}
+.tag.b{background:#EEF4FB;border-color:rgba(56,110,170,.35);color:#2C6FB5}
+.tag.p{background:#F5F0FA;border-color:rgba(122,78,168,.30);color:#7A4EA8}
+.tag.y{background:#FDF6E8;border-color:rgba(190,140,20,.30);color:#8A6410}
 @media(max-width:860px){.layout{flex-direction:column}.panel{flex:1 1 auto;width:100%}}
 </style>
 </head>
@@ -125,6 +151,34 @@ table.vt tr.top td:first-child{box-shadow:inset 3px 0 0 #1D9E75}
         <button id="endRv" class="pri">复盘讲解</button>
         <button id="endCopy">复制棋谱</button>
         <button id="endDl">下载棋谱</button>
+      </div>
+
+      <div class="rv" id="bkBar" hidden>
+        <div class="rv-head">
+          <span class="rv-title">开局手册</span>
+          <span class="rv-sub" id="bkInfo"></span>
+          <span style="flex:1"></span>
+          <label class="chk" title="藏起下一手的坐标，凭记忆落子"><input type="checkbox" id="bkDrill"> 背谱模式</label>
+          <button id="bkExit" class="rv-btn">收起</button>
+        </div>
+        <div class="rv-tabs" id="bkTabs">
+          <button data-t="list" class="on">全部手数</button>
+          <button data-t="why">这一手的道理</button>
+          <button data-t="cand">备选对照</button>
+          <button data-t="theory">开局原理</button>
+        </div>
+        <div class="rv-pane" id="bkList"></div>
+        <div class="rv-pane" id="bkWhy" hidden></div>
+        <div class="rv-pane" id="bkCand" hidden></div>
+        <div class="rv-pane" id="bkTheory" hidden></div>
+        <div class="rv-ctl2">
+          <button id="bkLoad" class="rv-btn">把棋盘摆到这一手</button>
+          <button id="bkFrom1" class="rv-btn">从第 1 手重摆</button>
+          <button id="bkCopyMd" class="rv-btn">复制全部讲解</button>
+          <button id="bkDlMd" class="rv-btn">下载 .md</button>
+          <button id="bkRec" class="rv-btn">导出成棋谱</button>
+        </div>
+        <div id="bkDrillBox" hidden></div>
       </div>
 
       <div class="rv" id="rvBar" hidden>
@@ -244,6 +298,7 @@ table.vt tr.top td:first-child{box-shadow:inset 3px 0 0 #1D9E75}
           <button id="btnUndo">悔棋</button>
           <button id="btnHint">提示</button>
           <button id="btnNew">新局</button>
+          <button id="btnBook">开局手册</button>
           <button id="btnReview">复盘</button>
         </div>
       </div>
@@ -270,7 +325,7 @@ table.vt tr.top td:first-child{box-shadow:inset 3px 0 0 #1D9E75}
       </div>
       <div class="tips">
         <kbd>拖动</kbd> 任意旋转视角　<kbd>滚轮</kbd> 放大 / 缩小（放大后会溢出画布，是故意的）<br>
-        <kbd>R</kbd> 复位视角　<kbd>H</kbd> 提示　<kbd>U</kbd> 悔棋　<kbd>N</kbd> 新局<br>
+        <kbd>R</kbd> 复位视角　<kbd>H</kbd> 提示　<kbd>U</kbd> 悔棋　<kbd>N</kbd> 新局　<kbd>B</kbd> 开局手册<br>
         <span style="color:#5B7796">下完自动存档棋谱，并自动进复盘。<b>复盘不是告诉你"该下哪"，是告诉你"为什么"</b>：
         「为什么」讲清推导、「后续变化」推演三五手、「格点价值」把 25 个落点的价值拆开比、
         「全盘报告」指出你反复犯的是哪一类错、「棋谱」可导出 / 粘贴导入重新分析。</span>
@@ -1423,6 +1478,8 @@ function humanMove(i){
     const dp=proj(XO(i),YO(i),layer+0.5);
     toast={msg:'↑ 落在第 '+(layer+1)+' 层', t:100, x:dp[0], y:dp[1]-PR*S-18};
   }
+  /* 背谱模式：用户这一手由棋谱裁判，而不是直接进正常对局流程 */
+  if(bkDrillOn()){ bkDrillHuman(i); return; }
   doMove(i, human);
   if(!over) setTimeout(aiTurn, 40);
 }
@@ -1456,6 +1513,7 @@ function finishGame(){
 }
 function aiTurn(){
   if(over) return;
+  if(bkDrillOn()) return;        // 背谱模式下对手是棋谱，不是 AI
   busy=true; thinking=true;
   turnStatus();
   const g = genId;
@@ -1469,6 +1527,7 @@ function aiTurn(){
   }, 30);
 }
 function undo(){
+  if(bkDrillOn()) return;            // 背谱模式下悔棋会让"第几手"错位
   if(rv.on) exitReview();            // 悔棋会改 history，之前算的分析就作废了
   if(!history.length || thinking) return;
   const pop = ()=>{
@@ -1485,6 +1544,7 @@ function undo(){
   if(turn===ai) setTimeout(aiTurn, 120);
 }
 function hint(){
+  if(bkDrillOn()) return;        // 背谱模式下不给提示，否则就白背了
   if(over||thinking||turn!==human) return;
   const m=thinkMove(human);
   if(m!==null){
@@ -1492,6 +1552,7 @@ function hint(){
   }
 }
 function reset(){
+  if(bk.drill) bkDrillStop();                                                // 新局先退出背谱
   if(rv.on){ rv.on=false; document.getElementById('rvBar').hidden=true; }   // 新局直接收起复盘条
   hideEndBar();
   PV_CACHE.clear();
@@ -2241,6 +2302,7 @@ function rvPaint(){
   rvFillPane();
 }
 function enterReview(){
+  if(bk.drill) bkDrillStop();        // 复盘会改棋盘画面，背谱序列就没法继续了
   if(rv.on) return;
   if(!history.length){ setStatus('还没落子，没什么可复盘的'); return; }
   rv.savedOver=over; rv.savedWin=winLine; rv.savedSide=winSide;
@@ -2525,6 +2587,592 @@ function showEndBar(){
 }
 function hideEndBar(){ const b=document.getElementById('endBar'); if(b) b.hidden=true; }
 
+/* ============================================================================
+   开局手册
+   ---------------------------------------------------------------------------
+   数据来自 tools/sf_book.js —— 那是把规则层从本文件里切出去、在 Node 里跑的
+   搜索引擎：每手固定 25 个落点**全部用全窗口搜一遍**（分数才可比），
+   再加 Zobrist 置换表 + D4 对称规范化（转 90°/镜像都是这盘棋的合法对称，
+   等效局面直接命中），所以能搜到 10 层以上。
+
+   下面这些数字（线数 / 层内 / 跨层 / 竖线 / 有几个杀点 / 堵掉几个）
+   全部是从规则本身算出来的，不是手写的 —— 讲解里说的和引擎算的必然是同一套账。
+   ========================================================================== */
+/*__BOOK_START__*/
+const OPENING_BOOK = {"meta":{"engine":"sf-book v1","date":"2026-09-30 07:54","budgetMs":35000,"maxDepth":13,"moves":45,"totalMs":983656,"note":"每手 25 个落点全窗口搜索；分数＝从我方视角的静态分。|分| ≥ 999500 表示搜索树里出现连四（真杀棋）。","tailMs":8000},"board":{"N":5,"lines":302,"vertical":50,"inPlane":140,"rising":162},"classes":[{"key":"2-3","cells":[7,11,13,17],"lines":8,"rising":2,"inPlane":6,"vertical":1,"searchVal":61.6},{"key":"2-2","cells":[6,8,16,18],"lines":10,"rising":4,"inPlane":6,"vertical":1,"searchVal":49.6},{"key":"1-2","cells":[1,3,5,9,15,19,21,23],"lines":8,"rising":4,"inPlane":4,"vertical":1,"searchVal":40.9},{"key":"3-3","cells":[12],"lines":9,"rising":1,"inPlane":8,"vertical":1,"searchVal":37.4},{"key":"1-1","cells":[0,4,20,24],"lines":7,"rising":4,"inPlane":3,"vertical":1,"searchVal":15.8},{"key":"1-3","cells":[2,10,14,22],"lines":5,"rising":2,"inPlane":3,"vertical":1,"searchVal":15.2}],"stats":{"inCenter3":24,"layerHist":[0,18,13,8,4,2],"typeHist":{"build":15,"stack":10,"fork":1,"threat":10,"block":7,"spread":1,"four":1},"threatTurns":8,"forkTurns":1},"result":{"winner":1,"mv":45},"moves":[{"k":1,"who":1,"cell":6,"x":1,"y":1,"z":0,"sc":-0.4,"depth":10,"ms":35012,"nodes":25387008,"stable":true,"gap2":1.5520000000000027,"ties":8,"second":12,"secondSc":-1.924000000000003,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":0,"threatenedBefore":0,"foeThreatBefore":0,"to2":0,"to3":0,"linesThrough":10,"rising":4,"inPlane":6,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":0,"foeGapBefore":0},"type":"build","evalBefore":0,"cands":[{"cell":6,"sc":-0.4,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":8,"sc":-0.4,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":16,"sc":-0.4,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":18,"sc":-0.4,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":7,"sc":-0.4,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":11,"sc":-0.4,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1}],"depthLog":[{"d":1,"cell":12,"sc":9.5},{"d":2,"cell":6,"sc":-0.9},{"d":3,"cell":6,"sc":25.9},{"d":4,"cell":12,"sc":-3.1},{"d":5,"cell":7,"sc":36.1},{"d":6,"cell":12,"sc":-3.2},{"d":7,"cell":12,"sc":46.5},{"d":8,"cell":6,"sc":-1},{"d":9,"cell":6,"sc":62.5},{"d":10,"cell":6,"sc":-0.4}]},{"k":2,"who":2,"cell":12,"x":2,"y":2,"z":0,"sc":0.7,"depth":11,"ms":21733,"nodes":44119848,"stable":true,"gap2":999991.696,"ties":1,"second":0,"secondSc":-999991,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":2,"threatenedBefore":0,"foeThreatBefore":0,"to2":0,"to3":0,"linesThrough":9,"rising":1,"inPlane":8,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":0,"foeGapBefore":0},"type":"build","evalBefore":-8.692,"cands":[{"cell":12,"sc":0.7,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":9,"height":1},{"cell":0,"sc":-999991,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":24,"sc":-999991,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":9,"sc":-999991,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":21,"sc":-999991,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":19,"sc":-999991,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1}],"depthLog":[{"d":1,"cell":31,"sc":0.9},{"d":2,"cell":18,"sc":-25.9},{"d":3,"cell":31,"sc":2.5},{"d":4,"cell":12,"sc":-28.8},{"d":5,"cell":18,"sc":-13.7},{"d":6,"cell":12,"sc":-44.3},{"d":7,"cell":12,"sc":-30.1},{"d":8,"cell":12,"sc":-49.6},{"d":9,"cell":12,"sc":-30.1},{"d":10,"cell":12,"sc":-49.6},{"d":11,"cell":12,"sc":0.7}]},{"k":3,"who":1,"cell":13,"x":3,"y":2,"z":0,"sc":36.2,"depth":11,"ms":28657,"nodes":65396506,"stable":false,"gap2":7.039999999999999,"ties":4,"second":31,"secondSc":29.206000000000003,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":2,"threatenedBefore":0,"foeThreatBefore":0,"to2":0,"to3":0,"linesThrough":8,"rising":2,"inPlane":6,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":0,"foeGapBefore":0},"type":"build","evalBefore":-0.6200000000000001,"cands":[{"cell":13,"sc":36.2,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":17,"sc":36.2,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":8,"sc":36.2,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":16,"sc":36.2,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":31,"sc":29.2,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":7,"sc":27,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1}],"depthLog":[{"d":1,"cell":8,"sc":26.4},{"d":2,"cell":37,"sc":-12.6},{"d":3,"cell":18,"sc":27.9},{"d":4,"cell":13,"sc":-11.4},{"d":5,"cell":8,"sc":31.6},{"d":6,"cell":13,"sc":-1.6},{"d":7,"cell":37,"sc":16.8},{"d":8,"cell":13,"sc":-0.7},{"d":9,"cell":37,"sc":22.3},{"d":10,"cell":13,"sc":-0.7},{"d":11,"cell":13,"sc":36.2}]},{"k":4,"who":2,"cell":17,"x":2,"y":3,"z":0,"sc":5.4,"depth":11,"ms":23081,"nodes":82731768,"stable":false,"gap2":5.735999999999998,"ties":1,"second":7,"secondSc":-0.32799999999999674,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":1,"threatenedBefore":0,"foeThreatBefore":0,"to2":2,"to3":0,"linesThrough":8,"rising":2,"inPlane":6,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":0,"foeGapBefore":0},"type":"build","evalBefore":-8.568000000000001,"cands":[{"cell":17,"sc":5.4,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":7,"sc":-0.3,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":8,"sc":-0.3,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":18,"sc":-0.3,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":23,"sc":-2.4,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":22,"sc":-999988,"type":"build","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1}],"depthLog":[{"d":1,"cell":8,"sc":19.2},{"d":2,"cell":7,"sc":-19.9},{"d":3,"cell":37,"sc":15.9},{"d":4,"cell":37,"sc":-28.9},{"d":5,"cell":37,"sc":6.6},{"d":6,"cell":17,"sc":-36.2},{"d":7,"cell":7,"sc":-2.9},{"d":8,"cell":17,"sc":-36.2},{"d":9,"cell":7,"sc":-20.7},{"d":10,"cell":17,"sc":-36.2},{"d":11,"cell":17,"sc":5.4}]},{"k":5,"who":1,"cell":7,"x":2,"y":1,"z":0,"sc":37.3,"depth":11,"ms":26844,"nodes":99697114,"stable":true,"gap2":1000032.268,"ties":1,"second":22,"secondSc":-999995,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":2,"threatenedBefore":0,"foeThreatBefore":0,"to2":3,"to3":0,"linesThrough":8,"rising":2,"inPlane":6,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":0,"foeGapBefore":0},"type":"build","evalBefore":-17.880000000000003,"cands":[{"cell":7,"sc":37.3,"type":"build","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":22,"sc":-999995,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1},{"cell":2,"sc":-999995,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1},{"cell":16,"sc":-999997,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":18,"sc":-999997,"type":"spread","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":1,"sc":-999997,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1}],"depthLog":[{"d":1,"cell":7,"sc":36.9},{"d":2,"cell":7,"sc":-11.4},{"d":3,"cell":7,"sc":51.3},{"d":4,"cell":7,"sc":-5.4},{"d":5,"cell":7,"sc":71},{"d":6,"cell":7,"sc":-5.4},{"d":7,"cell":7,"sc":-5.4},{"d":8,"cell":7,"sc":-5.4},{"d":9,"cell":7,"sc":-0.6},{"d":10,"cell":7,"sc":-5.4},{"d":11,"cell":7,"sc":37.3}]},{"k":6,"who":2,"cell":8,"x":3,"y":1,"z":0,"sc":4.9,"depth":11,"ms":34495,"nodes":122909129,"stable":true,"gap2":999999.872,"ties":1,"second":5,"secondSc":-999995,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":4,"threatenedBefore":0,"foeThreatBefore":0,"to2":2,"to3":0,"linesThrough":10,"rising":4,"inPlane":6,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":0,"foeGapBefore":0},"type":"build","evalBefore":-36.944,"cands":[{"cell":8,"sc":4.9,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":5,"sc":-999995,"type":"build","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":9,"sc":-999995,"type":"build","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":16,"sc":-999997,"type":"spread","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":18,"sc":-999997,"type":"spread","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":19,"sc":-999997,"type":"build","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1}],"depthLog":[{"d":1,"cell":8,"sc":11.4},{"d":2,"cell":8,"sc":-51.3},{"d":3,"cell":8,"sc":-1.9},{"d":4,"cell":8,"sc":-37.3},{"d":5,"cell":8,"sc":-33.4},{"d":6,"cell":8,"sc":-33.4},{"d":7,"cell":8,"sc":-33.4},{"d":8,"cell":8,"sc":-33.4},{"d":9,"cell":8,"sc":-33.4},{"d":10,"cell":8,"sc":-37.3},{"d":11,"cell":8,"sc":4.9}]},{"k":7,"who":1,"cell":16,"x":1,"y":3,"z":0,"sc":-4.9,"depth":10,"ms":35002,"nodes":148657152,"stable":true,"gap2":11.501999999999995,"ties":1,"second":1,"secondSc":-16.374000000000002,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":4,"threatenedBefore":0,"foeThreatBefore":0,"to2":2,"to3":0,"linesThrough":10,"rising":4,"inPlane":6,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":0,"foeGapBefore":0},"type":"build","evalBefore":-11.400000000000004,"cands":[{"cell":16,"sc":-4.9,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":1},{"cell":1,"sc":-16.4,"type":"threat","win":false,"to2":1,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":19,"sc":-20,"type":"threat","win":false,"to2":0,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":4,"sc":-999995,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":20,"sc":-999995,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":11,"sc":-999997,"type":"spread","win":false,"to2":5,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1}],"depthLog":[{"d":1,"cell":1,"sc":51.3},{"d":2,"cell":16,"sc":1.9},{"d":3,"cell":1,"sc":71},{"d":4,"cell":16,"sc":2.1},{"d":5,"cell":16,"sc":30.1},{"d":6,"cell":16,"sc":-0.7},{"d":7,"cell":16,"sc":31.1},{"d":8,"cell":16,"sc":-4.1},{"d":9,"cell":16,"sc":21.4},{"d":10,"cell":16,"sc":-4.9}]},{"k":8,"who":2,"cell":11,"x":1,"y":2,"z":0,"sc":4.9,"depth":9,"ms":35001,"nodes":173856768,"stable":true,"gap2":41.66000000000002,"ties":1,"second":1,"secondSc":-36.78800000000001,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":5,"threatenedBefore":0,"foeThreatBefore":0,"to2":3,"to3":0,"linesThrough":8,"rising":2,"inPlane":6,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":0,"foeGapBefore":0},"type":"build","evalBefore":-36.308,"cands":[{"cell":11,"sc":4.9,"type":"build","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":1,"sc":-36.8,"type":"build","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":37,"sc":-999997,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":2},{"cell":21,"sc":-999997,"type":"build","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":42,"sc":-999997,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":5,"sc":-999997,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1}],"depthLog":[{"d":1,"cell":11,"sc":-1.9},{"d":2,"cell":11,"sc":4.9},{"d":3,"cell":11,"sc":4.9},{"d":4,"cell":11,"sc":4.9},{"d":5,"cell":11,"sc":4.9},{"d":6,"cell":11,"sc":4.9},{"d":7,"cell":11,"sc":4.9},{"d":8,"cell":11,"sc":4.9},{"d":9,"cell":11,"sc":4.9}]},{"k":9,"who":1,"cell":5,"x":0,"y":1,"z":0,"sc":0,"depth":8,"ms":22603,"nodes":190048374,"stable":false,"gap2":5.219999999999992,"ties":1,"second":38,"secondSc":-5.254000000000005,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":2,"threatenedBefore":0,"foeThreatBefore":0,"to2":0,"to3":1,"linesThrough":8,"rising":4,"inPlane":4,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":0,"foeGapBefore":0},"type":"build","evalBefore":1.8599999999999977,"cands":[{"cell":5,"sc":0,"type":"build","win":false,"to2":0,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":38,"sc":-5.3,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":23,"sc":-5.3,"type":"build","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":32,"sc":-6.3,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":15,"sc":-6.9,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":41,"sc":-7.7,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2}],"depthLog":[{"d":1,"cell":1,"sc":54.4},{"d":2,"cell":5,"sc":2.1},{"d":3,"cell":32,"sc":51.3},{"d":4,"cell":23,"sc":0.3},{"d":5,"cell":31,"sc":40.5},{"d":6,"cell":23,"sc":8.5},{"d":7,"cell":37,"sc":38.6},{"d":8,"cell":5,"sc":0}]},{"k":10,"who":2,"cell":33,"x":3,"y":1,"z":1,"sc":2.4,"depth":7,"ms":35001,"nodes":214935552,"stable":false,"gap2":0.10999999999999677,"ties":1,"second":32,"secondSc":2.2760000000000034,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":0,"threatenedBefore":0,"foeThreatBefore":0,"to2":1,"to3":0,"linesThrough":14,"rising":8,"inPlane":6,"vertical":2,"height":2,"colFillBefore":1,"myGapBefore":0,"foeGapBefore":0},"type":"stack","evalBefore":-20.044,"cands":[{"cell":33,"sc":2.4,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":32,"sc":2.3,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":37,"sc":0,"type":"stack","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":2},{"cell":41,"sc":-0.3,"type":"stack","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":36,"sc":-7.9,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":4,"sc":-8.7,"type":"build","win":false,"to2":0,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1}],"depthLog":[{"d":1,"cell":1,"sc":-2.1},{"d":2,"cell":37,"sc":0},{"d":3,"cell":37,"sc":0},{"d":4,"cell":37,"sc":0},{"d":5,"cell":37,"sc":0},{"d":6,"cell":37,"sc":0},{"d":7,"cell":33,"sc":2.4}]},{"k":11,"who":1,"cell":0,"x":0,"y":0,"z":0,"sc":45.9,"depth":7,"ms":35001,"nodes":239563776,"stable":false,"gap2":1.7279999999999944,"ties":1,"second":31,"secondSc":44.214000000000006,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":1,"threatenedBefore":0,"foeThreatBefore":0,"to2":2,"to3":0,"linesThrough":7,"rising":4,"inPlane":3,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":0,"foeGapBefore":0},"type":"build","evalBefore":3.6559999999999997,"cands":[{"cell":0,"sc":45.9,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":31,"sc":44.2,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":15,"sc":43.3,"type":"spread","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":37,"sc":38.6,"type":"stack","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":2},{"cell":10,"sc":38.1,"type":"build","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1},{"cell":38,"sc":37.3,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2}],"depthLog":[{"d":1,"cell":1,"sc":56.8},{"d":2,"cell":15,"sc":43.3},{"d":3,"cell":15,"sc":43.3},{"d":4,"cell":15,"sc":43.3},{"d":5,"cell":31,"sc":56.3},{"d":6,"cell":0,"sc":45.9},{"d":7,"cell":0,"sc":45.9}]},{"k":12,"who":2,"cell":19,"x":4,"y":3,"z":0,"sc":-34.3,"depth":8,"ms":28341,"nodes":258628224,"stable":false,"gap2":4.2379999999999995,"ties":1,"second":9,"secondSc":-38.50000000000001,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":2,"threatenedBefore":0,"foeThreatBefore":0,"to2":1,"to3":0,"linesThrough":8,"rising":4,"inPlane":4,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":0,"foeGapBefore":0},"type":"build","evalBefore":-20.848000000000006,"cands":[{"cell":19,"sc":-34.3,"type":"build","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":9,"sc":-38.5,"type":"build","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":1,"sc":-43.9,"type":"build","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":42,"sc":-47.8,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":36,"sc":-49.6,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":4,"sc":-49.6,"type":"build","win":false,"to2":1,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1}],"depthLog":[{"d":1,"cell":58,"sc":43.8},{"d":2,"cell":19,"sc":10.2},{"d":3,"cell":32,"sc":13.4},{"d":4,"cell":19,"sc":10.2},{"d":5,"cell":32,"sc":13.4},{"d":6,"cell":19,"sc":10.2},{"d":7,"cell":32,"sc":13.4},{"d":8,"cell":19,"sc":-34.3}]},{"k":13,"who":1,"cell":38,"x":3,"y":2,"z":1,"sc":34.3,"depth":7,"ms":35001,"nodes":282088448,"stable":false,"gap2":2.932000000000002,"ties":1,"second":41,"secondSc":31.330000000000005,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":4,"threatenedBefore":0,"foeThreatBefore":0,"to2":1,"to3":0,"linesThrough":14,"rising":8,"inPlane":6,"vertical":2,"height":2,"colFillBefore":1,"myGapBefore":0,"foeGapBefore":0},"type":"stack","evalBefore":1.967999999999999,"cands":[{"cell":38,"sc":34.3,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":41,"sc":31.3,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":1,"sc":28,"type":"build","win":false,"to2":1,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":32,"sc":26.2,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":2,"sc":25.9,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1},{"cell":31,"sc":25.4,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2}],"depthLog":[{"d":1,"cell":15,"sc":63},{"d":2,"cell":38,"sc":34.3},{"d":3,"cell":38,"sc":34.3},{"d":4,"cell":38,"sc":34.3},{"d":5,"cell":41,"sc":52.1},{"d":6,"cell":38,"sc":34.3},{"d":7,"cell":38,"sc":34.3}]},{"k":14,"who":2,"cell":14,"x":4,"y":2,"z":0,"sc":-38.9,"depth":8,"ms":26562,"nodes":298669496,"stable":false,"gap2":0.7419999999999973,"ties":1,"second":9,"secondSc":-39.658,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":2,"threatenedBefore":0,"foeThreatBefore":0,"to2":2,"to3":1,"linesThrough":5,"rising":2,"inPlane":3,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":0,"foeGapBefore":0},"type":"build","evalBefore":-20.084000000000003,"cands":[{"cell":14,"sc":-38.9,"type":"build","win":false,"to2":2,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1},{"cell":9,"sc":-39.7,"type":"spread","win":false,"to2":5,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":36,"sc":-46.2,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":15,"sc":-46.6,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":63,"sc":-49.5,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":37,"sc":-49.5,"type":"stack","win":false,"to2":6,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":2}],"depthLog":[{"d":1,"cell":58,"sc":45.9},{"d":2,"cell":9,"sc":11.2},{"d":3,"cell":9,"sc":11.2},{"d":4,"cell":9,"sc":11.2},{"d":5,"cell":14,"sc":14},{"d":6,"cell":9,"sc":11.2},{"d":7,"cell":14,"sc":19.7},{"d":8,"cell":14,"sc":-38.9}]},{"k":15,"who":1,"cell":9,"x":4,"y":1,"z":0,"sc":54.7,"depth":9,"ms":21164,"nodes":312054471,"stable":true,"gap2":22.06799999999999,"ties":1,"second":63,"secondSc":32.62400000000001,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":5,"threatenedBefore":0,"foeThreatBefore":0,"to2":2,"to3":1,"linesThrough":8,"rising":4,"inPlane":4,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":0,"foeGapBefore":0},"type":"build","evalBefore":-5.604000000000003,"cands":[{"cell":9,"sc":54.7,"type":"build","win":false,"to2":2,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":63,"sc":32.6,"type":"threat","win":false,"to2":1,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":10,"sc":22.4,"type":"threat","win":false,"to2":2,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1},{"cell":15,"sc":20.4,"type":"threat","win":false,"to2":3,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":4,"sc":16.3,"type":"build","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":24,"sc":14.2,"type":"build","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1}],"depthLog":[{"d":1,"cell":63,"sc":66.3},{"d":2,"cell":63,"sc":-4.2},{"d":3,"cell":63,"sc":58.9},{"d":4,"cell":9,"sc":-10.3},{"d":5,"cell":9,"sc":38.9},{"d":6,"cell":9,"sc":38.6},{"d":7,"cell":9,"sc":38.9},{"d":8,"cell":9,"sc":-9},{"d":9,"cell":9,"sc":54.7}]},{"k":16,"who":2,"cell":37,"x":2,"y":2,"z":1,"sc":-54.7,"depth":8,"ms":35001,"nodes":333390848,"stable":false,"gap2":1.107999999999997,"ties":1,"second":63,"secondSc":-55.8,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":6,"threatenedBefore":0,"foeThreatBefore":0,"to2":6,"to3":0,"linesThrough":18,"rising":10,"inPlane":8,"vertical":2,"height":2,"colFillBefore":1,"myGapBefore":0,"foeGapBefore":0},"type":"stack","evalBefore":-22.014000000000003,"cands":[{"cell":37,"sc":-54.7,"type":"stack","win":false,"to2":6,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":2},{"cell":63,"sc":-55.8,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":44,"sc":-56.4,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":42,"sc":-56.5,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":36,"sc":-57.2,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":15,"sc":-63.5,"type":"build","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1}],"depthLog":[{"d":1,"cell":58,"sc":44.5},{"d":2,"cell":58,"sc":-27.8},{"d":3,"cell":58,"sc":10.3},{"d":4,"cell":10,"sc":-51.5},{"d":5,"cell":58,"sc":0.2},{"d":6,"cell":42,"sc":-42.5},{"d":7,"cell":32,"sc":-1.6},{"d":8,"cell":37,"sc":-54.7}]},{"k":17,"who":1,"cell":62,"x":2,"y":2,"z":2,"sc":-14.6,"depth":8,"ms":35001,"nodes":356795392,"stable":false,"gap2":10.427999999999997,"ties":1,"second":32,"secondSc":-25.038000000000004,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":5,"threatenedBefore":0,"foeThreatBefore":0,"to2":3,"to3":0,"linesThrough":26,"rising":18,"inPlane":8,"vertical":2,"height":3,"colFillBefore":2,"myGapBefore":0,"foeGapBefore":0},"type":"stack","evalBefore":-2.508000000000001,"cands":[{"cell":62,"sc":-14.6,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":26,"height":3},{"cell":32,"sc":-25,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":31,"sc":-25.5,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":10,"sc":-26,"type":"threat","win":false,"to2":2,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1},{"cell":1,"sc":-26.1,"type":"build","win":false,"to2":1,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":3,"sc":-26.1,"type":"build","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1}],"depthLog":[{"d":1,"cell":63,"sc":72.9},{"d":2,"cell":63,"sc":3},{"d":3,"cell":63,"sc":65.5},{"d":4,"cell":63,"sc":-9.6},{"d":5,"cell":15,"sc":20.6},{"d":6,"cell":63,"sc":-5.2},{"d":7,"cell":41,"sc":38.9},{"d":8,"cell":62,"sc":-14.6}]},{"k":18,"who":2,"cell":41,"x":1,"y":3,"z":1,"sc":-46.9,"depth":8,"ms":19411,"nodes":369684859,"stable":false,"gap2":1.1580000000000084,"ties":1,"second":58,"secondSc":-48.08800000000001,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":2,"newGaps":2,"blocked":0,"deadFoe":3,"threatenedBefore":0,"foeThreatBefore":0,"to2":0,"to3":2,"linesThrough":14,"rising":8,"inPlane":6,"vertical":2,"height":2,"colFillBefore":1,"myGapBefore":0,"foeGapBefore":0},"type":"fork","evalBefore":-26.852000000000004,"cands":[{"cell":41,"sc":-46.9,"type":"fork","win":false,"to2":0,"to3":2,"newGaps":2,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":58,"sc":-48.1,"type":"threat","win":false,"to2":2,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":3},{"cell":32,"sc":-63,"type":"stack","win":false,"to2":5,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":63,"sc":-66,"type":"threat","win":false,"to2":2,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":31,"sc":-68.5,"type":"stack","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":36,"sc":-75.2,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2}],"depthLog":[{"d":1,"cell":58,"sc":41.7},{"d":2,"cell":58,"sc":-42.8},{"d":3,"cell":32,"sc":11.6},{"d":4,"cell":63,"sc":-54.9},{"d":5,"cell":58,"sc":-3.8},{"d":6,"cell":41,"sc":-46.1},{"d":7,"cell":23,"sc":-20.2},{"d":8,"cell":41,"sc":-46.9}]},{"k":19,"who":1,"cell":32,"x":2,"y":1,"z":1,"sc":45.7,"depth":9,"ms":31716,"nodes":389998625,"stable":true,"gap2":1.014000000000003,"ties":2,"second":58,"secondSc":44.708000000000006,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":0,"newGaps":0,"blocked":0,"deadFoe":5,"threatenedBefore":0,"foeThreatBefore":0,"to2":5,"to3":0,"linesThrough":14,"rising":8,"inPlane":6,"vertical":2,"height":2,"colFillBefore":1,"myGapBefore":0,"foeGapBefore":2},"type":"stack","evalBefore":2.4179999999999957,"cands":[{"cell":32,"sc":45.7,"type":"stack","win":false,"to2":5,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":63,"sc":45.7,"type":"threat","win":false,"to2":3,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":58,"sc":44.7,"type":"stack","win":false,"to2":5,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":3},{"cell":66,"sc":42.3,"type":"stack","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":3},{"cell":34,"sc":39,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":44,"sc":37.3,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2}],"depthLog":[{"d":1,"cell":63,"sc":73.4},{"d":2,"cell":32,"sc":46.9},{"d":3,"cell":10,"sc":70.5},{"d":4,"cell":32,"sc":46.9},{"d":5,"cell":58,"sc":53.5},{"d":6,"cell":32,"sc":46.9},{"d":7,"cell":32,"sc":46.9},{"d":8,"cell":32,"sc":-3.4},{"d":9,"cell":32,"sc":45.7}]},{"k":20,"who":2,"cell":66,"x":1,"y":3,"z":2,"sc":11,"depth":9,"ms":35002,"nodes":412925952,"stable":false,"gap2":3.57599999999999,"ties":1,"second":58,"secondSc":7.432000000000006,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":3,"newGaps":1,"blocked":0,"deadFoe":4,"threatenedBefore":0,"foeThreatBefore":0,"to2":2,"to3":1,"linesThrough":14,"rising":8,"inPlane":6,"vertical":2,"height":3,"colFillBefore":2,"myGapBefore":2,"foeGapBefore":0},"type":"threat","evalBefore":-21.582000000000008,"cands":[{"cell":66,"sc":11,"type":"threat","win":false,"to2":2,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":3},{"cell":58,"sc":7.4,"type":"threat","win":false,"to2":2,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":3},{"cell":36,"sc":5.5,"type":"stack","win":false,"to2":5,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":63,"sc":5.5,"type":"threat","win":false,"to2":2,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":57,"sc":5.3,"type":"threat","win":false,"to2":3,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":10,"sc":3.6,"type":"build","win":false,"to2":0,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1}],"depthLog":[{"d":1,"cell":58,"sc":49.2},{"d":2,"cell":58,"sc":-29.3},{"d":3,"cell":20,"sc":41.9},{"d":4,"cell":20,"sc":-37.9},{"d":5,"cell":20,"sc":34.2},{"d":6,"cell":20,"sc":-46.9},{"d":7,"cell":20,"sc":-15.8},{"d":8,"cell":66,"sc":-45.7},{"d":9,"cell":66,"sc":11}]},{"k":21,"who":1,"cell":58,"x":3,"y":1,"z":2,"sc":-9,"depth":10,"ms":35001,"nodes":436059136,"stable":false,"gap2":4.011999999999986,"ties":1,"second":1,"secondSc":-12.981999999999992,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":1,"newGaps":1,"blocked":0,"deadFoe":5,"threatenedBefore":0,"foeThreatBefore":0,"to2":4,"to3":1,"linesThrough":14,"rising":8,"inPlane":6,"vertical":2,"height":3,"colFillBefore":2,"myGapBefore":0,"foeGapBefore":3},"type":"threat","evalBefore":10.48,"cands":[{"cell":58,"sc":-9,"type":"threat","win":false,"to2":4,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":3},{"cell":1,"sc":-13,"type":"build","win":false,"to2":2,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":91,"sc":-13.7,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":4},{"cell":63,"sc":-16.2,"type":"threat","win":false,"to2":4,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":57,"sc":-20.3,"type":"threat","win":false,"to2":6,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":34,"sc":-20.8,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2}],"depthLog":[{"d":1,"cell":63,"sc":84.1},{"d":2,"cell":1,"sc":60.7},{"d":3,"cell":63,"sc":82.7},{"d":4,"cell":1,"sc":60.7},{"d":5,"cell":57,"sc":77.9},{"d":6,"cell":1,"sc":60.7},{"d":7,"cell":1,"sc":60.7},{"d":8,"cell":1,"sc":60.7},{"d":9,"cell":1,"sc":60.7},{"d":10,"cell":58,"sc":-9}]},{"k":22,"who":2,"cell":20,"x":0,"y":4,"z":0,"sc":-27.6,"depth":9,"ms":35002,"nodes":458247168,"stable":false,"gap2":4.613999999999997,"ties":2,"second":4,"secondSc":-32.21199999999999,"profile":{"win":false,"myLiveAfter":1,"foeLiveAfter":0,"myGapAfter":3,"newGaps":0,"blocked":0,"deadFoe":3,"threatenedBefore":0,"foeThreatBefore":0,"to2":1,"to3":1,"linesThrough":7,"rising":4,"inPlane":3,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":3,"foeGapBefore":1},"type":"build","evalBefore":-30.326000000000008,"cands":[{"cell":20,"sc":-27.6,"type":"build","win":false,"to2":1,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":91,"sc":-27.6,"type":"threat","win":false,"to2":3,"to3":2,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":4},{"cell":4,"sc":-32.2,"type":"build","win":false,"to2":1,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":83,"sc":-45.1,"type":"stack","win":false,"to2":3,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":4},{"cell":57,"sc":-50.8,"type":"threat","win":false,"to2":3,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":31,"sc":-51.2,"type":"stack","win":false,"to2":6,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2}],"depthLog":[{"d":1,"cell":20,"sc":31.6},{"d":2,"cell":20,"sc":-31.9},{"d":3,"cell":20,"sc":28.8},{"d":4,"cell":20,"sc":-35.9},{"d":5,"cell":20,"sc":21.6},{"d":6,"cell":20,"sc":-44.7},{"d":7,"cell":20,"sc":5.8},{"d":8,"cell":31,"sc":-51.2},{"d":9,"cell":20,"sc":-27.6}]},{"k":23,"who":1,"cell":45,"x":0,"y":4,"z":1,"sc":-1.7,"depth":10,"ms":35001,"nodes":479565824,"stable":true,"gap2":999997.348,"ties":1,"second":25,"secondSc":-999999,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":1,"newGaps":0,"blocked":1,"deadFoe":3,"threatenedBefore":0,"foeThreatBefore":1,"to2":0,"to3":0,"linesThrough":8,"rising":5,"inPlane":3,"vertical":2,"height":2,"colFillBefore":1,"myGapBefore":1,"foeGapBefore":3},"type":"block","evalBefore":-31.63600000000001,"cands":[{"cell":45,"sc":-1.7,"type":"block","win":false,"to2":0,"to3":0,"newGaps":0,"blocked":1,"foeLiveAfter":0,"linesThrough":8,"height":2},{"cell":25,"sc":-999999,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":2},{"cell":1,"sc":-999999,"type":"build","win":false,"to2":2,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":1},{"cell":2,"sc":-999999,"type":"threat","win":false,"to2":2,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":1,"linesThrough":5,"height":1},{"cell":3,"sc":-999999,"type":"spread","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":1},{"cell":4,"sc":-999999,"type":"build","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":2,"linesThrough":7,"height":1}],"depthLog":[{"d":1,"cell":45,"sc":31.9},{"d":2,"cell":45,"sc":65.4},{"d":3,"cell":45,"sc":65.4},{"d":4,"cell":45,"sc":65.4},{"d":5,"cell":45,"sc":65.4},{"d":6,"cell":45,"sc":65.4},{"d":7,"cell":45,"sc":65.4},{"d":8,"cell":45,"sc":65.4},{"d":9,"cell":45,"sc":65.4},{"d":10,"cell":45,"sc":-1.7}]},{"k":24,"who":2,"cell":70,"x":0,"y":4,"z":2,"sc":-30.8,"depth":9,"ms":35002,"nodes":502159360,"stable":false,"gap2":0.5200000000000031,"ties":1,"second":91,"secondSc":-31.296,"profile":{"win":false,"myLiveAfter":1,"foeLiveAfter":0,"myGapAfter":2,"newGaps":0,"blocked":0,"deadFoe":3,"threatenedBefore":0,"foeThreatBefore":0,"to2":2,"to3":0,"linesThrough":5,"rising":2,"inPlane":3,"vertical":2,"height":3,"colFillBefore":2,"myGapBefore":2,"foeGapBefore":1},"type":"stack","evalBefore":-31.858000000000004,"cands":[{"cell":70,"sc":-30.8,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":3},{"cell":91,"sc":-31.3,"type":"threat","win":false,"to2":3,"to3":2,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":4},{"cell":4,"sc":-38.7,"type":"build","win":false,"to2":1,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":31,"sc":-54.2,"type":"stack","win":false,"to2":6,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":83,"sc":-56.6,"type":"stack","win":false,"to2":2,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":4},{"cell":57,"sc":-62.3,"type":"threat","win":false,"to2":3,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3}],"depthLog":[{"d":1,"cell":91,"sc":28.8},{"d":2,"cell":91,"sc":-35.9},{"d":3,"cell":70,"sc":21.6},{"d":4,"cell":70,"sc":-44.7},{"d":5,"cell":4,"sc":6},{"d":6,"cell":57,"sc":-62.3},{"d":7,"cell":36,"sc":-23.6},{"d":8,"cell":57,"sc":-62.3},{"d":9,"cell":70,"sc":-30.8}]},{"k":25,"who":1,"cell":95,"x":0,"y":4,"z":3,"sc":21.4,"depth":10,"ms":35001,"nodes":524637184,"stable":true,"gap2":1000020.368,"ties":1,"second":25,"secondSc":-999999,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":1,"newGaps":0,"blocked":1,"deadFoe":3,"threatenedBefore":0,"foeThreatBefore":1,"to2":3,"to3":0,"linesThrough":8,"rising":5,"inPlane":3,"vertical":2,"height":4,"colFillBefore":3,"myGapBefore":1,"foeGapBefore":2},"type":"block","evalBefore":-21.564,"cands":[{"cell":95,"sc":21.4,"type":"block","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":1,"foeLiveAfter":0,"linesThrough":8,"height":4},{"cell":25,"sc":-999999,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":2},{"cell":1,"sc":-999999,"type":"build","win":false,"to2":2,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":1},{"cell":2,"sc":-999999,"type":"threat","win":false,"to2":2,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":1,"linesThrough":5,"height":1},{"cell":3,"sc":-999999,"type":"spread","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":1},{"cell":4,"sc":-999999,"type":"build","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":2,"linesThrough":7,"height":1}],"depthLog":[{"d":1,"cell":95,"sc":40.1},{"d":2,"cell":95,"sc":90},{"d":3,"cell":95,"sc":90},{"d":4,"cell":95,"sc":90},{"d":5,"cell":95,"sc":90},{"d":6,"cell":95,"sc":90},{"d":7,"cell":95,"sc":90},{"d":8,"cell":95,"sc":90},{"d":9,"cell":95,"sc":90},{"d":10,"cell":95,"sc":21.4}]},{"k":26,"who":2,"cell":91,"x":1,"y":3,"z":3,"sc":-51,"depth":9,"ms":35003,"nodes":547717120,"stable":false,"gap2":36.512,"ties":1,"second":83,"secondSc":-87.558,"profile":{"win":false,"myLiveAfter":1,"foeLiveAfter":0,"myGapAfter":2,"newGaps":1,"blocked":0,"deadFoe":4,"threatenedBefore":0,"foeThreatBefore":0,"to2":3,"to3":2,"linesThrough":14,"rising":8,"inPlane":6,"vertical":2,"height":4,"colFillBefore":3,"myGapBefore":1,"foeGapBefore":1},"type":"threat","evalBefore":-40.072,"cands":[{"cell":91,"sc":-51,"type":"threat","win":false,"to2":3,"to3":2,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":4},{"cell":83,"sc":-87.6,"type":"stack","win":false,"to2":2,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":4},{"cell":31,"sc":-93.1,"type":"stack","win":false,"to2":6,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":4,"sc":-96.5,"type":"build","win":false,"to2":1,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":57,"sc":-97.6,"type":"threat","win":false,"to2":3,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":10,"sc":-999990,"type":"build","win":false,"to2":1,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1}],"depthLog":[{"d":1,"cell":91,"sc":21.6},{"d":2,"cell":91,"sc":-44.7},{"d":3,"cell":4,"sc":6},{"d":4,"cell":63,"sc":-86},{"d":5,"cell":36,"sc":-26.9},{"d":6,"cell":63,"sc":-86},{"d":7,"cell":42,"sc":-27.6},{"d":8,"cell":10,"sc":-90},{"d":9,"cell":91,"sc":-51}]},{"k":27,"who":1,"cell":116,"x":1,"y":3,"z":4,"sc":24.9,"depth":10,"ms":35001,"nodes":570665984,"stable":true,"gap2":1000023.91,"ties":1,"second":25,"secondSc":-999999,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":1,"newGaps":0,"blocked":1,"deadFoe":1,"threatenedBefore":0,"foeThreatBefore":1,"to2":1,"to3":0,"linesThrough":10,"rising":4,"inPlane":6,"vertical":1,"height":5,"colFillBefore":4,"myGapBefore":1,"foeGapBefore":2},"type":"block","evalBefore":-21.642000000000003,"cands":[{"cell":116,"sc":24.9,"type":"block","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":1,"foeLiveAfter":0,"linesThrough":10,"height":5},{"cell":25,"sc":-999999,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":2},{"cell":1,"sc":-999999,"type":"build","win":false,"to2":2,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":1},{"cell":2,"sc":-999999,"type":"threat","win":false,"to2":2,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":1,"linesThrough":5,"height":1},{"cell":3,"sc":-999999,"type":"spread","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":1},{"cell":4,"sc":-999999,"type":"build","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":2,"linesThrough":7,"height":1}],"depthLog":[{"d":1,"cell":116,"sc":44.7},{"d":2,"cell":116,"sc":-5.8},{"d":3,"cell":116,"sc":99},{"d":4,"cell":116,"sc":27.6},{"d":5,"cell":116,"sc":99},{"d":6,"cell":116,"sc":99},{"d":7,"cell":116,"sc":99},{"d":8,"cell":116,"sc":99},{"d":9,"cell":116,"sc":99},{"d":10,"cell":116,"sc":24.9}]},{"k":28,"who":2,"cell":57,"x":2,"y":1,"z":2,"sc":-101.6,"depth":9,"ms":35002,"nodes":594334720,"stable":false,"gap2":1.0540000000000163,"ties":1,"second":83,"secondSc":-102.67800000000001,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":2,"newGaps":1,"blocked":0,"deadFoe":9,"threatenedBefore":0,"foeThreatBefore":0,"to2":3,"to3":1,"linesThrough":18,"rising":12,"inPlane":6,"vertical":2,"height":3,"colFillBefore":2,"myGapBefore":1,"foeGapBefore":1},"type":"threat","evalBefore":-44.708000000000006,"cands":[{"cell":57,"sc":-101.6,"type":"threat","win":false,"to2":3,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":83,"sc":-102.7,"type":"stack","win":false,"to2":4,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":4},{"cell":4,"sc":-114.3,"type":"build","win":false,"to2":0,"to3":3,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":87,"sc":-999990,"type":"stack","win":false,"to2":4,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":4},{"cell":42,"sc":-999990,"type":"stack","win":false,"to2":6,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":39,"sc":-999990,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":2}],"depthLog":[{"d":1,"cell":4,"sc":5.8},{"d":2,"cell":63,"sc":-94.3},{"d":3,"cell":31,"sc":-23.4},{"d":4,"cell":31,"sc":-96},{"d":5,"cell":36,"sc":-35.6},{"d":6,"cell":87,"sc":-99.9},{"d":7,"cell":39,"sc":-35.5},{"d":8,"cell":57,"sc":-101.6},{"d":9,"cell":57,"sc":-101.6}]},{"k":29,"who":1,"cell":10,"x":0,"y":2,"z":0,"sc":101.6,"depth":9,"ms":23037,"nodes":610327827,"stable":true,"gap2":6.46599999999998,"ties":1,"second":30,"secondSc":95.15800000000002,"profile":{"win":false,"myLiveAfter":1,"foeLiveAfter":0,"myGapAfter":2,"newGaps":1,"blocked":0,"deadFoe":2,"threatenedBefore":0,"foeThreatBefore":0,"to2":3,"to3":1,"linesThrough":5,"rising":2,"inPlane":3,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":1,"foeGapBefore":2},"type":"threat","evalBefore":29.167999999999985,"cands":[{"cell":10,"sc":101.6,"type":"threat","win":false,"to2":3,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1},{"cell":30,"sc":95.2,"type":"stack","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":36,"sc":94.8,"type":"stack","win":false,"to2":8,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":1,"sc":94.7,"type":"build","win":false,"to2":2,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":44,"sc":93.5,"type":"threat","win":false,"to2":1,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":3,"sc":92.4,"type":"spread","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1}],"depthLog":[{"d":1,"cell":63,"sc":100.6},{"d":2,"cell":10,"sc":101.6},{"d":3,"cell":10,"sc":101.6},{"d":4,"cell":10,"sc":101.6},{"d":5,"cell":10,"sc":101.6},{"d":6,"cell":10,"sc":101.6},{"d":7,"cell":10,"sc":101.6},{"d":8,"cell":10,"sc":101.6},{"d":9,"cell":10,"sc":101.6}]},{"k":30,"who":2,"cell":15,"x":0,"y":3,"z":0,"sc":-25,"depth":9,"ms":35001,"nodes":633823232,"stable":true,"gap2":999974.016,"ties":1,"second":25,"secondSc":-999999,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":2,"newGaps":0,"blocked":1,"deadFoe":4,"threatenedBefore":0,"foeThreatBefore":1,"to2":5,"to3":0,"linesThrough":8,"rising":4,"inPlane":4,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":2,"foeGapBefore":2},"type":"block","evalBefore":-84.11,"cands":[{"cell":15,"sc":-25,"type":"block","win":false,"to2":5,"to3":0,"newGaps":0,"blocked":1,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":25,"sc":-999999,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":2},{"cell":1,"sc":-999999,"type":"build","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":1},{"cell":2,"sc":-999999,"type":"build","win":false,"to2":0,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":5,"height":1},{"cell":3,"sc":-999999,"type":"build","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":1},{"cell":4,"sc":-999999,"type":"build","win":false,"to2":0,"to3":3,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":7,"height":1}],"depthLog":[{"d":1,"cell":15,"sc":-19.9},{"d":2,"cell":15,"sc":-101.6},{"d":3,"cell":15,"sc":-101.6},{"d":4,"cell":15,"sc":-101.6},{"d":5,"cell":15,"sc":-101.6},{"d":6,"cell":15,"sc":-101.6},{"d":7,"cell":15,"sc":-101.6},{"d":8,"cell":15,"sc":-101.6},{"d":9,"cell":15,"sc":-25}]},{"k":31,"who":1,"cell":35,"x":0,"y":2,"z":1,"sc":97,"depth":7,"ms":8002,"nodes":638834688,"stable":true,"gap2":1.1559999999999917,"ties":1,"second":40,"secondSc":95.83800000000001,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":2,"newGaps":1,"blocked":0,"deadFoe":2,"threatenedBefore":0,"foeThreatBefore":0,"to2":3,"to3":1,"linesThrough":8,"rising":5,"inPlane":3,"vertical":2,"height":2,"colFillBefore":1,"myGapBefore":1,"foeGapBefore":2},"type":"threat","evalBefore":19.874000000000002,"cands":[{"cell":35,"sc":97,"type":"threat","win":false,"to2":3,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":2},{"cell":40,"sc":95.8,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":36,"sc":94.4,"type":"threat","win":false,"to2":7,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":1,"sc":93.3,"type":"build","win":false,"to2":2,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":2,"sc":90.6,"type":"threat","win":false,"to2":2,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1},{"cell":44,"sc":88.7,"type":"threat","win":false,"to2":1,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2}],"depthLog":[{"d":1,"cell":63,"sc":98.6},{"d":2,"cell":35,"sc":97},{"d":3,"cell":40,"sc":101.7},{"d":4,"cell":35,"sc":97},{"d":5,"cell":35,"sc":97},{"d":6,"cell":35,"sc":97},{"d":7,"cell":35,"sc":97}]},{"k":32,"who":2,"cell":30,"x":0,"y":1,"z":1,"sc":-97,"depth":8,"ms":8005,"nodes":643852288,"stable":true,"gap2":999898.006,"ties":1,"second":4,"secondSc":-999995,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":2,"newGaps":0,"blocked":0,"deadFoe":5,"threatenedBefore":0,"foeThreatBefore":0,"to2":1,"to3":0,"linesThrough":10,"rising":6,"inPlane":4,"vertical":2,"height":2,"colFillBefore":1,"myGapBefore":2,"foeGapBefore":2},"type":"stack","evalBefore":-42.27000000000001,"cands":[{"cell":30,"sc":-97,"type":"stack","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":4,"sc":-999995,"type":"build","win":false,"to2":0,"to3":3,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":42,"sc":-999997,"type":"stack","win":false,"to2":6,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":31,"sc":-999997,"type":"stack","win":false,"to2":10,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":36,"sc":-999997,"type":"threat","win":false,"to2":6,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":44,"sc":-999997,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2}],"depthLog":[{"d":1,"cell":4,"sc":7.5},{"d":2,"cell":30,"sc":-97},{"d":3,"cell":4,"sc":-32.8},{"d":4,"cell":30,"sc":-97},{"d":5,"cell":30,"sc":-97},{"d":6,"cell":30,"sc":-97},{"d":7,"cell":30,"sc":-97},{"d":8,"cell":30,"sc":-97}]},{"k":33,"who":1,"cell":3,"x":3,"y":0,"z":0,"sc":26.9,"depth":8,"ms":6395,"nodes":647880875,"stable":false,"gap2":1.6059999999999945,"ties":1,"second":36,"secondSc":25.303999999999995,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":2,"newGaps":0,"blocked":0,"deadFoe":3,"threatenedBefore":0,"foeThreatBefore":0,"to2":4,"to3":0,"linesThrough":8,"rising":4,"inPlane":4,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":2,"foeGapBefore":2},"type":"spread","evalBefore":20.634,"cands":[{"cell":3,"sc":26.9,"type":"spread","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":36,"sc":25.3,"type":"threat","win":false,"to2":6,"to3":2,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":60,"sc":23.9,"type":"threat","win":false,"to2":3,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":9,"height":3},{"cell":63,"sc":23.4,"type":"threat","win":false,"to2":6,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":87,"sc":22.8,"type":"threat","win":false,"to2":5,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":4},{"cell":42,"sc":19.9,"type":"stack","win":false,"to2":6,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2}],"depthLog":[{"d":1,"cell":63,"sc":101.3},{"d":2,"cell":3,"sc":26.9},{"d":3,"cell":40,"sc":93.2},{"d":4,"cell":3,"sc":26.9},{"d":5,"cell":36,"sc":86},{"d":6,"cell":3,"sc":26.9},{"d":7,"cell":83,"sc":77.8},{"d":8,"cell":3,"sc":26.9}]},{"k":34,"who":2,"cell":28,"x":3,"y":0,"z":1,"sc":-98,"depth":8,"ms":5093,"nodes":651382763,"stable":true,"gap2":8.909999999999982,"ties":1,"second":60,"secondSc":-106.892,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":2,"newGaps":0,"blocked":0,"deadFoe":4,"threatenedBefore":0,"foeThreatBefore":0,"to2":2,"to3":0,"linesThrough":10,"rising":6,"inPlane":4,"vertical":2,"height":2,"colFillBefore":1,"myGapBefore":2,"foeGapBefore":2},"type":"stack","evalBefore":-36.68000000000001,"cands":[{"cell":28,"sc":-98,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":60,"sc":-106.9,"type":"stack","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":9,"height":3},{"cell":55,"sc":-999990,"type":"stack","win":false,"to2":5,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":3},{"cell":39,"sc":-999990,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":2},{"cell":4,"sc":-999990,"type":"build","win":false,"to2":0,"to3":3,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":87,"sc":-999990,"type":"stack","win":false,"to2":5,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":4}],"depthLog":[{"d":1,"cell":4,"sc":13.8},{"d":2,"cell":28,"sc":-26.9},{"d":3,"cell":36,"sc":-24.3},{"d":4,"cell":28,"sc":-26.9},{"d":5,"cell":44,"sc":-25.8},{"d":6,"cell":28,"sc":-26.9},{"d":7,"cell":28,"sc":-26.9},{"d":8,"cell":28,"sc":-98}]},{"k":35,"who":1,"cell":60,"x":0,"y":2,"z":2,"sc":31.9,"depth":8,"ms":8001,"nodes":656393216,"stable":false,"gap2":9.287999999999997,"ties":2,"second":42,"secondSc":22.571999999999996,"profile":{"win":false,"myLiveAfter":1,"foeLiveAfter":0,"myGapAfter":3,"newGaps":1,"blocked":0,"deadFoe":4,"threatenedBefore":0,"foeThreatBefore":0,"to2":3,"to3":1,"linesThrough":9,"rising":6,"inPlane":3,"vertical":2,"height":3,"colFillBefore":2,"myGapBefore":2,"foeGapBefore":2},"type":"threat","evalBefore":25.424,"cands":[{"cell":60,"sc":31.9,"type":"threat","win":false,"to2":3,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":9,"height":3},{"cell":63,"sc":31.9,"type":"threat","win":false,"to2":7,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":42,"sc":22.6,"type":"stack","win":false,"to2":6,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":87,"sc":21.7,"type":"threat","win":false,"to2":5,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":4},{"cell":44,"sc":20,"type":"threat","win":false,"to2":1,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":53,"sc":16.8,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":3}],"depthLog":[{"d":1,"cell":63,"sc":108.1},{"d":2,"cell":1,"sc":98},{"d":3,"cell":60,"sc":111},{"d":4,"cell":1,"sc":98},{"d":5,"cell":60,"sc":106.8},{"d":6,"cell":40,"sc":98},{"d":7,"cell":40,"sc":98},{"d":8,"cell":60,"sc":31.9}]},{"k":36,"who":2,"cell":85,"x":0,"y":2,"z":3,"sc":-999990,"depth":8,"ms":2227,"nodes":657951845,"stable":true,"gap2":9,"ties":1,"second":25,"secondSc":-999999,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":2,"newGaps":0,"blocked":1,"deadFoe":5,"threatenedBefore":0,"foeThreatBefore":1,"to2":1,"to3":0,"linesThrough":8,"rising":5,"inPlane":3,"vertical":2,"height":4,"colFillBefore":3,"myGapBefore":2,"foeGapBefore":3},"type":"block","evalBefore":-92.26400000000001,"cands":[{"cell":85,"sc":-999990,"type":"block","win":false,"to2":1,"to3":0,"newGaps":0,"blocked":1,"foeLiveAfter":0,"linesThrough":8,"height":4},{"cell":25,"sc":-999999,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":2},{"cell":1,"sc":-999999,"type":"build","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":1},{"cell":2,"sc":-999999,"type":"build","win":false,"to2":0,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":5,"height":1},{"cell":53,"sc":-999999,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":3},{"cell":4,"sc":-999999,"type":"build","win":false,"to2":1,"to3":3,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":7,"height":1}],"depthLog":[{"d":1,"cell":85,"sc":-28},{"d":2,"cell":85,"sc":-999990},{"d":3,"cell":85,"sc":-999990},{"d":4,"cell":85,"sc":-999990},{"d":5,"cell":85,"sc":-999990},{"d":6,"cell":85,"sc":-999990},{"d":7,"cell":85,"sc":-999990},{"d":8,"cell":85,"sc":-999990}]},{"k":37,"who":1,"cell":110,"x":0,"y":2,"z":4,"sc":999991,"depth":8,"ms":3431,"nodes":660154278,"stable":true,"gap2":999962.278,"ties":2,"second":44,"secondSc":28.721999999999994,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":3,"newGaps":1,"blocked":0,"deadFoe":1,"threatenedBefore":0,"foeThreatBefore":0,"to2":0,"to3":2,"linesThrough":5,"rising":2,"inPlane":3,"vertical":1,"height":5,"colFillBefore":4,"myGapBefore":2,"foeGapBefore":2},"type":"threat","evalBefore":27.96,"cands":[{"cell":110,"sc":999991,"type":"threat","win":false,"to2":0,"to3":2,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":5},{"cell":63,"sc":999991,"type":"fork","win":false,"to2":6,"to3":2,"newGaps":2,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":44,"sc":28.7,"type":"threat","win":false,"to2":1,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":42,"sc":25.5,"type":"stack","win":false,"to2":6,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":87,"sc":24.7,"type":"threat","win":false,"to2":5,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":4},{"cell":1,"sc":21.3,"type":"threat","win":false,"to2":2,"to3":3,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1}],"depthLog":[{"d":1,"cell":63,"sc":111},{"d":2,"cell":110,"sc":999991},{"d":3,"cell":110,"sc":999991},{"d":4,"cell":110,"sc":999991},{"d":5,"cell":110,"sc":999991},{"d":6,"cell":110,"sc":999991},{"d":7,"cell":110,"sc":999991},{"d":8,"cell":110,"sc":999991}]},{"k":38,"who":2,"cell":4,"x":4,"y":0,"z":0,"sc":-999993,"depth":8,"ms":2235,"nodes":661777522,"stable":true,"gap2":2,"ties":2,"second":42,"secondSc":-999995,"profile":{"win":false,"myLiveAfter":1,"foeLiveAfter":0,"myGapAfter":2,"newGaps":0,"blocked":0,"deadFoe":4,"threatenedBefore":0,"foeThreatBefore":0,"to2":1,"to3":3,"linesThrough":7,"rising":4,"inPlane":3,"vertical":1,"height":1,"colFillBefore":0,"myGapBefore":2,"foeGapBefore":3},"type":"build","evalBefore":-36.730000000000004,"cands":[{"cell":4,"sc":-999993,"type":"build","win":false,"to2":1,"to3":3,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":7,"height":1},{"cell":63,"sc":-999993,"type":"threat","win":false,"to2":3,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":42,"sc":-999995,"type":"stack","win":false,"to2":7,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":2,"sc":-999995,"type":"build","win":false,"to2":0,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1},{"cell":44,"sc":-999995,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":87,"sc":-999995,"type":"stack","win":false,"to2":6,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":4}],"depthLog":[{"d":1,"cell":4,"sc":11.9},{"d":2,"cell":2,"sc":-92.5},{"d":3,"cell":42,"sc":-12.5},{"d":4,"cell":42,"sc":-92.1},{"d":5,"cell":4,"sc":-106.1},{"d":6,"cell":4,"sc":-999992},{"d":7,"cell":4,"sc":-999992},{"d":8,"cell":4,"sc":-999993}]},{"k":39,"who":1,"cell":29,"x":4,"y":0,"z":1,"sc":999994,"depth":8,"ms":167,"nodes":661885709,"stable":true,"gap2":1999993,"ties":1,"second":25,"secondSc":-999999,"profile":{"win":false,"myLiveAfter":1,"foeLiveAfter":0,"myGapAfter":4,"newGaps":1,"blocked":1,"deadFoe":3,"threatenedBefore":0,"foeThreatBefore":1,"to2":0,"to3":1,"linesThrough":8,"rising":5,"inPlane":3,"vertical":2,"height":2,"colFillBefore":1,"myGapBefore":3,"foeGapBefore":2},"type":"block","evalBefore":-11.866000000000014,"cands":[{"cell":29,"sc":999994,"type":"block","win":false,"to2":0,"to3":1,"newGaps":1,"blocked":1,"foeLiveAfter":0,"linesThrough":8,"height":2},{"cell":25,"sc":-999999,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":2},{"cell":1,"sc":-999999,"type":"threat","win":false,"to2":2,"to3":3,"newGaps":1,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":1},{"cell":2,"sc":-999999,"type":"fork","win":false,"to2":2,"to3":2,"newGaps":2,"blocked":0,"foeLiveAfter":1,"linesThrough":5,"height":1},{"cell":53,"sc":-999999,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":3},{"cell":55,"sc":-999999,"type":"stack","win":false,"to2":5,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":3}],"depthLog":[{"d":1,"cell":29,"sc":97.8},{"d":2,"cell":29,"sc":999994},{"d":3,"cell":29,"sc":999994},{"d":4,"cell":29,"sc":999994},{"d":5,"cell":29,"sc":999994},{"d":6,"cell":29,"sc":999994},{"d":7,"cell":29,"sc":999994},{"d":8,"cell":29,"sc":999994}]},{"k":40,"who":2,"cell":87,"x":2,"y":2,"z":3,"sc":-999995,"depth":8,"ms":2308,"nodes":663524356,"stable":true,"gap2":4,"ties":1,"second":25,"secondSc":-999999,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":1,"newGaps":0,"blocked":1,"deadFoe":6,"threatenedBefore":0,"foeThreatBefore":1,"to2":6,"to3":1,"linesThrough":18,"rising":10,"inPlane":8,"vertical":2,"height":4,"colFillBefore":3,"myGapBefore":1,"foeGapBefore":4},"type":"block","evalBefore":-97.78200000000001,"cands":[{"cell":87,"sc":-999995,"type":"block","win":false,"to2":6,"to3":1,"newGaps":0,"blocked":1,"foeLiveAfter":0,"linesThrough":18,"height":4},{"cell":25,"sc":-999999,"type":"stack","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":2},{"cell":1,"sc":-999999,"type":"spread","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":1},{"cell":2,"sc":-999999,"type":"build","win":false,"to2":1,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":5,"height":1},{"cell":53,"sc":-999999,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":8,"height":3},{"cell":54,"sc":-999999,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":1,"linesThrough":5,"height":3}],"depthLog":[{"d":1,"cell":87,"sc":-31.2},{"d":2,"cell":87,"sc":-999995},{"d":3,"cell":87,"sc":-999995},{"d":4,"cell":87,"sc":-999995},{"d":5,"cell":87,"sc":-999995},{"d":6,"cell":87,"sc":-999995},{"d":7,"cell":87,"sc":-999995},{"d":8,"cell":87,"sc":-999995}]},{"k":41,"who":1,"cell":36,"x":1,"y":2,"z":1,"sc":999996,"depth":8,"ms":471,"nodes":302795,"stable":true,"gap2":2,"ties":2,"second":44,"secondSc":999994,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":4,"newGaps":1,"blocked":0,"deadFoe":9,"threatenedBefore":0,"foeThreatBefore":0,"to2":6,"to3":2,"selfBlocked":6,"linesThrough":14,"rising":8,"inPlane":6,"vertical":2,"height":2,"colFillBefore":1,"myGapBefore":3,"foeGapBefore":1},"type":"threat","evalBefore":31.222,"cands":[{"cell":36,"sc":999996,"self":true,"type":"threat","win":false,"to2":6,"to3":2,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":63,"sc":999996,"self":false,"type":"fork","win":false,"to2":6,"to3":2,"newGaps":2,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":44,"sc":999994,"self":false,"type":"threat","win":false,"to2":2,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":40,"sc":999994,"self":false,"type":"stack","win":false,"to2":4,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":1,"sc":999994,"self":false,"type":"threat","win":false,"to2":2,"to3":3,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":2,"sc":999994,"self":false,"type":"fork","win":false,"to2":2,"to3":2,"newGaps":2,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1}],"depthLog":[{"d":1,"cell":63,"sc":111.2},{"d":2,"cell":63,"sc":31.9},{"d":3,"cell":36,"sc":999995},{"d":4,"cell":36,"sc":999995},{"d":5,"cell":36,"sc":999996},{"d":6,"cell":36,"sc":999996},{"d":7,"cell":36,"sc":999996},{"d":8,"cell":36,"sc":999996}]},{"k":42,"who":2,"cell":42,"x":2,"y":3,"z":1,"sc":-999997,"depth":8,"ms":1728,"nodes":1756389,"stable":true,"gap2":2,"ties":20,"second":61,"secondSc":-999999,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":0,"myGapAfter":1,"newGaps":0,"blocked":0,"deadFoe":7,"threatenedBefore":0,"foeThreatBefore":0,"to2":7,"to3":0,"selfBlocked":7,"linesThrough":14,"rising":8,"inPlane":6,"vertical":2,"height":2,"colFillBefore":1,"myGapBefore":1,"foeGapBefore":4},"type":"stack","evalBefore":-52.74200000000001,"cands":[{"cell":42,"sc":-999997,"self":true,"type":"stack","win":false,"to2":7,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":31,"sc":-999997,"self":false,"type":"stack","win":false,"to2":9,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":2},{"cell":21,"sc":-999997,"self":false,"type":"spread","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":1,"sc":-999997,"self":false,"type":"spread","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":44,"sc":-999997,"self":false,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":23,"sc":-999997,"self":false,"type":"build","win":false,"to2":2,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1}],"depthLog":[{"d":1,"cell":2,"sc":-26.6},{"d":2,"cell":42,"sc":-999996},{"d":3,"cell":42,"sc":-999996},{"d":4,"cell":42,"sc":-999997},{"d":5,"cell":42,"sc":-999997},{"d":6,"cell":42,"sc":-999997},{"d":7,"cell":42,"sc":-999997},{"d":8,"cell":42,"sc":-999997}]},{"k":43,"who":1,"cell":63,"x":3,"y":2,"z":2,"sc":999998,"depth":8,"ms":108,"nodes":1817930,"stable":true,"gap2":2,"ties":2,"second":67,"secondSc":999996,"profile":{"win":false,"myLiveAfter":2,"foeLiveAfter":0,"myGapAfter":5,"newGaps":1,"blocked":0,"deadFoe":6,"threatenedBefore":0,"foeThreatBefore":0,"to2":6,"to3":2,"selfBlocked":10,"linesThrough":18,"rising":12,"inPlane":6,"vertical":2,"height":3,"colFillBefore":2,"myGapBefore":4,"foeGapBefore":1},"type":"threat","evalBefore":29.097999999999978,"cands":[{"cell":63,"sc":999998,"self":true,"type":"threat","win":false,"to2":6,"to3":2,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":61,"sc":999998,"self":false,"type":"fork","win":false,"to2":5,"to3":2,"newGaps":2,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":67,"sc":999996,"self":false,"type":"fork","win":false,"to2":3,"to3":2,"newGaps":2,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":1,"sc":999996,"self":false,"type":"threat","win":false,"to2":2,"to3":3,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":40,"sc":999996,"self":false,"type":"stack","win":false,"to2":3,"to3":2,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":10,"height":2},{"cell":2,"sc":999996,"self":false,"type":"fork","win":false,"to2":2,"to3":2,"newGaps":2,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1}],"depthLog":[{"d":1,"cell":61,"sc":999997},{"d":2,"cell":63,"sc":999998},{"d":3,"cell":63,"sc":999998},{"d":4,"cell":63,"sc":999998},{"d":5,"cell":63,"sc":999998},{"d":6,"cell":63,"sc":999998},{"d":7,"cell":63,"sc":999998},{"d":8,"cell":63,"sc":999998}]},{"k":44,"who":2,"cell":25,"x":0,"y":0,"z":1,"sc":-999999,"depth":8,"ms":332,"nodes":1991390,"stable":true,"gap2":null,"ties":23,"second":null,"secondSc":null,"profile":{"win":false,"myLiveAfter":0,"foeLiveAfter":2,"myGapAfter":1,"newGaps":0,"blocked":0,"deadFoe":2,"threatenedBefore":0,"foeThreatBefore":2,"to2":5,"to3":0,"selfBlocked":3,"linesThrough":8,"rising":5,"inPlane":3,"vertical":2,"height":2,"colFillBefore":1,"myGapBefore":1,"foeGapBefore":5},"type":"stack","evalBefore":-999997,"cands":[{"cell":25,"sc":-999999,"self":true,"type":"stack","win":false,"to2":5,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":2,"linesThrough":8,"height":2},{"cell":1,"sc":-999999,"self":false,"type":"spread","win":false,"to2":4,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":2,"linesThrough":8,"height":1},{"cell":2,"sc":-999999,"self":false,"type":"build","win":false,"to2":1,"to3":1,"newGaps":0,"blocked":0,"foeLiveAfter":2,"linesThrough":5,"height":1},{"cell":53,"sc":-999999,"self":false,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":2,"linesThrough":8,"height":3},{"cell":54,"sc":-999999,"self":false,"type":"stack","win":false,"to2":2,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":2,"linesThrough":5,"height":3},{"cell":55,"sc":-999999,"self":false,"type":"stack","win":false,"to2":6,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":2,"linesThrough":8,"height":3}],"depthLog":[{"d":1,"cell":25,"sc":-999998},{"d":2,"cell":25,"sc":-999999},{"d":3,"cell":25,"sc":-999999},{"d":4,"cell":25,"sc":-999999},{"d":5,"cell":25,"sc":-999999},{"d":6,"cell":25,"sc":-999999},{"d":7,"cell":25,"sc":-999999},{"d":8,"cell":25,"sc":-999999}]},{"k":45,"who":1,"cell":61,"x":1,"y":2,"z":2,"sc":999999,"depth":8,"ms":13,"nodes":1998033,"stable":true,"gap2":1,"ties":2,"second":50,"secondSc":999998,"profile":{"win":true,"myLiveAfter":2,"foeLiveAfter":0,"myGapAfter":6,"newGaps":1,"blocked":0,"deadFoe":12,"threatenedBefore":2,"foeThreatBefore":0,"to2":4,"to3":3,"selfBlocked":11,"linesThrough":18,"rising":12,"inPlane":6,"vertical":2,"height":3,"colFillBefore":2,"myGapBefore":5,"foeGapBefore":1},"type":"four","evalBefore":999998,"cands":[{"cell":61,"sc":999999,"self":true,"type":"four","win":true,"to2":4,"to3":3,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":18,"height":3},{"cell":88,"sc":999999,"self":false,"type":"four","win":true,"to2":1,"to3":4,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":14,"height":4},{"cell":50,"sc":999998,"self":false,"type":"stack","win":false,"to2":3,"to3":0,"newGaps":0,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":3},{"cell":1,"sc":999998,"self":false,"type":"fork","win":false,"to2":1,"to3":4,"newGaps":2,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":1},{"cell":2,"sc":999998,"self":false,"type":"fork","win":false,"to2":2,"to3":2,"newGaps":2,"blocked":0,"foeLiveAfter":0,"linesThrough":5,"height":1},{"cell":53,"sc":999998,"self":false,"type":"threat","win":false,"to2":2,"to3":1,"newGaps":1,"blocked":0,"foeLiveAfter":0,"linesThrough":8,"height":3}],"depthLog":[{"d":1,"cell":61,"sc":999999},{"d":2,"cell":61,"sc":999999},{"d":3,"cell":61,"sc":999999},{"d":4,"cell":61,"sc":999999},{"d":5,"cell":61,"sc":999999},{"d":6,"cell":61,"sc":999999},{"d":7,"cell":61,"sc":999999},{"d":8,"cell":61,"sc":999999}]}],"firstAll":[{"cell":7,"x":2,"y":1,"sc":61.6},{"cell":11,"x":1,"y":2,"sc":61.6},{"cell":13,"x":3,"y":2,"sc":61.6},{"cell":17,"x":2,"y":3,"sc":61.6},{"cell":6,"x":1,"y":1,"sc":49.6},{"cell":8,"x":3,"y":1,"sc":49.6},{"cell":16,"x":1,"y":3,"sc":49.6},{"cell":18,"x":3,"y":3,"sc":49.6},{"cell":1,"x":1,"y":0,"sc":40.9},{"cell":3,"x":3,"y":0,"sc":40.9},{"cell":5,"x":0,"y":1,"sc":40.9},{"cell":9,"x":4,"y":1,"sc":40.9},{"cell":15,"x":0,"y":3,"sc":40.9},{"cell":19,"x":4,"y":3,"sc":40.9},{"cell":21,"x":1,"y":4,"sc":40.9},{"cell":23,"x":3,"y":4,"sc":40.9},{"cell":12,"x":2,"y":2,"sc":37.4},{"cell":0,"x":0,"y":0,"sc":15.8},{"cell":4,"x":4,"y":0,"sc":15.8},{"cell":20,"x":0,"y":4,"sc":15.8},{"cell":24,"x":4,"y":4,"sc":15.8},{"cell":2,"x":2,"y":0,"sc":15.2},{"cell":10,"x":0,"y":2,"sc":15.2},{"cell":14,"x":4,"y":2,"sc":15.2},{"cell":22,"x":2,"y":4,"sc":15.2}],"firstDepth":11};
+/*__BOOK_END__*/
+const bkSeq = (OPENING_BOOK && OPENING_BOOK.moves) ? OPENING_BOOK.moves : [];
+const bk = { on:false, tab:'list', sel:0, drill:false, i:0, userSide:1, ok:0, wrong:0, bad:[], paused:false };
+
+function bkName(cell){ return 'x' + (XO(cell) + 1) + 'y' + (YO(cell) + 1) + 'L' + (ZO(cell) + 1); }
+function bkWhoTxt(w){ return w === 1 ? '蓝' : '红'; }
+function bkWhoCls(w){ return w === 1 ? 'bl' : 'rd'; }
+function bkLegalIn(b, c){
+  if(b[c] !== 0) return false;
+  const x = XO(c), y = YO(c);
+  for(let z = 0; z < N; z++){ const i = idx(x, y, z); if(b[i] === 0) return i === c; }
+  return false;
+}
+/* 找"三缺一"：一条线上三颗同色 + 一个空位。空位够不够得到，是这游戏最关键的区分。 */
+function bkGaps(b, who){
+  const out = [];
+  for(const L of LINES){
+    let n = 0, empty = -1, ok = true;
+    for(let t = 0; t < 4; t++){
+      const c = L[t], v = b[c];
+      if(v === who) n++;
+      else if(v !== 0){ ok = false; break; }
+      else empty = c;
+    }
+    if(ok && n === 3 && empty >= 0) out.push({ c: empty, lgl: bkLegalIn(b, empty) });
+  }
+  return out;
+}
+function bkGapTxt(gs){
+  if(!gs.length) return '无';
+  return gs.map(g => bkName(g.c) + (g.lgl ? '' : '（层不够，暂时落不了）')).join('、');
+}
+let BKS = null;
+function bkBuildSnapshots(){
+  BKS = [];
+  const b = new Uint8Array(SZ);
+  for(const mv of bkSeq){
+    BKS.push({
+      b: b.slice(),
+      my: bkGaps(b, mv.who),
+      foe: bkGaps(b, 3 - mv.who),
+    });
+    b[mv.cell] = mv.who;
+  }
+}
+
+/* ---------- 分数口径 ---------- */
+const BK_WIN = 1000000;
+function bkIsMate(sc){ return Math.abs(sc) >= BK_WIN - 500; }
+function bkScoreStr(sc, who){
+  if(bkIsMate(sc)) return (sc > 0 ? '必胜（已算到连四）' : '必输（对手已算到连四）');
+  const v = Math.round(sc);
+  if(sc > 0) return '领先 ' + v + ' 分';
+  if(sc < 0) return '落后 ' + (-v) + ' 分';
+  return '五五开';
+}
+/* gap2 = 最佳手减第二名的分差。注意 gap2 本身可能达到百万量级 —— 那不是算错，
+   而是「除最佳手外，其余落点都会被对手在搜索深度内强制算杀」（深搜真的算出来了）。
+   这种原始 mate 分绝不能直接露给用户，要翻译成"唯一解/唯一拖延"。 */
+function bkGapStr(mv, long){
+  if(mv.gap2 === null) return long ? '全盘唯一：所有其他落点都差很多' : '唯一';
+  if(mv.gap2 > BK_WIN - 500) return long
+    ? '强制唯一解：其余落点都会被对手强制算杀（搜索深度内必输），只有这一手能下'
+    : '唯一解';
+  if(mv.gap2 < 5) return long
+    ? '没有唯一性：和下一档只差 ' + Math.round(mv.gap2) + ' 分，属于同一档，选哪个都行'
+    : '同档';
+  return long
+    ? (mv.gap2 < 25 ? '小优：比下一档高 ' : '明显最好：比下一档高 ') + Math.round(mv.gap2) + ' 分'
+    : ('领先' + Math.round(mv.gap2));
+}
+
+/* ---------- 类型表 ---------- */
+const BKT = {
+  four:   { t:'直接连四', cls:'g', tip:'落下去就四连，棋结束' },
+  block:  { t:'必须堵',   cls:'r', tip:'对手已造出杀点，不堵就输' },
+  fork:   { t:'造双杀',   cls:'r', tip:'一手造出两个杀点，挡不住' },
+  threat: { t:'造三缺一', cls:'b', tip:'单威胁＝抢一手先手' },
+  stack:  { t:'加高柱子', cls:'p', tip:'竖线和跨层斜线同时变厚' },
+  spread: { t:'铺线',     cls:'y', tip:'一次把好几条线推成两子' },
+  build:  { t:'占交叉点', cls:'',  tip:'选串线最多、又能往上长的那一格' },
+};
+function bkTag(type){ const x = BKT[type] || BKT.build; return '<span class="tag ' + x.cls + '">' + x.t + '</span>'; }
+
+/* ---------- 讲解：这一手为什么下在这 ---------- */
+function bkReason(mv, S){
+  const p = mv.profile, foeL = S.foe.filter(g => g.lgl), myL = S.my.filter(g => g.lgl);
+  switch(mv.type){
+    case 'four':
+      return '这一手落下去，四颗同色已经连成一条线 —— 棋直接结束。棋谱里出现这一手，说明前面某一手已经无法挽回了：'
+           + '回看上一手，对手一定有能落的杀点，而那一手（或者更早）没有去堵。';
+    case 'block':
+      return '对手上一手造出了 <b>' + foeL.length + '</b> 个能落的杀点（' + bkGapTxt(foeL) + '）。这种局面只有一种读法：'
+           + '<b>要么我先连四，要么我堵住那个缺口</b>，其余全都不成立。这手落在缺口上把那条线掐死，'
+           + '一共撞掉 <b>' + p.blocked + '</b> 个杀点。注意「堵」＝<b>落在那个空格上</b>，不是落在旁边 —— '
+           + '三颗子已经摆好了，全盘只有那一格能兑现。';
+    case 'fork':
+      return '这手同时造出 <b>' + p.newGaps + '</b> 个三缺一。对手只能堵一个，另一个下一手就是四连 —— 从这一手起胜负已定。'
+           + '这就是这盘棋<b>唯一的杀手锏</b>：单威胁永远会被堵，双威胁谁都挡不住。'
+           + '所以读到这一步的正确想法不是"哪一格好看"，而是"我能不能一手吃到两条线的缺口"。';
+    case 'threat':
+      return '这手造出 1 个三缺一。单一威胁本身赢不了（对手会来堵），但它的作用是<b>抢先手</b>：'
+           + '对手被迫花一手去应付，我就能连着我想要的节奏走。判断一手棋值不值，关键就看它<b>有没有逼对手做事</b>。';
+    case 'stack':
+      return '往<b>第 ' + p.height + ' 层</b>放 —— 这根柱子下面已经有 ' + p.colFillBefore + ' 颗。加高是效率最高的一类手：'
+           + '这一格同时串着 <b>' + p.vertical + ' 条竖线</b>和 <b>' + p.rising + ' 条跨层斜线</b>（合计 ' + p.linesThrough + ' 条四连线）。'
+           + '全盘 302 条线里有 <b>162 条是跨层的</b> —— 不往上堆，那 162 条你一条都碰不到。';
+    case 'spread':
+      return '这一手同时把 <b>' + p.to2 + '</b> 条线从「1 颗」推到「2 颗」，还顺手撞死了对手 <b>' + p.deadFoe + '</b> 条线。'
+           + '两颗同色 + 两个空格都够得到 ＝ 活二，是对手必须开始理会的形状：再添一颗就是三缺一。';
+    default:
+      return '这一格串着 <b>' + p.linesThrough + '</b> 条四连线（层内 ' + p.inPlane + ' 条 + 跨层 ' + p.rising + ' 条），'
+           + '而且从这个位置向上还有 <b>' + p.rising + '</b> 个发展方向。'
+           + '开局选点的标准就两条：<b>串的线多</b>（将来凑四的路多）、<b>能往上长</b>（跨层线占全盘一半以上）。';
+  }
+}
+
+function bkWhyHtml(k){
+  if(!bkSeq.length) return '<div class="box tip">还没有算好的棋谱数据。</div>';
+  k = Math.max(0, Math.min(k, bkSeq.length - 1));
+  const mv = bkSeq[k], S = BKS[k], p = mv.profile;
+  const nxt = bkSeq[k + 1] || null;
+  const foeL = S.foe.filter(g => g.lgl), myL = S.my.filter(g => g.lgl);
+  let h = '';
+  h += '<div class="rv-sec">第 ' + mv.k + ' 手 · <span class="' + bkWhoCls(mv.who) + '">' + bkWhoTxt(mv.who) + '方</span> · '
+     + '<b style="font-size:13px">' + bkName(mv.cell) + '</b>（第 ' + (mv.z + 1) + ' 层，此柱第 ' + p.colFillBefore + '+1 颗）'
+     + ' ' + bkTag(mv.type) + '</div>';
+
+  /* 落子前必须先看的两个数 */
+  h += '<div class="box info"><b>落子前，先看两个数</b><br>'
+     + '对手能落的杀点：<b>' + foeL.length + '</b> 个' + (foeL.length ? '（' + bkGapTxt(foeL) + '）' : '') + '<br>'
+     + '我能落的杀点：<b>' + myL.length + '</b> 个' + (myL.length ? '（' + bkGapTxt(myL) + '）' : '') + '<br>'
+     + (foeL.length >= 1
+        ? '<span style="color:#993C1D">对手已经能连四了 —— 这一手没有选择，只能堵（或者我自己先连四）。</span>'
+        : '双方都还没有能马上兑现的杀点 —— 现在是把形状做厚的时候。')
+     + '</div>';
+
+  h += '<div class="rv-sec">为什么是这一手</div><div>' + bkReason(mv, S) + '</div>';
+
+  h += '<div class="rv-sec">这一手具体改变了什么</div>'
+     + '<table class="vt"><tr><th>把几条线推成 2 子<br>to2</th><th>推成 3 子<br>to3</th>'
+     + '<th>新增杀点<br>newGaps</th><th>撞掉对手杀点<br>blocked</th><th>撞死对手线<br>deadFoe</th>'
+     + '<th>串线总数<br>lines</th></tr><tr>'
+     + '<td>' + p.to2 + '</td><td>' + p.to3 + '</td><td>' + p.newGaps + '</td>'
+     + '<td>' + p.blocked + '</td><td>' + p.deadFoe + '</td><td>' + p.linesThrough + '</td></tr></table>'
+     + '<div style="color:#8A877F;font-size:11.5px;margin-top:3px">'
+     + 'to2 = 从「1 颗」变「2 颗」的线数（做厚）；to3 = 变成三缺一的线数（做杀）；'
+     + 'blocked = 撞掉对手几个能落的杀点；deadFoe = 因为我这颗子，对手有几条线彻底作废（撞线既是进攻也是防守）</div>';
+
+  /* 这一手有多"唯一" */
+  const uniq = bkGapStr(mv, true);
+  h += '<div class="rv-sec">这一手有多「唯一」</div>'
+     + '<div>引擎给这一手 <b>' + bkScoreStr(mv.sc, mv.who) + '</b>；'
+     + (mv.ties > 1 ? '有 <b>' + mv.ties + '</b> 个落点与它<b>完全同分</b>（在棋盘上互为旋转/镜像，完全等价，随便挑一个）。' : '')
+     + uniq + '。搜索深度 ' + mv.depth + ' 层'
+     + (mv.stable ? '，最优手在最近几层一直没变（比较可信）' : '，<span style="color:#993C1D">最优手在相邻层之间换过（说明几手差不多，别把它当唯一正解）</span>')
+     + '。</div>';
+
+  if(nxt){
+    h += '<div class="rv-sec">下完这手，对手会怎么应</div>'
+       + '<div>谱上是 <span class="' + bkWhoCls(nxt.who) + '">' + bkWhoTxt(nxt.who) + '</span> '
+       + '<b>' + bkName(nxt.cell) + '</b> ' + bkTag(nxt.type) + ' —— '
+       + bkOneLiner(nxt) + '</div>';
+  }
+  h += '<div class="rv-sec">这一手该走的读盘顺序</div>' + bkChecklist(mv, S);
+  return h;
+}
+function bkOneLiner(mv){
+  const p = mv.profile;
+  switch(mv.type){
+    case 'block': return '它只能去堵这个缺口。';
+    case 'fork': return '它去造双杀 —— 我一被逼到这一步就已经很难了。';
+    case 'threat': return '它反手造一个三缺一，把先手权抢回去。';
+    case 'stack': return '它接着往上堆第 ' + p.height + ' 层。';
+    case 'four': return '它直接连四，棋结束。';
+    default: return '它去占串线最多的那一格（' + p.linesThrough + ' 条线）。';
+  }
+}
+function bkChecklist(mv, S){
+  const foeL = S.foe.filter(g => g.lgl).length, myL = S.my.filter(g => g.lgl).length;
+  const rows = [
+    ['① 我能连四吗？', myL >= 1 ? '能 —— 直接下缺口' : (myL === 0 && mv.type === 'four' ? '能' : '不能'), myL >= 1 || mv.type === 'four'],
+    ['② 对手下一步能连四吗？', foeL >= 1 ? '能 —— 必须堵，别想别的' : '不能', foeL >= 1],
+    ['③ 我能一手造出两个杀点吗？', mv.type === 'fork' ? '能 —— 这就是本手' : '不能', mv.type === 'fork'],
+    ['④ 对手能一手造出两个杀点吗？', '看它的杀点数：它现在有 ' + (S.foe.length) + ' 个三缺一的形状', false],
+    ['⑤ 都不是 —— 就挑串线最多、还能往上长的那一格', '本手 ' + bkName(mv.cell) + ' 串 ' + mv.profile.linesThrough + ' 条线', !(foeL >= 1) && mv.type !== 'four'],
+  ];
+  return '<ul>' + rows.map(r => '<li>' + r[0] + ' → <b>' + r[1] + '</b>' + (r[2] ? ' ✓' : '') + '</li>').join('') + '</ul>'
+       + '<div style="color:#8A877F;font-size:11.5px">这五步是固定的顺序：先算自己的赢，再算对手的赢，再算"一手两威胁"，'
+       + '最后才轮到"哪格好看"。实战里漏棋，九成是跳过了②。</div>';
+}
+
+/* ---------- 备选对照 ---------- */
+function bkCandHtml(k){
+  if(!bkSeq.length) return '';
+  const mv = bkSeq[k];
+  let h = '<div class="rv-sec">同一局面下引擎给 25 个落点的分（前 6 名）</div>'
+    + '<table class="vt"><tr><th>落点</th><th>引擎分</th><th>与第一名差</th><th>下法</th>'
+    + '<th>to2</th><th>to3</th><th>新增杀点</th><th>撞掉杀点</th><th>串线</th><th>层</th></tr>';
+  for(const c of mv.cands){
+    const isSelf = (c.cell === mv.cell);      // 直接比坐标，不依赖数据里有没有 self 字段
+    const d = (mv.sc - c.sc);
+    h += '<tr' + (isSelf ? ' class="top"' : '') + '>'
+      + '<td class="l">' + bkName(c.cell) + (isSelf ? ' ←本手' : '') + '</td>'
+      + '<td>' + (bkIsMate(c.sc) ? (c.sc > 0 ? '必胜' : '必输') : Math.round(c.sc)) + '</td>'
+      + '<td>' + (isSelf ? '—' : (bkIsMate(c.sc) && bkIsMate(mv.sc) ? '—' : (d <= 0 ? '0（同分）' : '-' + Math.round(d)))) + '</td>'
+      + '<td>' + bkTag(c.type) + '</td>'
+      + '<td>' + c.to2 + '</td><td>' + c.to3 + '</td><td>' + c.newGaps + '</td>'
+      + '<td>' + c.blocked + '</td><td>' + c.linesThrough + '</td><td>' + c.height + '</td></tr>';
+  }
+  h += '</table>';
+  h += '<div class="box tip"><b>这张表怎么读</b><br>'
+     + '· 只看「引擎分」的差距：差 <b>5 分以内</b>基本是同一档，别纠结；差 <b>20 分以上</b>就是实打实的优劣。<br>'
+     + '· 「新增杀点」是攻击力（决定你下一步能不能逼人），「撞掉杀点」是防守力，两个都记。<br>'
+     + '· 「串线」是这一格的长期潜力：它串着多少条四连线，将来就有多少条路能走。<br>'
+     + '· 表里所有数字和「这一手的道理」页是同一套账（同一次搜索拆出来的），不会打架。</div>';
+  if(mv.depthLog && mv.depthLog.length){
+    h += '<div class="rv-sec">深度稳定性：每一层算出来的最优手</div>'
+      + '<div class="memo">' + mv.depthLog.map(d => d.d + '层 ' + bkName(d.cell)
+        + (bkIsMate(d.sc) ? (d.sc > 0 ? ' 必胜' : ' 必输') : ' ' + Math.round(d.sc))).join('\n') + '</div>'
+      + '<div style="color:#8A877F;font-size:11.5px;margin-top:4px">最优手跳来跳去的那几层，说明候选之间本来就差不多；'
+      + '从某一层开始稳定下来，那一手才值得背。</div>';
+  }
+  return h;
+}
+
+/* ---------- 开局原理 ---------- */
+function bkTheoryHtml(){
+  if(!OPENING_BOOK) return '';
+  const bd = OPENING_BOOK.board, st = OPENING_BOOK.stats;
+  let h = '<div class="rv-sec">棋盘本身告诉你的三件事</div>'
+    + '<div class="box info">'
+    + '① 全盘 <b>' + bd.lines + '</b> 条四连线 ＝ 层内 <b>' + bd.inPlane + '</b> 条 + <b>跨层 ' + bd.rising + '</b> 条'
+    + '（跨层的里面有 <b>' + bd.vertical + ' 条是竖线</b>）。<br>'
+    + '② <b>跨层线占了一半以上</b> —— 这是空间四子棋和平面的最大区别：<b>只在地面铺子，你有一半的线根本够不到</b>。'
+    + '所以"往上堆"不是选择题，是必修课。<br>'
+    + '③ 每一手的落点永远是 <b>25 个</b>（每根柱子最低的那个空格），这个数字不会因为局面变复杂而变多 —— '
+    + '所以判断可以非常机械：<b>每次就问同样五个问题</b>。'
+    + '</div>';
+
+  /* 首手对称类 */
+  const cls = OPENING_BOOK.classes || [];
+  h += '<div class="rv-sec">先手第一步：25 个落点其实只有 6 种</div>'
+    + '<div style="color:#8A877F;font-size:11.5px;margin-bottom:4px">'
+    + '棋盘绕竖轴转 90°/180°/270°、以及四种镜像，都是这盘棋的合法对称（重力沿 z，xy 平面怎么翻都一样）。'
+    + '所以地面 25 格分成 6 个"本质相同"的类 —— 背棋谱只需要背这 6 个类。</div>'
+    + '<table class="vt"><tr><th>类（代表格）</th><th>同类格</th><th>串线</th><th>其中层内</th><th>其中跨层</th>'
+    + '<th>竖直</th><th>引擎给先手的评价</th></tr>';
+  for(const c of cls){
+    h += '<tr><td class="l"><b>' + bkName(c.cells[0]) + '</b></td>'
+      + '<td class="l" style="font-size:11px">' + c.cells.map(bkName).join(' ') + '</td>'
+      + '<td>' + c.lines + '</td><td>' + c.inPlane + '</td><td>' + c.rising + '</td><td>' + c.vertical + '</td>'
+      + '<td>' + (c.searchVal === null || c.searchVal === undefined ? '—'
+          : (bkIsMate(c.searchVal) ? (c.searchVal > 0 ? '必胜' : '必输') : (c.searchVal > 0 ? '+' : '') + Math.round(c.searchVal))) + '</td></tr>';
+  }
+  h += '</table>';
+  /* 用算出来的表自己找规律：把 6 类按引擎分排序后，看排最前的几类有什么共同点 */
+  const ranked = cls.slice().sort((a, b) => (b.searchVal ?? -1e9) - (a.searchVal ?? -1e9));
+  const top = ranked.slice(0, 3), bot = ranked.slice(-2);
+  h += '<div class="box tip">'
+    + '注意一个反直觉的事实：<b>地面正中心 x3y3L1 并不是串线最多的格子</b>（9 条），'
+    + '离它一格的那四个斜邻格（x2y2 / x4y2 / x2y4 / x4y4）才是（10 条）。'
+    + '原因在于<b>越靠边的格子，向上的方向能留在棋盘里的越多</b>（中心格向上只有 1 个方向不出界），'
+    + '而跨层线占全盘一半以上。<br><br>'
+    + '但把 6 个类按引擎分排完，能看出真正的判据不是"串线总数"，而是<b>层内线数</b>：'
+    + '排最前的三类层内分别是 ' + top.map(c => c.inPlane + ' 条（' + bkName(c.cells[0]) + '）').join('、')
+    + '，而垫底的两类是 ' + bot.map(c => c.inPlane + ' 条（' + bkName(c.cells[0]) + '）').join('、') + '。<br>'
+    + '道理是：<b>层内的线在第一手就"够得到"</b>（另外三个空位都合法），'
+    + '<b>跨层的线现在还够不到</b>（上面几层是空的，落不上去），只有等你真往上堆了才值钱。'
+    + '所以第一手选的是"眼下就能用"的线最多的地方 —— 也就是中间那 3×3。</div>';
+  h += '<div class="box good"><b>先手第一步的结论（可以直接背）</b><br>'
+    + '· <b>落在中间 3×3 九格里</b>：引擎给这九格的分在 ' + Math.round(Math.min.apply(null, top.map(c => c.searchVal)))
+    + '~' + Math.round(Math.max.apply(null, top.map(c => c.searchVal))) + ' 之间，互相只差几分；<br>'
+    + '· 中心格、四个正交邻格、四个斜邻格<b>基本等价</b>，<b>不要</b>去纠结选哪一个（引擎自己也随深度换来换去）；<br>'
+    + '· 真正要避开的是<b>四个角</b>和<b>四条边的正中</b>：它们层内只有 3 条线，引擎分比中心区低 ' 
+    + (Math.round(Math.min.apply(null, top.map(c => c.searchVal)) - Math.max.apply(null, bot.map(c => c.searchVal)))) + ' 分以上；<br>'
+    + '· 这盘棋是<b>叠放</b>的：你下在中心区，第二颗就能顺着往上堆或者沿对角线铺开；下在角上，向上的路只有一条，很快就走死了。</div>';
+
+  /* 统计 */
+  if(st){
+    h += '<div class="rv-sec">这条棋谱自己的规律</div>'
+      + '<div class="box good">'
+      + '· 这 ' + bkSeq.length + ' 手里有 <b>' + st.inCenter3 + '</b> 手下在中间的 3×3 区域（x2~x4, y2~y4）；<br>'
+      + '· 落点按层分布：' + st.layerHist.map((n, i) => (i === 0 ? '' : '第' + i + '层 ' + n + ' 手')).filter(Boolean).join('，') + '；<br>'
+      + '· 下法类型：' + Object.keys(st.typeHist).map(t => (BKT[t] ? BKT[t].t : t) + ' ' + st.typeHist[t]).join('，') + '；<br>'
+      + '· 有 <b>' + st.threatTurns + '</b> 手是"对手已经造出杀点、必须堵"的被动手，'
+      + '<b>' + st.forkTurns + '</b> 手是主动造双杀。'
+      + '</div>';
+  }
+
+  /* 口诀 */
+  h += '<div class="rv-sec">可以背下来的六句话</div><div class="box tip">'
+    + '① <b>每手先数两个数</b>：我能落的杀点有几个、对手能落的杀点有几个。数完了再想"哪格好看"。<br>'
+    + '② <b>三缺一只认"缺口"那一格</b>。三颗子已经摆好，全盘只有那一个空格能兑现 —— 堵在别处等于没堵。<br>'
+    + '③ <b>一个威胁赢不了，两个威胁挡不住</b>。看到自己一手能吃两条线的缺口，立刻下；看到对手可能这样，立刻拆。<br>'
+    + '④ <b>能往上堆就往上堆</b>。跨层线占全盘一半以上，竖线和斜线都靠层数长出来。<br>'
+    + '⑤ <b>选点看两样</b>：串着多少条四连线（潜力），向上还有多少方向不出界（成长）。<br>'
+    + '⑥ <b>撞线也是防守</b>。你的一颗子落在对手的线上，那条线就一起作废了 —— 不一定非要去堵缺口。'
+    + '</div>';
+
+  h += '<div class="rv-sec">速记表（可以直接背）</div><div class="memo">' + bkMemoText() + '</div>';
+  return h;
+}
+function bkMemoText(){
+  const lines = [];
+  for(let i = 0; i < bkSeq.length; i += 5){
+    lines.push(bkSeq.slice(i, i + 5).map(m => m.k + '.' + bkWhoTxt(m.who) + ' ' + bkName(m.cell)).join('   '));
+  }
+  return lines.join('\n');
+}
+
+/* ---------- 标签页 ---------- */
+function bkShowTab(t){
+  bk.tab = t;
+  const tabs = document.getElementById('bkTabs');
+  if(tabs) [...tabs.children].forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  /* 面板可见性也要切 —— 只填内容不切 hidden 的话，点了标签页下面永远还是清单（截图实测踩过） */
+  [['bkList','list'],['bkWhy','why'],['bkCand','cand'],['bkTheory','theory']].forEach(p => {
+    const el = document.getElementById(p[0]); if(el) el.hidden = (p[1] !== t);
+  });
+  bkFill();
+}
+function bkFill(){
+  if(!bkSeq.length){ const el = document.getElementById('bkList'); if(el) el.innerHTML = '<div class="box tip">没有棋谱数据。</div>'; return; }
+  const k = Math.max(0, Math.min(bk.sel, bkSeq.length - 1));
+  bk.sel = k;
+  /* 清单**每次都重绘** —— 背谱模式会把"走错的那一手"标红，而那时当前页可能不是清单页，
+     只在清单页重绘的话，切回去看到的还是旧状态。45 行而已，不值得省。 */
+  bkRenderList(k);
+  if(bk.tab === 'why'){
+    document.getElementById('bkWhy').innerHTML = bkWhyHtml(k);
+  } else if(bk.tab === 'cand'){
+    document.getElementById('bkCand').innerHTML = bkCandHtml(k);
+  } else if(bk.tab === 'theory'){
+    document.getElementById('bkTheory').innerHTML = bkTheoryHtml();
+  }
+}
+function bkRenderList(k){
+  const el = document.getElementById('bkList'); if(!el) return;
+  let h = '<div class="rv-sec">' + bkSeq.length + ' 手（点任意一行看那一手的道理）</div><div class="bk-list">';
+  bkSeq.forEach((mv, i) => {
+    const bad = bk.bad.indexOf(i) >= 0;
+    h += '<div class="bk-row' + (i === k ? ' on' : '') + (i === bk.i && bk.drill ? ' now' : '') + (bad ? ' bad' : '') + '" data-i="' + i + '">'
+      + '<span class="n">' + mv.k + '</span>'
+      + '<span class="w ' + bkWhoCls(mv.who) + '">' + bkWhoTxt(mv.who) + '</span>'
+      + '<span class="c">' + bkName(mv.cell) + '</span>'
+      + '<span class="s">' + (bkIsMate(mv.sc) ? (mv.sc > 0 ? '必胜' : '必输') : Math.round(mv.sc)) + '</span>'
+      + '<span class="d">' + bkGapStr(mv) + '</span>'
+      + '<span class="t">' + (BKT[mv.type] ? BKT[mv.type].t : mv.type) + ' · ' + mv.depth + '层' + (mv.stable ? '' : ' ⚠') + '</span>'
+      + '</div>';
+  });
+  h += '</div><div class="box tip">右侧「引擎分」是从落子那一方视角算的；「同档」表示和下一个不同的落点只差 5 分以内，'
+     + '说明那几手等价、不是唯一解；「⚠」表示最优手在相邻搜索深度之间换过，同样说明差不多。<br>'
+     + '<b>一个重要口径</b>：每一手的分都是<b>同一次搜索里 25 个落点之间</b>的比较，'
+     + '<b>不要跨手比较</b>（搜索深度按奇偶层数收尾，奇数手和偶数手的绝对值不同量纲）。'
+     + '真正能横向看的只有「领先下一档」这一列。</div>';
+  el.innerHTML = h;
+  el.querySelectorAll('.bk-row').forEach(r => { r.onclick = () => { bk.sel = +r.dataset.i; bkShowTab('why'); }; });
+}
+
+/* ---------- 把棋盘摆到某一手之前 ---------- */
+function bkLoad(ply, quiet){
+  if(rv.on){ rv.on = false; document.getElementById('rvBar').hidden = true; }
+  hideEndBar();
+  genId++; busy = false; thinking = false;
+  board.fill(0); touch.fill(0); resetLines();
+  history = [];
+  for(let t = 0; t < ply && t < bkSeq.length; t++){ const mv = bkSeq[t]; put(mv.cell, mv.who); history.push(mv.cell); }
+  over = null; winLine = null; winSide = 0; hintCell = -1; hover = -1; hoverStone = -1; focusCol = -1;
+  humanFirst = true; human = P1; ai = P2;
+  turn = (history.length % 2 === 0) ? P1 : P2;
+  const last = history[history.length - 1];
+  if(last !== undefined){
+    const w = findWin(last, whoAt(history.length - 1));
+    if(w){ over = { winner: whoAt(history.length - 1) }; winLine = w; winSide = over.winner; }
+  }
+  refreshThreats(); turnStatus();
+  if(!quiet) setStatus('已摆到开局手册第 ' + (ply + 1) + ' 手之前 —— 接下来按谱走（或你自己下）', 'think');
+}
+function bkLoadSelected(){ bkLoad(bk.sel); }
+
+/* ---------- 背谱模式 ---------- */
+function bkDrillOn(){ return bk.on && bk.drill && bkSeq.length > 0; }
+function bkDrillStart(){
+  bk.i = 0; bk.ok = 0; bk.wrong = 0; bk.bad = []; bk.paused = false;
+  bkLoad(0, true);
+  bkDrillBox();
+  bkDrillTick();
+}
+function bkDrillStop(){
+  bk.drill = false;
+  const cb = document.getElementById('bkDrill'); if(cb) cb.checked = false;
+  const box = document.getElementById('bkDrillBox'); if(box){ box.hidden = true; box.innerHTML = ''; }
+  bkFill();
+}
+function bkDrillBox(){
+  const box = document.getElementById('bkDrillBox'); if(!box) return;
+  box.hidden = false;
+  box.innerHTML = '<div class="rv-sec">背谱模式</div>'
+    + '<div class="rv-ctl2" id="bkSidePick">'
+    + '<button class="rv-btn' + (bk.userSide === 1 ? ' on' : '') + '" data-s="1">我背蓝方（先手）</button>'
+    + '<button class="rv-btn' + (bk.userSide === 2 ? ' on' : '') + '" data-s="2">我背红方（后手）</button>'
+    + '<button class="rv-btn" id="bkDrillReset">从第 1 手重来</button>'
+    + '</div>'
+    + '<div class="dr" id="bkDrillMsg">准备开始</div>';
+  box.querySelectorAll('#bkSidePick button[data-s]').forEach(b => {
+    b.onclick = () => { bk.userSide = +b.dataset.s; bkDrillBox(); bkDrillStart(); };
+  });
+  document.getElementById('bkDrillReset').onclick = bkDrillStart;
+}
+function bkDrillMsg(cls, html){
+  const m = document.getElementById('bkDrillMsg');
+  if(!m) return;
+  m.className = 'dr' + (cls ? ' ' + cls : '');
+  m.innerHTML = html;
+}
+function bkDrillTick(){
+  if(!bkDrillOn()) return;
+  if(bk.paused) return;
+  if(bk.i >= bkSeq.length){
+    bkDrillMsg('ok', '<b>背完了 ' + bkSeq.length + ' 手。</b>这盘棋的正确率 ' + bk.ok + '/' + (bk.ok + bk.wrong) + '。'
+      + '错过的第几手就在上面的清单里标了红 —— 点它看那一手的道理。');
+    return;
+  }
+  const mv = bkSeq[bk.i];
+  bk.sel = bk.i;
+  if(mv.who === bk.userSide){
+    bkDrillMsg('', '<b>轮到你了 —— 第 ' + mv.k + ' 手（你执' + bkWhoTxt(mv.who) + '）。</b><br>'
+      + '凭记忆把这一手落在棋盘上。忘了就点上面的「全部手数」偷看一眼，或者切到「这一手的道理」。');
+    bkFill();
+  } else {
+    bkDrillMsg('', '谱上第 ' + mv.k + ' 手：' + bkWhoTxt(mv.who) + ' 方落子中…');
+    setTimeout(() => {
+      if(!bkDrillOn() || bk.paused) return;
+      const m2 = bkSeq[bk.i];
+      if(!m2 || m2.who === bk.userSide) return;
+      doMove(m2.cell, m2.who);
+      bk.i++;
+      bkFill();
+      bkDrillTick();
+    }, 620);
+  }
+}
+/* 用户在背谱模式下落子：对/错都当场告诉他 */
+function bkDrillHuman(cell){
+  const mv = bkSeq[bk.i];
+  if(!mv) return;
+  if(cell === mv.cell){
+    bk.ok++;
+    doMove(cell, mv.who);
+    bk.i++;
+    bkDrillMsg('ok', '<b>✓ 第 ' + mv.k + ' 手 ' + bkName(mv.cell) + '，对了。</b><br>'
+      + bkShortWhy(mv));
+    bkFill();
+    setTimeout(bkDrillTick, 900);
+  } else {
+    bk.wrong++;
+    if(bk.bad.indexOf(bk.i) < 0) bk.bad.push(bk.i);
+    flash(cell);
+    setStatus('这一手不对 —— 谱上是 ' + bkName(mv.cell), 'lose');
+    bk.paused = true;
+    const el = document.getElementById('bkDrillMsg');
+    if(el){
+      el.className = 'dr no';
+      el.innerHTML = '<b>✗ 第 ' + mv.k + ' 手你走了 ' + bkName(cell) + '，谱上是 <span style="font-size:14px">'
+        + bkName(mv.cell) + '</span>。</b><br>' + bkShortWhy(mv)
+        + '<div class="rv-ctl2"><button class="rv-btn" id="bkFixGo">按正确手继续</button>'
+        + '<button class="rv-btn" id="bkFixUndo">我自己再试一次</button></div>';
+      document.getElementById('bkFixGo').onclick = () => {
+        bk.paused = false;
+        doMove(mv.cell, mv.who); bk.i++; bkFill(); bkDrillMsg('', '继续…');
+        setTimeout(bkDrillTick, 620);
+      };
+      document.getElementById('bkFixUndo').onclick = () => {
+        bk.paused = false; bkDrillMsg('', '再试一次第 ' + mv.k + ' 手（' + bkWhoTxt(mv.who) + '方）。'); bkFill();
+      };
+    }
+    bkFill();
+  }
+}
+function bkShortWhy(mv){
+  const p = mv.profile;
+  const t = BKT[mv.type] ? BKT[mv.type].t : mv.type;
+  const bits = [];
+  bits.push('下法：<b>' + t + '</b>');
+  if(p.foeThreatBefore >= 1) bits.push('⚠ 落子前对手有 ' + p.foeThreatBefore + ' 个能落的杀点，这手是被迫的');
+  if(p.newGaps) bits.push('造出 ' + p.newGaps + ' 个杀点');
+  if(p.blocked) bits.push('撞掉对手 ' + p.blocked + ' 个杀点');
+  if(p.to2) bits.push('把 ' + p.to2 + ' 条线推成两子');
+  if(p.to3) bits.push('把 ' + p.to3 + ' 条线推成三缺一');
+  bits.push('这一格串 ' + p.linesThrough + ' 条线（层内 ' + p.inPlane + ' + 跨层 ' + p.rising + '）');
+  if(p.height > 1) bits.push('第 ' + p.height + ' 层，加高');
+  return bits.join('；') + '。'
+    + (mv.ties > 1 ? '（另有 ' + (mv.ties - 1) + ' 个点在对称意义上完全等价）' : '');
+}
+
+/* ---------- 导出 ---------- */
+function bkMarkdown(){
+  if(!OPENING_BOOK) return '';
+  const bd = OPENING_BOOK.board, st = OPENING_BOOK.stats;
+  let s = '# 空间四子棋 5×5×5 · 开局手册\n\n';
+  s += '> 由 `tools/sf_book.js` 用算力算出：每手把 25 个落点**全部**搜一遍（全窗口，分数可比），'
+     + '带 Zobrist 置换表 + 绕竖轴的四重对称规范化，单步深度 ' + OPENING_BOOK.meta.maxDepth + ' 层、预算 '
+     + Math.round(OPENING_BOOK.meta.budgetMs / 1000) + ' 秒/手。生成时间 ' + OPENING_BOOK.meta.date + '。\n\n';
+  s += '棋盘：' + bd.lines + ' 条四连线 ＝ 层内 ' + bd.inPlane + ' 条 + 跨层 ' + bd.rising + ' 条（其中竖线 ' + bd.vertical + ' 条）。\n\n';
+  s += '结果：' + (OPENING_BOOK.result
+      ? (OPENING_BOOK.result.winner === 0 ? '和棋' : (OPENING_BOOK.result.winner === 1 ? '先手胜' : '后手胜') + '（第 ' + OPENING_BOOK.result.mv + ' 手）')
+      : '这一版只算了 ' + bkSeq.length + ' 手，未分出胜负') + '\n\n';
+  s += '## 一、速记表\n\n```\n' + bkMemoText() + '\n```\n\n';
+  s += '## 二、六句话\n\n';
+  s += '1. 每手先数两个数：我能落的杀点、对手能落的杀点。\n'
+     + '2. 三缺一只认「缺口」那一格，堵在别处等于没堵。\n'
+     + '3. 一个威胁赢不了，两个威胁挡不住。\n'
+     + '4. 能往上堆就往上堆（跨层线占全盘一半以上）。\n'
+     + '5. 选点看两样：串线多少、向上还有多少方向不出界。\n'
+     + '6. 撞线也是防守：你的一颗子落在对手的线上，那条线就一起作废。\n\n';
+  s += '## 三、逐手讲解\n\n';
+  for(let k = 0; k < bkSeq.length; k++){
+    const mv = bkSeq[k], p = mv.profile, S = BKS[k];
+    const foeL = S.foe.filter(g => g.lgl), myL = S.my.filter(g => g.lgl);
+    s += '### 第 ' + mv.k + ' 手 · ' + bkWhoTxt(mv.who) + ' ' + bkName(mv.cell)
+       + '（' + (BKT[mv.type] ? BKT[mv.type].t : mv.type) + '，引擎给 ' + bkScoreStr(mv.sc, mv.who) + '）\n\n';
+    s += '- 落子前：对手能落的杀点 ' + foeL.length + ' 个' + (foeL.length ? '（' + bkGapTxt(foeL) + '）' : '')
+       + '；我能落的杀点 ' + myL.length + ' 个。\n';
+    s += '- 为什么：' + bkReason(mv, S).replace(/<[^>]+>/g, '') + '\n';
+    s += '- 数据：to2=' + p.to2 + '，to3=' + p.to3 + '，新增杀点=' + p.newGaps + '，撞掉对手杀点=' + p.blocked
+       + '，撞死对手线=' + p.deadFoe + '，串线=' + p.linesThrough + '（层内' + p.inPlane + '+跨层' + p.rising + '），第 ' + p.height + ' 层。\n';
+    s += '- 唯一性：' + bkGapStr(mv, true)
+       + (mv.ties > 1 ? '，有 ' + mv.ties + ' 个点完全同分（互为对称）' : '')
+       + '；搜索深度 ' + mv.depth + ' 层，最优手' + (mv.stable ? '稳定' : '在相邻层之间换过（几手差不多）') + '。\n';
+    s += '- 备选前 3：' + mv.cands.filter(c => !c.self).slice(0, 3).map(c =>
+        bkName(c.cell) + '（' + (bkIsMate(c.sc) ? (c.sc > 0 ? '必胜' : '必输') : Math.round(c.sc)) + '，'
+        + (BKT[c.type] ? BKT[c.type].t : c.type) + '）').join('、') + '\n\n';
+  }
+  if(st) s += '## 四、这条棋谱自己的规律\n\n'
+    + '- ' + bkSeq.length + ' 手里有 ' + st.inCenter3 + ' 手落在中间 3×3 区域。\n'
+    + '- 按层：' + st.layerHist.map((n, i) => (i === 0 ? '' : '第' + i + '层 ' + n)).filter(Boolean).join('、') + '。\n'
+    + '- 类型：' + Object.keys(st.typeHist).map(t => (BKT[t] ? BKT[t].t : t) + ' ' + st.typeHist[t]).join('、') + '。\n'
+    + '- 被动堵杀 ' + st.threatTurns + ' 手，主动造双杀 ' + st.forkTurns + ' 手。\n\n';
+  s += '## 五、先手第一步的 6 个对称类\n\n| 代表格 | 同类格 | 串线 | 层内 | 跨层 | 引擎评价 |\n|---|---|---|---|---|---|\n';
+  for(const c of (OPENING_BOOK.classes || [])){
+    s += '| ' + bkName(c.cells[0]) + ' | ' + c.cells.map(bkName).join(' ') + ' | ' + c.lines + ' | ' + c.inPlane + ' | ' + c.rising + ' | '
+      + (c.searchVal === null || c.searchVal === undefined ? '—' : Math.round(c.searchVal)) + ' |\n';
+  }
+  return s;
+}
+
+/* ---------- 面板显示/隐藏 ---------- */
+function bkShow(){
+  if(!bkSeq.length){ setStatus('没有棋谱数据'); return; }
+  if(rv.on) exitReview();
+  bk.on = true;
+  document.getElementById('bkBar').hidden = false;
+  document.getElementById('bkInfo').textContent =
+    bkSeq.length + ' 手 · 每手深度 ' + Math.max.apply(null, bkSeq.map(m => m.depth)) + ' 层 · '
+    + (OPENING_BOOK && OPENING_BOOK.result
+        ? (OPENING_BOOK.result.winner === 0 ? '和棋' : (OPENING_BOOK.result.winner === 1 ? '先手胜' : '后手胜') + ' · 第 ' + OPENING_BOOK.result.mv + ' 手结束')
+        : '未走到终局');
+  bkFill();
+  bkShowTab(bk.tab);
+}
+function bkHide(){
+  bk.on = false;
+  bkDrillStop();
+  document.getElementById('bkBar').hidden = true;
+}
+function bkExportRecord(){
+  if(!bkSeq.length) return;
+  const ms = bkSeq.map(m => (m.x + 1) + '-' + (m.y + 1) + '-' + (m.z + 1)).join(',');
+  const res = OPENING_BOOK && OPENING_BOOK.result ? (OPENING_BOOK.result.winner === 1 ? 'W' : OPENING_BOOK.result.winner === 2 ? 'L' : 'D') : 'U';
+  return 'SF1;v=1;d=' + stamp() + ';lv=1;f=1;r=' + res + ';m=' + ms;
+}
+
 /* ================= 面板绑定 ================= */
 function bindSeg(idName, cb){
   const el=document.getElementById(idName);
@@ -2550,6 +3198,24 @@ document.getElementById('rvTabs').onclick=e=>{
   const b=e.target.closest('button'); if(!b) return;
   rvShowTab(b.dataset.t);
 };
+/* 开局手册 */
+document.getElementById('btnBook').onclick=bkShow;
+document.getElementById('bkExit').onclick=bkHide;
+document.getElementById('bkTabs').onclick=e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  bkShowTab(b.dataset.t);
+};
+document.getElementById('bkLoad').onclick=bkLoadSelected;
+document.getElementById('bkFrom1').onclick=()=>{ bkLoad(0); };
+document.getElementById('bkCopyMd').onclick=e=>copyText(bkMarkdown(), e.target);
+document.getElementById('bkDlMd').onclick=()=>download('space-four-开局手册.md', bkMarkdown());
+document.getElementById('bkRec').onclick=e=>copyText(bkExportRecord() + '\n', e.target);
+document.getElementById('bkDrill').onchange=e=>{
+  if(!bk.on) bkShow();
+  bk.drill = e.target.checked;
+  if(bk.drill) bkDrillStart(); else bkDrillStop();
+};
+if(bkSeq.length) bkBuildSnapshots();
 /* 棋谱：导出 */
 document.getElementById('recCopy').onclick=e=>copyText(document.getElementById('recBox').value, e.target);
 document.getElementById('recDl').onclick=()=>download('space-four-'+stamp().replace(/[:T]/g,'')+'.sfg', document.getElementById('recBox').value);
@@ -2605,6 +3271,7 @@ document.addEventListener('keydown', e=>{
   else if(k==='h'){ hint(); }
   else if(k==='u'){ undo(); }
   else if(k==='n'){ reset(); }
+  else if(k==='b'){ bk.on ? bkHide() : bkShow(); }
 });
 
 /* ================= 主循环 ================= */
